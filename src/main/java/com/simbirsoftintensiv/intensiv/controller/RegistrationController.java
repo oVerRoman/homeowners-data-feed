@@ -12,8 +12,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import javax.validation.Valid;
-//TODO нам разве нужна регистрация ? Как будуть появлсяться новые пользователи ??
-// номера телефонов уже будут в БД ?
+//TODO добавить инпуты
 @Controller
 public class RegistrationController {
 
