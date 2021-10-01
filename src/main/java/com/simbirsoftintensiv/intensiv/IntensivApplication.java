@@ -7,7 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class IntensivApplication {
 
 	public static void main(String[] args) {
+
 		SpringApplication.run(IntensivApplication.class, args);
 	}
-
 }
