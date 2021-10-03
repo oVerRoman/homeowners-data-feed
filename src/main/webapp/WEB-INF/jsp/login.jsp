@@ -19,6 +19,7 @@
       <input name="username" type="text" placeholder="Username"
              autofocus="true"/>
       <input name="password" type="password" placeholder="Password"/>
+
       <button type="submit">Log In</button>
       <h4><a href="/registration">Зарегистрироваться</a></h4>
     </div>
