@@ -1,9 +1,8 @@
-
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8" %>
 
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">>
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8">
     <title>Зайти по паролю</title>
@@ -21,12 +20,13 @@
     <form method="POST" action="/login" modelAttribute="username">
         <h2>Вход в систему</h2>
         <div>
-            <p >Данные пришедшие с модели1
+            <p >Данные пришедшие с модели
                 <%
                     out.println(name);
                 %>
             </p>
-            <input name="username" type="text" placeholder="Username"
+
+            <input name="username" type="text" placeholder="Password"
                    autofocus="true" value="${name}"/>
 
             <input name="password" type="password" placeholder="Password"/>

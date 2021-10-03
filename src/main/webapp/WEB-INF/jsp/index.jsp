@@ -12,12 +12,15 @@
 <body>
 <div>
   <h3>${pageContext.request.userPrincipal.name}</h3>
-  // если не авторизован показываем
+<%--  // если не авторизован показываем--%>
   <sec:authorize access="!isAuthenticated()">
     <h4><a href="/login">Войти</a></h4>
+    <h4><a href="/username">Войти по правильному</a></h4>
     <h4><a href="/registration">Зарегистрироваться</a></h4>
+
   </sec:authorize>
-// а если авторизован что показваем на стартовой странице ?
+
+<%--// а если авторизован что показваем на стартовой странице --%>
   <sec:authorize access="isAuthenticated()">
     <h4><a href="/logout">Выйти</a></h4>
   </sec:authorize>

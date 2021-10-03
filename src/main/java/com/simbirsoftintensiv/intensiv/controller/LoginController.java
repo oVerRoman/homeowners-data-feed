@@ -14,16 +14,19 @@ import org.springframework.web.bind.annotation.RequestParam;
 import javax.validation.Valid;
 
 @Controller
-public class LoginController {
-String UserName;
-    @Autowired
-    private UserService userService;
 
+public class LoginController {
+    String UserName;
+    @Autowired
+    private UserService userService; // внедряем обьект
+
+    //TODO сделать проверку если такой логин и вывод ошибки
+    //TODO сделать проверку пароля и вывод ошибки
+    //TODO сделать что было /username/${логин}
     @GetMapping("/username")
-    public String registration(Model model,
-                              @RequestParam(value = "username", required = false) String username
-                               ) {
-        model.addAttribute("username", username);
+    public String checkUser(Model model,
+                            @RequestParam(value = "username", required = false) String username
+    ) {
 
         return "username";
     }
@@ -33,14 +36,23 @@ String UserName;
                           @Valid User userForm, BindingResult bindingResult,
                           @RequestParam(value = "username", required = false) String username,
                           Model model) {
-        this.UserName=username;
+
+//        if (bindingResult.hasErrors()) {
+//            return "username";
+//        }
+//
+//        if (!userService.saveUser(userForm)) {
+//            model.addAttribute("usernameError", "Пользователь с таким именем уже существует");
+//            return "username";
+//        }
+        this.UserName = username;
         model.addAttribute("username", username);
         System.out.println(username);
         return "redirect:password";
     }
 
     @GetMapping("/password")
-    public String registration(Model model
+    public String checkPassword(Model model
     ) {
         model.addAttribute("username", this.UserName);
 
