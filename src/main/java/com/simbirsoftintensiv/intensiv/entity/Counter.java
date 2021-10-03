@@ -6,6 +6,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.Size;
 
 @Entity
 @Table(name = "counters")
@@ -15,6 +16,7 @@ public class Counter {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private int id;
+    @Size(min = 2, message = "Название должно быть минимум из 2х символов")
     @Column(name = "name")
     private String name;
     @Column(name = "client_id")

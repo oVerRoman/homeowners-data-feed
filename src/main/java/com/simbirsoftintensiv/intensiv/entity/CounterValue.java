@@ -6,6 +6,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.DecimalMin;
 
 @Entity
 @Table(name = "counter_values")
@@ -19,13 +20,14 @@ public class CounterValue {
     private int counterId;
     @Column(name = "date")
     private String date;
+    @DecimalMin(value = "0.1", message = "Значение должно быть больше 0")
     @Column(name = "value")
-    private int value;
+    private double value;
 
     public CounterValue() {
     }
 
-    public CounterValue(int counterId, String date, int value) {
+    public CounterValue(int counterId, String date, double value) {
         super();
         this.counterId = counterId;
         this.date = date;
@@ -56,7 +58,7 @@ public class CounterValue {
         this.date = date;
     }
 
-    public int getValue() {
+    public double getValue() {
         return value;
     }
 
@@ -69,9 +71,7 @@ public class CounterValue {
         final int prime = 31;
         int result = 1;
         result = prime * result + counterId;
-        result = prime * result + ((date == null) ? 0 : date.hashCode());
         result = prime * result + id;
-        result = prime * result + value;
         return result;
     }
 
@@ -86,14 +86,7 @@ public class CounterValue {
         CounterValue other = (CounterValue) obj;
         if (counterId != other.counterId)
             return false;
-        if (date == null) {
-            if (other.date != null)
-                return false;
-        } else if (!date.equals(other.date))
-            return false;
         if (id != other.id)
-            return false;
-        if (value != other.value)
             return false;
         return true;
     }

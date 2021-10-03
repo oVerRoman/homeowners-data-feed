@@ -7,4 +7,6 @@ import com.simbirsoftintensiv.intensiv.entity.CounterValue;
 public interface CounterValueService {
 
     public void addAllCounterValues(List<CounterValue> values);
+
+    public List<CounterValue> getAllCounterValues();
 }
