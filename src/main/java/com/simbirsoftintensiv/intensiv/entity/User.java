@@ -1,6 +1,8 @@
 package com.simbirsoftintensiv.intensiv.entity;
 
 
+import com.simbirsoftintensiv.intensiv.service.OtpService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -13,6 +15,7 @@ import java.util.Set;
 //TODO добавить поля
 @Table(name = "t_user")
 public class User implements UserDetails {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -26,6 +29,7 @@ public class User implements UserDetails {
     private Set<Role> roles;
 
     public User() {
+        System.out.println("User");
     }
 
     public Long getId() {

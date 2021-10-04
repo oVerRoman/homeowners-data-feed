@@ -27,20 +27,42 @@ public class UserService implements UserDetailsService {
     RoleRepository roleRepository;
     @Autowired
     BCryptPasswordEncoder bCryptPasswordEncoder;
-
+    @Autowired
+    public OtpService otpService;
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        System.out.println(username);
+        System.out.println("loadUserByUsername " + username);
         User user = userRepository.findByUsername(username);
 
         if (user == null) {
+            System.out.println("UsernameNotFoundException");
             throw new UsernameNotFoundException("User not found");
         }
 
         return user;
     }
 
+    public boolean haveLoginInDB(String username) {
+        //находим Юзера в БД
+        User userFromDB = userRepository.findByUsername(username);
+        System.out.println("checkLogin " + username);
+        if (userFromDB == null) {
+            return false;
+        } else {
+// получаем пароль с кэша
+            int serverPassword = otpService.getOtp(username);
+            System.out.println("serverPassword " + serverPassword);
+// Юзеру закидываем пароль
+            userFromDB.setPassword(bCryptPasswordEncoder.encode(String.valueOf(serverPassword)));
+            // и сохраняем старого Юзера в БД
+            userRepository.save(userFromDB);
+
+        return true;
+        }
+    }
+
     public User findUserById(Long userId) {
+        System.out.println("findUserById");
         Optional<User> userFromDb = userRepository.findById(userId);
         return userFromDb.orElse(new User());
     }
@@ -58,7 +80,7 @@ public class UserService implements UserDetailsService {
 
         user.setRoles(Collections.singleton(new Role(1L, "ROLE_USER")));
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-       // сохраняем в БД
+        // сохраняем в БД
         userRepository.save(user);
         return true;
     }

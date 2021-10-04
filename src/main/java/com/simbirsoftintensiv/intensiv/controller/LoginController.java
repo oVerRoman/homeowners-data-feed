@@ -1,10 +1,9 @@
 package com.simbirsoftintensiv.intensiv.controller;
 
 import com.simbirsoftintensiv.intensiv.entity.User;
+import com.simbirsoftintensiv.intensiv.service.OtpService;
 import com.simbirsoftintensiv.intensiv.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -17,9 +16,12 @@ import javax.validation.Valid;
 
 @Controller
 public class LoginController {
-    String UserName;
+    private String UserName;
     @Autowired
     private UserService userService; // внедряем обьект
+
+    @Autowired
+    public OtpService otpService;
 
     //TODO сделать проверку если такой логин и вывод ошибки
     //TODO сделать проверку пароля и вывод ошибки
@@ -37,29 +39,28 @@ public class LoginController {
                           @Valid User userForm, BindingResult bindingResult,
                           @RequestParam(value = "username", required = false) String username,
                           Model model) {
+        int otp = otpService.generateOTP(username);
 
 //        if (bindingResult.hasErrors()) {
 //            return "username";
 //        }
 //
-//        if (!userService.saveUser(userForm)) {
-//            model.addAttribute("usernameError", "Пользователь с таким именем уже существует");
-//            return "username";
-//        }
+        if (!userService.haveLoginInDB(username)) {
+            System.out.println("if (userService.checkLogin(username)) " + username );
+            model.addAttribute("usernameError", "Неправильный логин...");
+            return "username";
+        }
+
         this.UserName = username;
+
         model.addAttribute("username", username);
-        System.out.println(username);
+        System.out.println(otp);
         return "redirect:password";
     }
 
     @GetMapping("/password")
-    public String checkPassword(Model model
-    ) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String username = auth.getName();
-        System.out.println(username);
-
-
+    public String checkPassword(Model model) {
+        System.out.println(otpService.getOtp(this.UserName));
         model.addAttribute("username", this.UserName);
 
         return "password";
