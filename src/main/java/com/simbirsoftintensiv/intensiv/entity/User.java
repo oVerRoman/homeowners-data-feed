@@ -9,18 +9,18 @@ import javax.validation.constraints.Size;
 import java.util.Collection;
 import java.util.Set;
 
-@Entity
-@Table(name = "t_user") //указывает с какой именно таблицей.
+@Entity //->поля класса имеют отображение в БД,
+//TODO добавить поля
+@Table(name = "t_user")
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    // что генерацией id будет заниматься БД.
     private Long id;
-    @Size(min=7, message = "Не меньше 7 знаков")
+    @Size(min = 2, message = "Не меньше 5 знаков")
     private String username;
-    @Size(min=2, message = "Не меньше 2 знаков")
+    @Size(min = 2, message = "Не меньше 5 знаков")
     private String password;
-    @Transient
+    @Transient // под этой анотации поле не имеет отображения в БД.
     private String passwordConfirm;
     @ManyToMany(fetch = FetchType.EAGER)
     private Set<Role> roles;
@@ -67,7 +67,6 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-
         return getRoles();
     }
 
@@ -93,7 +92,6 @@ public class User implements UserDetails {
     }
 
     public void setRoles(Set<Role> roles) {
-
         this.roles = roles;
     }
 
