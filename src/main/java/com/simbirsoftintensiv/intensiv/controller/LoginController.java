@@ -3,6 +3,8 @@ package com.simbirsoftintensiv.intensiv.controller;
 import com.simbirsoftintensiv.intensiv.entity.User;
 import com.simbirsoftintensiv.intensiv.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -14,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import javax.validation.Valid;
 
 @Controller
-
 public class LoginController {
     String UserName;
     @Autowired
@@ -54,6 +55,11 @@ public class LoginController {
     @GetMapping("/password")
     public String checkPassword(Model model
     ) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = auth.getName();
+        System.out.println(username);
+
+
         model.addAttribute("username", this.UserName);
 
         return "password";
