@@ -1,17 +1,17 @@
+<%@ page contentType="text/html;charset=utf-8" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="ISO-8859-1">
 <title>Показания счётчиков</title>
 </head>
 <body>
-	<h2>Показания</h2>
+	<h2>Показания счётчиков</h2>
 	<br><br>
 	<form action="counters" method="get">
 		<input type="text" name="counter"
-		placeholder ="Внесите наименование счётчика">
+		placeholder ="Введите наименование счётчика">
 	</form>
 	<br>
 	<form:form action="counters" method="get" modelAttribute="value">
@@ -20,9 +20,9 @@
 			<li> ${counterName} </li>
 		</ul>
 		Счётчик ${counterValue.value} <form:input path="counterValue"
-		placeholder ="Внесите показания счётчика"/>
+		placeholder ="Введите показания счётчика"/>
 		<br>
-		<input type="submit" name="Отправить">
+		<input type="submit" name="Отправить">
 	</form:form>
 </body>
 </html>
