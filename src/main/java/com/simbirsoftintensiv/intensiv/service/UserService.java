@@ -20,7 +20,7 @@ import java.util.Optional;
 @Service
 public class UserService implements UserDetailsService {
     @PersistenceContext
-    private EntityManager em;
+    private EntityManager em; //запрос к БД
     @Autowired
     UserRepository userRepository;
     @Autowired
@@ -30,6 +30,7 @@ public class UserService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        System.out.println(username);
         User user = userRepository.findByUsername(username);
 
         if (user == null) {
@@ -57,6 +58,7 @@ public class UserService implements UserDetailsService {
 
         user.setRoles(Collections.singleton(new Role(1L, "ROLE_USER")));
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+       // сохраняем в БД
         userRepository.save(user);
         return true;
     }
