@@ -8,10 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -24,51 +21,51 @@ public class LoginController {
     @Autowired
     public OtpService otpService;
 
-    //TODO сделать проверку если такой логин и вывод ошибки
-    //TODO сделать проверку пароля и вывод ошибки
-    //TODO сделать что было /username/${логин}
+
+
+    // фронту это не надо будет
     @GetMapping("/username")
     public String checkUser(Model model,
                             @RequestParam(value = "username", required = false) String username
     ) {
         System.out.println("тут только вводим имя");
-        // фронту это не надо будет
+
         return "username";
     }
-
+//    @ResponseBody
     @PostMapping("/username")
     public String addUser(@RequestParam(value = "username", required = false) String username,
                           Model model) {
-        int otp = otpService.generateOTP(username);
+        // генерируем новый пароль
+        otpService.generateOTP(username);
 
 
         if (!userService.haveLoginInDB(username)) {
             System.out.println("if (userService.checkLogin(username)) " + username );
             // фронту отдать json где будет написано {descrition?: "Неправильный логин..."
+            // или как  ??
             model.addAttribute("usernameError", "Неправильный логин...");
-            return "username";
+            return "{\"rightUsername\":false}";
         }
 
         this.UserName = username;
 
         model.addAttribute("username", username);
 
-        // отдать фронту {username: *, password:*}
+        // отдать фронту return  "{\"rightUsername\":true}";
         return "redirect:password";
     }
 
+    // фронту это не надо будет
     @GetMapping("/password")
     public String sendPassword(Model model) {
         // здесь мы ожидаем что к нам придет пароль  логин от пользователя
         // мы получаем его и
         SmsService.main(otpService.getOtp(this.UserName));
-
         model.addAttribute("username", this.UserName);
-        // фронту это не надо будет
-
         return "password";
     }
-
+    @ResponseBody
     @PostMapping("/password")
     public String checkPassword (
             @RequestParam(value = "username", required = false) String username,
@@ -81,22 +78,24 @@ public class LoginController {
         // мы получаем его
         // сравниваем с серверным и разрешаем вход(возвращаем на клиента что то и как то)???
         //Проверить Otp
-        //TODO сделать так что бы пароль не сохранялся в бд и не проверялся по запросу с БД
-        //   но у меня не получилось
+
         if(password >= 0){
             int serverOtp = otpService.getOtp(username);
 
                 if(password == serverOtp){
                     otpService.clearOTP(username);
                     System.out.println("пароли совпали и мы удалили из кэша старый отп");
-                    return "/index"; // ?? как сделать что бы пароль не проверял ??
+                    //TODO как сделать так что бы на этом моменте от авторизовывался
+                    //   но у меня не получилось :((
+//                    return "/index"; // ?? как сделать что бы пароль не проверял ??
+                    return "{\"rightPassword\":true}";
                 }else{
                     System.out.println("пароли не совпали");
-                    return FAIL;
+                    return "{\"rightPassword\":false}";
                 }
             }else {
             System.out.println("пароль не пришёл");
-                return FAIL;
+            return "{\"rightPassword\":false}";
             }
         }
 
