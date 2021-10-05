@@ -2,13 +2,12 @@ package com.simbirsoftintensiv.intensiv.controller;
 
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 
 import com.simbirsoftintensiv.intensiv.entity.Counter;
 import com.simbirsoftintensiv.intensiv.entity.CounterValue;
@@ -24,31 +23,32 @@ public class CounterValuesController {
     CounterValueService counterValueService;
 
     @GetMapping("/counters")
-    public String showCounterValues(/*
-                                     * @RequestParam("counter") counterName, @RequestParam("counterValue")
-                                     * counterValueName,
-                                     */HttpServletRequest request, Model model, @ModelAttribute Counter counter,
-            @ModelAttribute CounterValue counterValue) {
-        if (counter == null) {
-            model.addAttribute("counter", new Counter());
-        }
-        if (counterValue == null) {
-            model.addAttribute("counterValue", new CounterValue());
-        }
-        String counterName = request.getParameter("counter");
-//        Counter counter = new Counter();
-        counter.setName(counterName);
-        counter.setClientId(1);
+    public String getAllCounterValues(Model model) {
         List<Counter> counters = counterService.getAllCounters();
-        counters.add(counter);
-        String counterValueName = request.getParameter("counterValue");
-//        CounterValue counterValue = new CounterValue();
-        counterValue.setCounterId(1);
-        counterValue.setValue(Double.parseDouble(counterValueName));
-        List<CounterValue> counterValues = counterValueService.getAllCounterValues();
-        counterValues.add(counterValue);
+        model.addAttribute("counter", new Counter());
         model.addAttribute("allCounters", counters);
+        List<CounterValue> counterValues = counterValueService.getAllCounterValues();
         model.addAttribute("allCounterValues", counterValues);
         return "counters";
+    }
+
+    @GetMapping("/addCounter")
+    public String addCounter(Model model) {
+        model.addAttribute("counter", new Counter());
+        return "add-counter";
+    }
+
+    @PostMapping("/saveCounter")
+    public String saveCounter(@ModelAttribute("counter") Counter counter) {
+        // TODO change client_id setting to current client
+        counter.setClientId(100003);
+        counterService.addCounter(counter);
+        return "redirect:/counters";
+    }
+
+    @PostMapping("/saveCounterValues")
+    public String saveCounterValues(@ModelAttribute("counterValue") CounterValue counterValue) {
+        // TODO save all counter values
+        return "redirect:/counters";
     }
 }

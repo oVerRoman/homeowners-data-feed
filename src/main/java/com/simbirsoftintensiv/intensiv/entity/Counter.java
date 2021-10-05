@@ -19,7 +19,7 @@ public class Counter {
     @Size(min = 2, message = "Название должно быть минимум из 2х символов")
     @Column(name = "name")
     private String name;
-    @Column(name = "client_id")
+    @Column(name = "user_id")
     private int clientId;
 
     public Counter() {
