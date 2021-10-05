@@ -2,6 +2,7 @@ package com.simbirsoftintensiv.intensiv.controller;
 
 import com.simbirsoftintensiv.intensiv.entity.User;
 import com.simbirsoftintensiv.intensiv.service.OtpService;
+import com.simbirsoftintensiv.intensiv.service.SmsService;
 import com.simbirsoftintensiv.intensiv.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -30,24 +31,20 @@ public class LoginController {
     public String checkUser(Model model,
                             @RequestParam(value = "username", required = false) String username
     ) {
-
+        System.out.println("тут только вводим имя");
+        // фронту это не надо будет
         return "username";
     }
 
     @PostMapping("/username")
-    public String addUser(@ModelAttribute("userForm")
-                          @Valid User userForm,
-                          BindingResult bindingResult,
-                          @RequestParam(value = "username", required = false) String username,
+    public String addUser(@RequestParam(value = "username", required = false) String username,
                           Model model) {
         int otp = otpService.generateOTP(username);
 
-//        if (bindingResult.hasErrors()) {
-//            return "username";
-//        }
-//
+
         if (!userService.haveLoginInDB(username)) {
             System.out.println("if (userService.checkLogin(username)) " + username );
+            // фронту отдать json где будет написано {descrition?: "Неправильный логин..."
             model.addAttribute("usernameError", "Неправильный логин...");
             return "username";
         }
@@ -55,8 +52,8 @@ public class LoginController {
         this.UserName = username;
 
         model.addAttribute("username", username);
-        System.out.println(otp);
-        // отправка otp пароля к клиенту
+
+        // отдать фронту {username: *, password:*}
         return "redirect:password";
     }
 
@@ -64,8 +61,10 @@ public class LoginController {
     public String sendPassword(Model model) {
         // здесь мы ожидаем что к нам придет пароль  логин от пользователя
         // мы получаем его и
-        System.out.println(otpService.getOtp(this.UserName));
+        SmsService.main(otpService.getOtp(this.UserName));
+
         model.addAttribute("username", this.UserName);
+        // фронту это не надо будет
 
         return "password";
     }
@@ -78,10 +77,12 @@ public class LoginController {
         final String SUCCESS = "Entered Otp is valid";
 
         final String FAIL = "Entered Otp is NOT valid. Please Retry!";
-        // здесь мы ожидаем что к нам придет пароль  логин от пользователя
+        // здесь мы ожидаем что к нам c фронта придет пароль  логин от пользователя
         // мы получаем его
-        // сравниваем с сервеным и разрешаем вход(возвращаем на клиента что то и как то)???
+        // сравниваем с серверным и разрешаем вход(возвращаем на клиента что то и как то)???
         //Проверить Otp
+        //TODO сделать так что бы пароль не сохранялся в бд и не проверялся по запросу с БД
+        //   но у меня не получилось
         if(password >= 0){
             int serverOtp = otpService.getOtp(username);
 
@@ -101,4 +102,4 @@ public class LoginController {
 
     }
 
-}
+
