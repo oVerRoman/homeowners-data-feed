@@ -36,7 +36,8 @@ public class LoginController {
 
     @PostMapping("/username")
     public String addUser(@ModelAttribute("userForm")
-                          @Valid User userForm, BindingResult bindingResult,
+                          @Valid User userForm,
+                          BindingResult bindingResult,
                           @RequestParam(value = "username", required = false) String username,
                           Model model) {
         int otp = otpService.generateOTP(username);
@@ -55,15 +56,49 @@ public class LoginController {
 
         model.addAttribute("username", username);
         System.out.println(otp);
+        // отправка otp пароля к клиенту
         return "redirect:password";
     }
 
     @GetMapping("/password")
-    public String checkPassword(Model model) {
+    public String sendPassword(Model model) {
+        // здесь мы ожидаем что к нам придет пароль  логин от пользователя
+        // мы получаем его и
         System.out.println(otpService.getOtp(this.UserName));
         model.addAttribute("username", this.UserName);
 
         return "password";
+    }
+
+    @PostMapping("/password")
+    public String checkPassword (
+            @RequestParam(value = "username", required = false) String username,
+            @RequestParam(value = "password", required = false) int password
+    ){
+        final String SUCCESS = "Entered Otp is valid";
+
+        final String FAIL = "Entered Otp is NOT valid. Please Retry!";
+        // здесь мы ожидаем что к нам придет пароль  логин от пользователя
+        // мы получаем его
+        // сравниваем с сервеным и разрешаем вход(возвращаем на клиента что то и как то)???
+        //Проверить Otp
+        if(password >= 0){
+            int serverOtp = otpService.getOtp(username);
+
+                if(password == serverOtp){
+                    otpService.clearOTP(username);
+                    System.out.println("пароли совпали и мы удалили из кэша старый отп");
+                    return "/index"; // ?? как сделать что бы пароль не проверял ??
+                }else{
+                    System.out.println("пароли не совпали");
+                    return FAIL;
+                }
+            }else {
+            System.out.println("пароль не пришёл");
+                return FAIL;
+            }
+        }
+
     }
 
 }
