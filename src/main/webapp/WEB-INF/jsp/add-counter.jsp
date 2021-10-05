@@ -6,7 +6,7 @@
 <title>Добавление счётчика</title>
 </head>
 <body>
-	<h2>Добовление счётчика</h2>
+	<h2>Добавление счётчика</h2>
 	<br><br>
 	<form:form action="saveCounter" modelAttribute="counter">
 		Наименование <form:input path="name"/>
