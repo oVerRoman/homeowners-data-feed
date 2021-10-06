@@ -1,12 +1,10 @@
 package com.simbirsoftintensiv.intensiv.service.user;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-
+import com.simbirsoftintensiv.intensiv.entity.Role;
+import com.simbirsoftintensiv.intensiv.entity.User;
+import com.simbirsoftintensiv.intensiv.repository.RoleRepository;
+import com.simbirsoftintensiv.intensiv.repository.user.CrudUserRepository;
+import com.simbirsoftintensiv.intensiv.service.OtpService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -14,11 +12,10 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.simbirsoftintensiv.intensiv.entity.Role;
-import com.simbirsoftintensiv.intensiv.entity.User;
-import com.simbirsoftintensiv.intensiv.repository.RoleRepository;
-import com.simbirsoftintensiv.intensiv.repository.user.UserRepository;
-import com.simbirsoftintensiv.intensiv.service.OtpService;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import java.util.Collections;
+import java.util.List;
 
 @Service
 public class UserService implements UserDetailsService {
@@ -26,7 +23,7 @@ public class UserService implements UserDetailsService {
     @PersistenceContext
     private EntityManager em; // запрос к БД
     @Autowired
-    UserRepository userRepository;
+    CrudUserRepository userRepository;
     @Autowired
     RoleRepository roleRepository;
     @Autowired
@@ -36,27 +33,26 @@ public class UserService implements UserDetailsService {
     public OtpService otpService;
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        System.out.println(username);
-        User user = userRepository.findByUsername(username);
+    public UserDetails loadUserByUsername(String phone) throws UsernameNotFoundException {
+        System.out.println(phone);
+        User user = userRepository.getByPhone(Long.parseLong(phone));
 
         if (user == null) {
-
             throw new UsernameNotFoundException("User not found");
         }
 
         return user;
     }
 
-    public boolean haveLoginInDB(String username) {
+    public boolean haveLoginInDB(String phone) {
         // находим Юзера в БД
-        User userFromDB = userRepository.findByUsername(username);
-        System.out.println("checkLogin " + username);
+        User userFromDB = userRepository.getByPhone(Long.parseLong(phone));
+        System.out.println("checkLogin " + phone);
         if (userFromDB == null) {
             return false;
         } else {
 // получаем пароль с кэша
-            int serverPassword = otpService.getOtp(username);
+            int serverPassword = otpService.getOtp(phone);
             System.out.println("serverPassword " + serverPassword);
 // Юзеру закидываем пароль
             userFromDB.setPassword(bCryptPasswordEncoder.encode(String.valueOf(serverPassword)));
@@ -67,17 +63,16 @@ public class UserService implements UserDetailsService {
         }
     }
 
-    public User findUserById(Long userId) {
-        Optional<User> userFromDb = userRepository.findById(userId);
-        return userFromDb.orElse(new User());
+    public User get(int userId) {
+        return userRepository.get(userId);
     }
 
-    public List<User> allUsers() {
-        return userRepository.findAll();
+    public List<User> getAll() {
+        return userRepository.getAll();
     }
 
-    public boolean saveUser(User user) {
-        User userFromDB = userRepository.findByUsername(user.getUsername());
+    public boolean save(User user) {
+        User userFromDB = userRepository.getByPhone(user.getPhone());
 
         if (userFromDB != null) {
             return false;
@@ -91,9 +86,9 @@ public class UserService implements UserDetailsService {
         return true;
     }
 
-    public boolean deleteUser(Integer userId) {
-        if (userRepository.findById(userId).isPresent()) {
-            userRepository.deleteById(userId);
+    public boolean delete(Integer userId) {
+        if (userRepository.get(userId) != null) {
+            userRepository.delete(userId);
             return true;
         }
         return false;

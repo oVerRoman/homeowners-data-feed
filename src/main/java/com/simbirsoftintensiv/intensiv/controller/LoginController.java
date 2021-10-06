@@ -1,7 +1,8 @@
 package com.simbirsoftintensiv.intensiv.controller;
 
-import java.util.HashMap;
-
+import com.simbirsoftintensiv.intensiv.service.OtpService;
+import com.simbirsoftintensiv.intensiv.service.SmsService;
+import com.simbirsoftintensiv.intensiv.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -10,9 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.simbirsoftintensiv.intensiv.service.OtpService;
-import com.simbirsoftintensiv.intensiv.service.SmsService;
-import com.simbirsoftintensiv.intensiv.service.user.UserService;
+import java.util.HashMap;
 
 // как должно работать
 //фронт делает запрос на /username?username=22
@@ -49,9 +48,9 @@ public class LoginController {
     public HashMap<String, String> addUser(@RequestParam(value = "username") String username,
             Model model) {
         int smsPassword = otpService.generateOTP(username);
-        boolean itRightName = userService.haveLoginInDB(username);
+        boolean isRightName = userService.haveLoginInDB(username);
         HashMap<String, String> map = new HashMap<>();
-        if (!itRightName) {
+        if (!isRightName) {
             map.put("rightUsername", "false");
             map.put("smsPassword", null);
             map.put("username", "false");

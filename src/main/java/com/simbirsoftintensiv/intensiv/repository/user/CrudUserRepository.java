@@ -2,6 +2,8 @@ package com.simbirsoftintensiv.intensiv.repository.user;
 
 import com.simbirsoftintensiv.intensiv.entity.User;
 
+import java.util.List;
+
 public interface CrudUserRepository {
 
     // null if not found, when updated
@@ -16,5 +18,5 @@ public interface CrudUserRepository {
     // null if not found
     User getByPhone(Long phone);
 
-    //List<User> getAll();
+    List<User> getAll();
 }
