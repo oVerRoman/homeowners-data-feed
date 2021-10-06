@@ -1,6 +1,5 @@
 package com.simbirsoftintensiv.intensiv.controller;
 
-import com.simbirsoftintensiv.intensiv.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -9,13 +8,15 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.simbirsoftintensiv.intensiv.service.user.UserService;
 
 @Controller
 public class AdminController {
+
     @Autowired
     private UserService userService;
 
-    //Доступ к странице admin имеют только пользователи с ролью администратора.
+    // Доступ к странице admin имеют только пользователи с ролью администратора.
     @GetMapping("/admin")
     public String userList(Model model) {
         model.addAttribute("allUsers", userService.allUsers());
@@ -24,10 +25,8 @@ public class AdminController {
     }
 
     @PostMapping("/admin")
-    public String deleteUser(@RequestParam(required = true, defaultValue = "") Long userId,
-                             @RequestParam(required = true, defaultValue = "") String action,
-                             Model model) {
-        // Вместо анотации использовать PathVariable ???
+    public String deleteUser(@RequestParam(required = true, defaultValue = "") Integer userId,
+            @RequestParam(required = true, defaultValue = "") String action, Model model) {
         if (action.equals("delete")) {
             userService.deleteUser(userId);
         }

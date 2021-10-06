@@ -82,19 +82,16 @@
 			<artifactId>javaee-api</artifactId>
 			<version>7.0</version>
 		</dependency>
-<<<<<<< HEAD
 		<!-- Google Guava -->
 		<dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
 			<version>19.0</version>
-=======
-
+		</dependency>
 		<dependency>
 			<groupId>com.github.ulisesbocchio</groupId>
 			<artifactId>jasypt-maven-plugin</artifactId>
 			<version>3.0.4</version>
->>>>>>> d20faef9bf02c24fd9d96c1b3f778e21b7e8ff78
 		</dependency>
 	</dependencies>
 

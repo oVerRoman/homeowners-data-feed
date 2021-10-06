@@ -1,9 +1,12 @@
-package com.simbirsoftintensiv.intensiv.service;
+package com.simbirsoftintensiv.intensiv.service.user;
 
-import com.simbirsoftintensiv.intensiv.entity.Role;
-import com.simbirsoftintensiv.intensiv.entity.User;
-import com.simbirsoftintensiv.intensiv.repository.RoleRepository;
-import com.simbirsoftintensiv.intensiv.repository.UserRepository;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -11,16 +14,17 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import com.simbirsoftintensiv.intensiv.entity.Role;
+import com.simbirsoftintensiv.intensiv.entity.User;
+import com.simbirsoftintensiv.intensiv.repository.RoleRepository;
+import com.simbirsoftintensiv.intensiv.repository.user.UserRepository;
+import com.simbirsoftintensiv.intensiv.service.OtpService;
 
 @Service
 public class UserService implements UserDetailsService {
+
     @PersistenceContext
-    private EntityManager em; //запрос к БД
+    private EntityManager em; // запрос к БД
     @Autowired
     UserRepository userRepository;
     @Autowired
@@ -30,7 +34,6 @@ public class UserService implements UserDetailsService {
 
     @Autowired
     public OtpService otpService;
-
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -45,9 +48,8 @@ public class UserService implements UserDetailsService {
         return user;
     }
 
-
     public boolean haveLoginInDB(String username) {
-        //находим Юзера в БД
+        // находим Юзера в БД
         User userFromDB = userRepository.findByUsername(username);
         System.out.println("checkLogin " + username);
         if (userFromDB == null) {
@@ -61,10 +63,9 @@ public class UserService implements UserDetailsService {
             // и сохраняем старого Юзера в БД
             userRepository.save(userFromDB);
 
-        return true;
+            return true;
         }
     }
-
 
     public User findUserById(Long userId) {
         Optional<User> userFromDb = userRepository.findById(userId);
@@ -85,12 +86,12 @@ public class UserService implements UserDetailsService {
         user.setRoles(Collections.singleton(new Role(1L, "ROLE_USER")));
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
 
-       // сохраняем в БД
+        // сохраняем в БД
         userRepository.save(user);
         return true;
     }
 
-    public boolean deleteUser(Long userId) {
+    public boolean deleteUser(Integer userId) {
         if (userRepository.findById(userId).isPresent()) {
             userRepository.deleteById(userId);
             return true;
