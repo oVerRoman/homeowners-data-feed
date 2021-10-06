@@ -1,6 +1,5 @@
 package com.simbirsoftintensiv.intensiv.entity;
 
-
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -33,6 +32,7 @@ public class User implements UserDetails {
     private Set<Role> roles;
 
     public User() {
+
     }
 
     public Integer getId() {
@@ -74,6 +74,7 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
+
         return getRoles();
     }
 
@@ -91,6 +92,7 @@ public class User implements UserDetails {
     }
 
     public void setPasswordConfirm(String passwordConfirm) {
+
         this.passwordConfirm = passwordConfirm;
     }
 
