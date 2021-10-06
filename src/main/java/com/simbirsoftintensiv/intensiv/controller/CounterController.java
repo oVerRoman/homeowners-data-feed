@@ -1,15 +1,16 @@
 package com.simbirsoftintensiv.intensiv.controller;
 
-import com.simbirsoftintensiv.intensiv.entity.Counter;
-import com.simbirsoftintensiv.intensiv.entity.CounterValue;
-import com.simbirsoftintensiv.intensiv.service.counter.CounterService;
+import java.util.List;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
-import java.util.List;
+import com.simbirsoftintensiv.intensiv.entity.Counter;
+import com.simbirsoftintensiv.intensiv.entity.CounterValue;
+import com.simbirsoftintensiv.intensiv.service.counter.CounterService;
 
 @Controller
 public class CounterController {
@@ -22,9 +23,10 @@ public class CounterController {
 
     @GetMapping("/counters")
     public String getAllCounterValues(Model model) {
-        //fixme тут нужно присваивать id авторизованного пользователя из спринг-секьюрити
-        int userId = 1_000_000;
-        List<Counter> counters = counterService.getAll(userId);//fixme
+        // fixme тут нужно присваивать id авторизованного пользователя из
+        // спринг-секьюрити
+        int userId = 100_000;
+        List<Counter> counters = counterService.getAll(userId);// fixme
 //        model.addAttribute("counter", new Counter());
         model.addAttribute("allCounters", counters);
 //        закомментировал, потому что у allCounters будут values
@@ -35,8 +37,9 @@ public class CounterController {
 
     @GetMapping("/addCounter")
     public String addCounter(Model model) {
-        //fixme тут нужно присваивать id авторизованного пользователя из спринг-секьюрити
-        int userId = 1_000_000;
+        // fixme тут нужно присваивать id авторизованного пользователя из
+        // спринг-секьюрити
+        int userId = 100_000;
         model.addAttribute("counter", new Counter());
         return "add-counter";
     }
@@ -44,9 +47,10 @@ public class CounterController {
     @PostMapping("/saveCounter")
     public String saveCounter(@ModelAttribute("counter") Counter counter) {
         // TODO change client_id setting to current client
-        //fixme тут нужно присваивать id авторизованного пользователя из спринг-секьюрити
-        int userId = 1_000_000;
-        //counter.setClientId(100003);
+        // fixme тут нужно присваивать id авторизованного пользователя из
+        // спринг-секьюрити
+        int userId = 100_000;
+        // counter.setClientId(100003);
         counterService.save(counter, userId);
         return "redirect:/counters";
     }
