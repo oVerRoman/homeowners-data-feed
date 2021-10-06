@@ -1,5 +1,6 @@
 package com.simbirsoftintensiv.intensiv.controller;
 
+import com.simbirsoftintensiv.intensiv.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -7,8 +8,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-
-import com.simbirsoftintensiv.intensiv.service.UserService;
 
 @Controller
 public class AdminController {
@@ -24,7 +23,7 @@ public class AdminController {
     }
 
     @PostMapping("/admin")
-    public String deleteUser(@RequestParam(required = true, defaultValue = "") Long userId,
+    public String deleteUser(@RequestParam(required = true, defaultValue = "") Integer userId,
             @RequestParam(required = true, defaultValue = "") String action, Model model) {
         if (action.equals("delete")) {
             userService.deleteUser(userId);

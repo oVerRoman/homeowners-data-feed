@@ -5,17 +5,24 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.Collection;
 import java.util.Set;
 
 @Entity //->поля класса имеют отображение в БД,
 //TODO добавить поля
-@Table(name = "t_user")
+@Table(name = "users")
 public class User implements UserDetails {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
+
+    @Column(name = "phone")
+    @NotNull
+    private Long phone;
+
     @Size(min = 2, message = "Не меньше 5 знаков")
     private String username;
     @Size(min = 2, message = "Не меньше 5 знаков")
@@ -28,11 +35,11 @@ public class User implements UserDetails {
     public User() {
     }
 
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

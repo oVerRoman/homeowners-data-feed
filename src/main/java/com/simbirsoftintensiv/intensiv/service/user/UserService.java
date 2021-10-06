@@ -1,9 +1,9 @@
-package com.simbirsoftintensiv.intensiv.service;
+package com.simbirsoftintensiv.intensiv.service.user;
 
 import com.simbirsoftintensiv.intensiv.entity.Role;
 import com.simbirsoftintensiv.intensiv.entity.User;
 import com.simbirsoftintensiv.intensiv.repository.RoleRepository;
-import com.simbirsoftintensiv.intensiv.repository.UserRepository;
+import com.simbirsoftintensiv.intensiv.repository.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -40,7 +40,7 @@ public class UserService implements UserDetailsService {
         return user;
     }
 
-    public User findUserById(Long userId) {
+    public User findUserById(Integer userId) {
         Optional<User> userFromDb = userRepository.findById(userId);
         return userFromDb.orElse(new User());
     }
@@ -63,7 +63,7 @@ public class UserService implements UserDetailsService {
         return true;
     }
 
-    public boolean deleteUser(Long userId) {
+    public boolean deleteUser(Integer userId) {
         if (userRepository.findById(userId).isPresent()) {
             userRepository.deleteById(userId);
             return true;
