@@ -3,6 +3,8 @@ package com.simbirsoftintensiv.intensiv.repository.user;
 import com.simbirsoftintensiv.intensiv.entity.User;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public class DataJpaUserRepository implements CrudUserRepository{
 
@@ -30,5 +32,10 @@ public class DataJpaUserRepository implements CrudUserRepository{
     @Override
     public User getByPhone(Long phone) {
         return userRepository.getByPhone(phone);
+    }
+
+    @Override
+    public List<User> getAll() {
+        return userRepository.findAll();
     }
 }
