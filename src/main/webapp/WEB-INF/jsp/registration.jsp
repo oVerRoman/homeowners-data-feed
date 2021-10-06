@@ -14,44 +14,19 @@
   <form:form method="POST" modelAttribute="userForm">
     <h2>Регистрация</h2>
     <div>
-      <form:input type="text" path="username" placeholder="Фамилия"
-                 ></form:input>
+      <form:input type="text" path="username" placeholder="Username"
+                  autofocus="true"></form:input>
+      <form:errors path="username"></form:errors>
+        ${usernameError}
     </div>
     <div>
-      <form:input type="text" path="username" placeholder="Имя"
-                ></form:input>
+      <form:input type="password" path="password" placeholder="Password"></form:input>
     </div>
     <div>
-      <form:input type="text" path="username" placeholder="Отчество"
-                 ></form:input>
-    </div>
-    <div>
-      <form:input type="text" path="username" placeholder="Улица"
-                 ></form:input>
-    </div>
-    <div>
-      <form:input type="text" path="username" placeholder="Дом"
-                  ></form:input>
-    </div>
-    <div>
-      <form:input type="text" path="username" placeholder="Корпус"
-                  ></form:input>
-    </div>
-    <div>
-      <form:input type="text" path="username" placeholder="Квартира"
-                  ></form:input>
-    </div>
-    <div>
-      <form:input type="text" path="username" placeholder="Счёт"
-                  ></form:input>
-    </div>
-    <div>
-      <form:input type="text" path="username" placeholder="Телефон"
-                  ></form:input>
-    </div>
-    <div>
-      <form:input type="text" path="username" placeholder="Электронаая почта"
-                  ></form:input>
+      <form:input type="password" path="passwordConfirm"
+                  placeholder="Confirm your password"></form:input>
+      <form:errors path="password"></form:errors>
+        ${passwordError}
     </div>
     <button type="submit">Зарегистрироваться</button>
   </form:form>

@@ -18,6 +18,8 @@ public class AdminController {
     @GetMapping("/admin")
     public String userList(Model model) {
         model.addAttribute("allUsers", userService.allUsers());
+        System.out.println("создаем массив со юзеров");
+
         return "admin";
     }
 
