@@ -17,7 +17,7 @@
     String name = String.valueOf(request.getAttribute("username"));
 %>
 <div>
-    <form method="POST" action="/password" modelAttribute="username">
+    <form method="POST" action="/login" modelAttribute="username">
         <h2>Вход в систему</h2>
         <div>
             <p >Данные пришедшие с модели

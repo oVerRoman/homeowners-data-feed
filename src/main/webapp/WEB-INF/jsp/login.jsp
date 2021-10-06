@@ -12,12 +12,20 @@
 <sec:authorize access="isAuthenticated()">
   <% response.sendRedirect("/"); %>
 </sec:authorize>
+<%
+    String name = String.valueOf(request.getAttribute("username"));
+%>
 <div>
   <form method="POST" action="/login">
     <h2>Вход в систему</h2>
+      <p >Данные пришедшие с модели
+          <%
+              out.println(name);
+          %>
+      </p>
     <div>
       <input name="username" type="text" placeholder="Username"
-             autofocus="true"/>
+             autofocus="true" value="${name}"/>
       <input name="password" type="password" placeholder="Password"/>
 
       <button type="submit">Log In</button>

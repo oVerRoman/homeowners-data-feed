@@ -14,7 +14,7 @@
   <h3>${pageContext.request.userPrincipal.name}</h3>
 <%--  // если не авторизован показываем--%>
   <sec:authorize access="!isAuthenticated()">
-    <h4><a href="/login">Войти</a></h4>
+
     <h4><a href="/username">Войти по SMS паролю</a></h4>
     <h4><a href="/registration">Зарегистрироваться</a></h4>
 
