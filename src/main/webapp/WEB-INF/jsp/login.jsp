@@ -12,6 +12,7 @@
 <sec:authorize access="isAuthenticated()">
   <% response.sendRedirect("/"); %>
 </sec:authorize>
+
 <%
     String name = String.valueOf(request.getAttribute("username"));
 %>

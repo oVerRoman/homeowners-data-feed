@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+
 @Controller
 public class AdminController {
     @Autowired
@@ -19,7 +20,6 @@ public class AdminController {
     public String userList(Model model) {
         model.addAttribute("allUsers", userService.allUsers());
         System.out.println("создаем массив со юзеров");
-
         return "admin";
     }
 

@@ -1,8 +1,5 @@
 package com.simbirsoftintensiv.intensiv.entity;
 
-
-import com.simbirsoftintensiv.intensiv.service.OtpService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -29,7 +26,7 @@ public class User implements UserDetails {
     private Set<Role> roles;
 
     public User() {
-        System.out.println("User");
+
     }
 
     public Long getId() {

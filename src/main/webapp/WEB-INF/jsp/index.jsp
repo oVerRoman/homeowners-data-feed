@@ -18,13 +18,14 @@
     <h4><a href="/username">Войти по SMS паролю</a></h4>
     <h4><a href="/registration">Зарегистрироваться</a></h4>
 
-
   </sec:authorize>
 
 <%--// а если авторизован что показваем на стартовой странице --%>
   <sec:authorize access="isAuthenticated()">
     <h4><a href="/logout">Выйти</a></h4>
+
     <h4><a href="/admin">Пользователи (только админ)</a></h4>
+
   </sec:authorize>
 </div>
 </body>

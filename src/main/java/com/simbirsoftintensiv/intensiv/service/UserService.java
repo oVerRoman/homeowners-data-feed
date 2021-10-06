@@ -27,20 +27,24 @@ public class UserService implements UserDetailsService {
     RoleRepository roleRepository;
     @Autowired
     BCryptPasswordEncoder bCryptPasswordEncoder;
+
     @Autowired
     public OtpService otpService;
+
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        System.out.println("loadUserByUsername " + username);
+        System.out.println(username);
         User user = userRepository.findByUsername(username);
 
         if (user == null) {
-            System.out.println("UsernameNotFoundException");
+
             throw new UsernameNotFoundException("User not found");
         }
 
         return user;
     }
+
 
     public boolean haveLoginInDB(String username) {
         //находим Юзера в БД
@@ -61,8 +65,8 @@ public class UserService implements UserDetailsService {
         }
     }
 
+
     public User findUserById(Long userId) {
-        System.out.println("findUserById");
         Optional<User> userFromDb = userRepository.findById(userId);
         return userFromDb.orElse(new User());
     }
@@ -80,7 +84,8 @@ public class UserService implements UserDetailsService {
 
         user.setRoles(Collections.singleton(new Role(1L, "ROLE_USER")));
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-        // сохраняем в БД
+
+       // сохраняем в БД
         userRepository.save(user);
         return true;
     }
