@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @Table(name = "mater_values")
 public class CounterValue extends AbstractBaseEntity {
 
-    @Column(name = "mater_id")
+    @JoinColumn(name = "mater_id")
     @ManyToOne(fetch = FetchType.LAZY)
     private Counter counter;
 
