@@ -99,4 +99,8 @@ public class Request {
     public void setId(Integer id) {
         this.id = id;
     }
+
+    public Boolean isNull(){
+        return true;
+    }
 }

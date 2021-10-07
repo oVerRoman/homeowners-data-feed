@@ -13,4 +13,6 @@ import java.util.List;
 public interface RequestRepository extends JpaRepository<Request, Integer> {
 
     Page<Request> findAllBy(Integer type, String title, Long date, Integer address, String comment, Integer status, Integer clientId, Pageable pageable);
+
+    Long count(Integer type, String title, Long date, Integer address, String comment, Integer status, Integer clientId, Pageable pageable);
 }
