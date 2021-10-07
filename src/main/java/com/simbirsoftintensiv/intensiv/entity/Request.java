@@ -96,11 +96,12 @@ public class Request {
         return id;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
     public Boolean isNull(){
-        return true;
+        return !(this.getType() != null
+                || this.getTitle() != null
+                || this.getDate() != null
+                || this.getAddress() != null
+                || this.getClient() != null
+                || this.getStatus() != null);
     }
 }

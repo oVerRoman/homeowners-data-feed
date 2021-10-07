@@ -77,15 +77,13 @@ public class RequestController {
             @RequestParam(value = "pageNumber", defaultValue = "0") Integer pageNumber,
             @RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize,
             @RequestParam(value = "order", defaultValue = "id") String order){
-        Pageable pageable = PageRequest.of(pageNumber,pageSize, Sort.by(order).descending());
         return requestRepository.count(type,
                 title,
                 date,
                 address,
                 comment,
                 status,
-                clientId,
-                pageable);
+                clientId);
     }
 
     // Добавление обращения пользователя
