@@ -16,39 +16,39 @@ CREATE TABLE companies
     id      INTEGER PRIMARY KEY DEFAULT nextval('global_seq'),
     name    VARCHAR(50) NOT NULL,
     address TEXT        NOT NULL,
-    phone   CHARACTER   NOT NULL
+    phone   BIGINT      NOT NULL
 );
 
 CREATE TABLE users
 (
     id          INTEGER PRIMARY KEY DEFAULT nextval('global_seq'),
-    phone       CHARACTER(11) NOT NULL,
-    email       CHARACTER(50) NOT NULL,
-    first_name  TEXT          NOT NULL,
-    second_name TEXT          NOT NULL,
-    patronymic  TEXT          NOT NULL,
-    address     INTEGER       NOT NULL,
-    company_id INTEGER,
-    FOREIGN KEY (company_id) REFERENCES companies(id),
+    phone       BIGINT  NOT NULL,
+    email       VARCHAR NOT NULL,
+    first_name  TEXT    NOT NULL,
+    second_name TEXT    NOT NULL,
+    patronymic  TEXT    NOT NULL,
+    address     INTEGER NOT NULL,
+    company_id  INTEGER,
+    FOREIGN KEY (company_id) REFERENCES companies (id),
     CONSTRAINT user_phone UNIQUE (phone)
 );
 
 CREATE TABLE addresses
 (
     id        INTEGER PRIMARY KEY DEFAULT nextval('global_seq'),
-    user_id INTEGER NOT NULL ,
-    city      CHARACTER(50) NOT NULL,
-    street    CHARACTER(50) NOT NULL,
-    house     CHARACTER(10) NOT NULL,
-    building  CHARACTER(20),
-    apartment CHARACTER(20) NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+    user_id   INTEGER       NOT NULL,
+    city      VARCHAR NOT NULL,
+    street    VARCHAR NOT NULL,
+    house     VARCHAR NOT NULL,
+    building  VARCHAR,
+    apartment VARCHAR NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
 );
 
 CREATE TABLE maters
 (
-    id        INTEGER PRIMARY KEY DEFAULT nextval('global_seq'),
-    name      CHARACTER NOT NULL,
+    id      INTEGER PRIMARY KEY DEFAULT nextval('global_seq'),
+    name    VARCHAR NOT NULL,
     user_id INTEGER,
     FOREIGN KEY (user_id) REFERENCES users (id)
 );
