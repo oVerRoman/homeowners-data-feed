@@ -1,6 +1,8 @@
 package com.simbirsoftintensiv.intensiv.controller;
 
+import com.simbirsoftintensiv.intensiv.entity.Address;
 import com.simbirsoftintensiv.intensiv.entity.Request;
+import com.simbirsoftintensiv.intensiv.entity.User;
 import com.simbirsoftintensiv.intensiv.repository.RequestRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -12,7 +14,38 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 
+import java.time.Instant;
 import java.util.List;
+
+/**
+ * Обрабатываем запросы от фронта
+ *
+ * getAllRequest - Получаем данные о заявках пользователей
+ * GET на адрес /request - возвращает JSON со списком запросов пользователей
+ * поддерживается фильтрация по type, title, date, addressid, comment, status, clientid
+ * поддерживается пагинация, по умолчанию 5 записей на страницу, начальный вывод с нулевой
+ * поддерживается сортировк, необходимо передать название поля
+ *
+ * getRequestById - Получаем данные заказа по его id
+ * GET на адрес /request/{id} - возвращает JSON с данными заявки клиента
+ *
+ * getRequestCount - Возвращает количество данных отвечающим условиям запроса (используем для пагинации на фронте)
+ * GET на адрес /request/count
+ * параметры запроса аналогично getAllRequest
+ *
+ * createRequest - Создаем заявку клиента
+ * POST запрос на адрес /request - возвращает JSON с созданным запросом
+ * ождиает в данных запроса JSON с данными о заявке
+ *
+ * updateRequest - Обновление завки клиента
+ * POST запрос на адрес /request/{id} - возвращает обновленные данные по завке
+ * ожидает в данных запроса JSON с данными о заявке, обновляет только то что не NULL
+ *
+ * deleteById - Удалет заявку клиента
+ * DELETE - запрос на адрес /request/{id} - возвращает код ответа на запрос
+ * ожидает id заявки
+ *
+ */
 
 @Controller
 @RequestMapping(path = "request")
@@ -69,21 +102,21 @@ public class RequestController {
     Long getRequestCount(
             @RequestParam(value = "type", required = false) Integer type,
             @RequestParam(value = "title", required = false) String title,
-            @RequestParam(value = "date", required = false) Long date,
-            @RequestParam(value = "address", required = false) Integer address,
+            @RequestParam(value = "date", required = false) Instant date,
+            @RequestParam(value = "address", required = false) Address address,
             @RequestParam(value = "comment", required = false) String comment,
             @RequestParam(value = "status", required = false) Integer status,
-            @RequestParam(value = "clientId", required = false) Integer clientId,
+            @RequestParam(value = "clientId", required = false) User user,
             @RequestParam(value = "pageNumber", defaultValue = "0") Integer pageNumber,
             @RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize,
             @RequestParam(value = "order", defaultValue = "id") String order){
-        return requestRepository.count(type,
+        return requestRepository.countByParam(type,
                 title,
                 date,
                 address,
                 comment,
                 status,
-                clientId);
+                user);
     }
 
     // Добавление обращения пользователя
