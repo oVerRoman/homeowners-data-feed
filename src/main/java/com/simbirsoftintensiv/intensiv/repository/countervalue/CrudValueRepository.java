@@ -1,8 +1,9 @@
 package com.simbirsoftintensiv.intensiv.repository.countervalue;
 
-import com.simbirsoftintensiv.intensiv.entity.CounterValue;
-
 import java.util.List;
+
+import com.simbirsoftintensiv.intensiv.entity.Counter;
+import com.simbirsoftintensiv.intensiv.entity.CounterValue;
 
 public interface CrudValueRepository {
 
@@ -16,4 +17,8 @@ public interface CrudValueRepository {
 
     // ORDERED dateTime desc
     List<CounterValue> getAll(int userId);
+
+    CounterValue getByCounter(Counter counter);
+
+    CounterValue saveNewValue(CounterValue value, int userId, int counterId);
 }

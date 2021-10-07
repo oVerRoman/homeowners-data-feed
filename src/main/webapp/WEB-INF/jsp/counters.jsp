@@ -9,6 +9,7 @@
 <body>
 	<h2>Показания</h2>
 	<br><br>
+	<form:form action="saveCounterValues" method="post" modelAttribute="allCurrentValues">
 	
 	<table>
 		<tr>
@@ -21,8 +22,8 @@
 				<td>${counter.name}</td>
 				<td>${allCounterValues[status.index].value}</td>
 				<td>
-					<input type="text" name="currentValue"
-					placeholder ="Введите показания счётчика">
+					<form:input path="counterValues[${status.index}].value"/>
+					<form:hidden path="counterValues[${status.index}].id"/>
 				</td>
 			</tr>
 		</c:forEach>
@@ -36,26 +37,11 @@
 			</td>
 			<td width=170></td>
 			<td>
-				<form:form action="saveCounterValues" modelAttribute="counterValue">
-					<input type="submit" value="Отправить">
-				</form:form>
+				<input type="submit" value="Отправить">
 			</td>
 		</tr>
 	</table>
-	<%--<form action="counters" method="get">
-		<input type="text" name="counter"
-		placeholder ="Введите наименование счётчика">
-	</form>
-	<br>
-	<form:form action="counters" method="get" modelAttribute="value">
-		<ul>
-			<c:forEach var="counterName" items="${counter.names}"></c:forEach>
-			<li> ${counterName} </li>
-		</ul>
-		Счётчик ${counterValue.value} <form:input path="counterValue"
-		placeholder ="Введите показания счётчика"/>
-		<br>
-		<input type="submit" name="Отправить">
-	</form:form>--%>
+	
+	</form:form>
 </body>
 </html>

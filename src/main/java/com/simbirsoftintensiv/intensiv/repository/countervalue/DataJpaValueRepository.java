@@ -1,10 +1,13 @@
 package com.simbirsoftintensiv.intensiv.repository.countervalue;
 
-import com.simbirsoftintensiv.intensiv.entity.CounterValue;
-import com.simbirsoftintensiv.intensiv.repository.counter.CounterRepository;
+import java.time.LocalDateTime;
+import java.util.List;
+
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
+import com.simbirsoftintensiv.intensiv.entity.Counter;
+import com.simbirsoftintensiv.intensiv.entity.CounterValue;
+import com.simbirsoftintensiv.intensiv.repository.counter.CounterRepository;
 
 @Repository
 public class DataJpaValueRepository implements CrudValueRepository {
@@ -33,14 +36,26 @@ public class DataJpaValueRepository implements CrudValueRepository {
 
     @Override
     public CounterValue get(int id, int userId) {
-        return valueRepository.findById(id).filter(counterValue ->
-                counterValue.getCounter().getUser().getId() == userId)
+        return valueRepository.findById(id)
+                .filter(counterValue -> counterValue.getCounter().getUser().getId() == userId)
                 .orElse(null);
     }
 
-    //fixme может, такой метод не нужен?..
+    // fixme может, такой метод не нужен?..
     @Override
     public List<CounterValue> getAll(int userId) {
         return null;
+    }
+
+    @Override
+    public CounterValue getByCounter(Counter counter) {
+        return valueRepository.getByCounter(counter);
+    }
+
+    @Override
+    public CounterValue saveNewValue(CounterValue value, int userId, int counterId) {
+        value.setCounter(counterRepository.getById(counterId));
+        value.setDateTime(LocalDateTime.now());
+        return valueRepository.save(value);
     }
 }
