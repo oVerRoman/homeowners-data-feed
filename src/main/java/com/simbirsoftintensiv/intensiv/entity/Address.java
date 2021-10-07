@@ -1,75 +1,31 @@
 package com.simbirsoftintensiv.intensiv.entity;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 
-@Table(name = "addresses")
 @Entity
-public class Address {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
-    private Integer id;
+@Table(name = "addresses")
+public class Address extends AbstractBaseEntity{
 
-    @Column(name = "city", nullable = false, length = 50)
+    @Column(name = "city")
     private String city;
 
-    @Column(name = "street", nullable = false, length = 50)
+    @Column(name = "street")
     private String street;
 
-    @Column(name = "house", nullable = false, length = 10)
+    @Column(name = "house")
     private String house;
 
-    @Column(name = "building", length = 20)
+    @Column(name = "building")
     private String building;
 
-    @Column(name = "apartment", nullable = false, length = 20)
+    @Column(name = "apartment")
     private String apartment;
 
-    public String getApartment() {
-        return apartment;
-    }
+//    @JoinColumn(name = "user_id")
+//    @OneToOne(fetch = FetchType.LAZY)
+//    private User user;
 
-    public void setApartment(String apartment) {
-        this.apartment = apartment;
-    }
 
-    public String getBuilding() {
-        return building;
-    }
-
-    public void setBuilding(String building) {
-        this.building = building;
-    }
-
-    public String getHouse() {
-        return house;
-    }
-
-    public void setHouse(String house) {
-        this.house = house;
-    }
-
-    public String getStreet() {
-        return street;
-    }
-
-    public void setStreet(String street) {
-        this.street = street;
-    }
-
-    public String getCity() {
-        return city;
-    }
-
-    public void setCity(String city) {
-        this.city = city;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
 }

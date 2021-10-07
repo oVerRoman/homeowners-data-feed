@@ -1,41 +1,25 @@
 package com.simbirsoftintensiv.intensiv.entity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.Size;
+import java.util.List;
 
 @Entity
-@Table(name = "counters")
-public class Counter {
+@Table(name = "maters")
+public class Counter extends AbstractBaseEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private int id;
     @Size(min = 2, message = "Название должно быть минимум из 2х символов")
     @Column(name = "name")
     private String name;
-    @Column(name = "client_id")
-    private int clientId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "counter")
+    private List<CounterValue> counterValues;
 
     public Counter() {
-    }
-
-    public Counter(String name, int clientId) {
-        this.name = name;
-        this.clientId = clientId;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public String getName() {
@@ -46,39 +30,13 @@ public class Counter {
         this.name = name;
     }
 
-    public int getClientId() {
-        return clientId;
+    public User getUser() {
+        return user;
     }
 
-    public void setClientId(int clientId) {
-        this.clientId = clientId;
+    public void setUser(User user) {
+        this.user = user;
     }
 
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + clientId;
-        result = prime * result + ((name == null) ? 0 : name.hashCode());
-        return result;
-    }
 
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        Counter other = (Counter) obj;
-        if (clientId != other.clientId)
-            return false;
-        if (name == null) {
-            if (other.name != null)
-                return false;
-        } else if (!name.equals(other.name))
-            return false;
-        return true;
-    }
 }

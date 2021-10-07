@@ -1,93 +1,55 @@
 package com.simbirsoftintensiv.intensiv.entity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.validation.constraints.DecimalMin;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import javax.persistence.*;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "counter_values")
-public class CounterValue {
+@Table(name = "mater_values")
+public class CounterValue extends AbstractBaseEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private int id;
-    @Column(name = "counter_id")
-    private int counterId;
+    @JoinColumn(name = "mater_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Counter counter;
+
     @Column(name = "date")
-    private String date;
-    @DecimalMin(value = "0.1", message = "Значение должно быть больше 0")
+    @NotNull
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
+    private LocalDateTime dateTime;
+
     @Column(name = "value")
-    private double value;
+    @Min(value = 1, message = "Значение должно быть больше 0")
+    private Integer value;
 
     public CounterValue() {
     }
 
-    public CounterValue(int counterId, String date, double value) {
-        super();
-        this.counterId = counterId;
-        this.date = date;
-        this.value = value;
+    public Counter getCounter() {
+        return counter;
     }
 
-    public int getId() {
-        return id;
+    public void setCounter(Counter counter) {
+        this.counter = counter;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public LocalDateTime getDateTime() {
+        return dateTime;
     }
 
-    public int getCounterId() {
-        return counterId;
+    public void setDateTime(LocalDateTime dateTime) {
+        this.dateTime = dateTime;
     }
 
-    public void setCounterId(int counterId) {
-        this.counterId = counterId;
-    }
-
-    public String getDate() {
-        return date;
-    }
-
-    public void setDate(String date) {
-        this.date = date;
-    }
-
-    public double getValue() {
+    public Integer getValue() {
         return value;
     }
 
-    public void setValue(double d) {
-        this.value = d;
+    public void setValue(Integer value) {
+        this.value = value;
     }
 
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + counterId;
-        result = prime * result + id;
-        return result;
-    }
 
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        CounterValue other = (CounterValue) obj;
-        if (counterId != other.counterId)
-            return false;
-        if (id != other.id)
-            return false;
-        return true;
-    }
 }
