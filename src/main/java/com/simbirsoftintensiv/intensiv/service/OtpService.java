@@ -15,7 +15,6 @@ public class OtpService {
     private LoadingCache<String, Integer> otpCache;
 
     public OtpService(){
-        super();
         otpCache = CacheBuilder.newBuilder().
                 expireAfterWrite(EXPIRE_MINS, TimeUnit.MINUTES).build(new CacheLoader<String, Integer>() {
             public Integer load(String key) {

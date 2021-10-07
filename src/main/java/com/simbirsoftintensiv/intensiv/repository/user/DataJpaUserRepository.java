@@ -1,18 +1,16 @@
 package com.simbirsoftintensiv.intensiv.repository.user;
 
 import com.simbirsoftintensiv.intensiv.entity.User;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 @Repository
+@AllArgsConstructor
 public class DataJpaUserRepository implements CrudUserRepository{
 
     private final UserRepository userRepository;
-
-    public DataJpaUserRepository(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
 
     @Override
     public User save(User user) {

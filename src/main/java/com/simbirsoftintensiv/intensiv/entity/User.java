@@ -1,5 +1,11 @@
 package com.simbirsoftintensiv.intensiv.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.Getter;
+import lombok.Setter;
+import org.hibernate.annotations.BatchSize;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -7,9 +13,11 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.Collection;
+import java.util.EnumSet;
 import java.util.Set;
 
 @Entity //->поля класса имеют отображение в БД,
+
 @Table(name = "users")
 public class User extends AbstractBaseEntity implements UserDetails {
 
@@ -29,28 +37,44 @@ public class User extends AbstractBaseEntity implements UserDetails {
     @Column(name = "patronymic")
     private String patronymic;
 
-    @JoinColumn(name = "address")
-    @OneToOne(fetch = FetchType.LAZY)
+    @Getter
+    @Setter
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "address_id")
     private Address address;
 
     @JoinColumn(name = "company_id")
     @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnore
     private Company company;
 
     @Size(min = 2, message = "Не меньше 5 знаков")
-    private String username;
-
-    @Size(min = 2, message = "Не меньше 5 знаков")
+    @Transient
     private String password;
 
     @Transient // под этой анотации поле не имеет отображения в БД.
     private String passwordConfirm;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @Enumerated(EnumType.STRING)
+    @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"),
+            uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id", "role"}, name = "uk_user_roles")})
+    @Column(name = "role")
+    @ElementCollection(fetch = FetchType.EAGER)
+//    @Fetch(FetchMode.SUBSELECT)
+    @BatchSize(size = 200)
+    @JoinColumn(name = "user_id") //https://stackoverflow.com/a/62848296/548473
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Set<Role> roles;
 
-    public User() {
+    public User() {}
 
+    public User(Long phone, String email, String firstName, String secondName, String patronymic, Role role) {
+        this.phone = phone;
+        this.email = email;
+        this.firstName = firstName;
+        this.secondName = secondName;
+        this.patronymic = patronymic;
+        this.roles = EnumSet.of(role);
     }
 
     public Long getPhone() {
@@ -93,14 +117,6 @@ public class User extends AbstractBaseEntity implements UserDetails {
         this.patronymic = patronymic;
     }
 
-    public Address getAddress() {
-        return address;
-    }
-
-    public void setAddress(Address address) {
-        this.address = address;
-    }
-
     public Company getCompany() {
         return company;
     }
@@ -111,7 +127,7 @@ public class User extends AbstractBaseEntity implements UserDetails {
 
     @Override
     public String getUsername() {
-        return username;
+        return phone+"";
     }
 
     @Override
@@ -134,10 +150,6 @@ public class User extends AbstractBaseEntity implements UserDetails {
         return true;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return getRoles();
@@ -150,15 +162,6 @@ public class User extends AbstractBaseEntity implements UserDetails {
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public String getPasswordConfirm() {
-        return passwordConfirm;
-    }
-
-    public void setPasswordConfirm(String passwordConfirm) {
-
-        this.passwordConfirm = passwordConfirm;
     }
 
     public Set<Role> getRoles() {
