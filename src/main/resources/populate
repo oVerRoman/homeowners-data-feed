@@ -1,7 +1,7 @@
 INSERT INTO public.companies (id, name, address, phone)
 VALUES (50000, 'ТСЖ', 'Чикаго', 222333);
 
-INSERT INTO public.users (id, phone, email, first_name, second_name, patronymic, address, company_id)
+INSERT INTO public.users (id, phone, email, first_name, second_name, patronymic, address_id, company_id)
 VALUES (60000, 70000000000, 'user0@mail.ru', 'Петр', 'Петров', 'Петрович', 0, 50000);
 INSERT INTO public.users (id, phone, email, first_name, second_name, patronymic, address, company_id)
 VALUES (60001, 71111111111, 'user1@mail.ru', 'Сидор', 'Сидоров', 'Сидорович', 1, 50000);

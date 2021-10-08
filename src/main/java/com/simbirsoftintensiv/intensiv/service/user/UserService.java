@@ -43,19 +43,19 @@ public class UserService implements UserDetailsService {
 
     public boolean haveLoginInDB(String phone) {
         // находим Юзера в БД
+        System.out.println("haveLoginInDB " +Long.parseLong(phone));
         User userFromDB = userRepository.getByPhone(Long.parseLong(phone));
-        System.out.println("checkLogin " + phone);
+        System.out.println("userFromDB.getUsername " + userFromDB.getFirstName());
         if (userFromDB == null) {
             return false;
         } else {
-// получаем пароль с кэша
+            // получаем пароль с кэша
             int serverPassword = otpService.getOtp(phone);
             System.out.println("serverPassword " + serverPassword);
-// Юзеру закидываем пароль
+            // Юзеру закидываем пароль
             userFromDB.setPassword(bCryptPasswordEncoder.encode(String.valueOf(serverPassword)));
             // и сохраняем старого Юзера в БД
             userRepository.save(userFromDB);
-
             return true;
         }
     }
@@ -75,7 +75,7 @@ public class UserService implements UserDetailsService {
         }
 
 //        user.setRoles(Collections.singleton(new Role(1L, "ROLE_USER")));
-//        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
 
         // сохраняем в БД
         return userRepository.save(user);
@@ -93,4 +93,6 @@ public class UserService implements UserDetailsService {
         return em.createQuery("SELECT u FROM User u WHERE u.id > :paramId", User.class)
                 .setParameter("paramId", idMin).getResultList();
     }
+
+
 }
