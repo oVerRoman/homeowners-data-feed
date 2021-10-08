@@ -1,8 +1,6 @@
 package com.simbirsoftintensiv.intensiv.service.user;
 
-import com.simbirsoftintensiv.intensiv.entity.Role;
 import com.simbirsoftintensiv.intensiv.entity.User;
-import com.simbirsoftintensiv.intensiv.repository.RoleRepository;
 import com.simbirsoftintensiv.intensiv.repository.user.CrudUserRepository;
 import com.simbirsoftintensiv.intensiv.service.OtpService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +12,6 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -24,8 +21,8 @@ public class UserService implements UserDetailsService {
     private EntityManager em; // запрос к БД
     @Autowired
     CrudUserRepository userRepository;
-    @Autowired
-    RoleRepository roleRepository;
+//    @Autowired
+//    RoleRepository roleRepository;
     @Autowired
     BCryptPasswordEncoder bCryptPasswordEncoder;
 
@@ -71,19 +68,17 @@ public class UserService implements UserDetailsService {
         return userRepository.getAll();
     }
 
-    public boolean save(User user) {
-        User userFromDB = userRepository.getByPhone(user.getPhone());
+    public User save(User user) {
 
-        if (userFromDB != null) {
-            return false;
+        if (userRepository.getByPhone(user.getPhone()) != null) {
+            return null;//fixme нужно исключение пользователь с таким телефоном уже существует
         }
 
-        user.setRoles(Collections.singleton(new Role(1L, "ROLE_USER")));
-        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+//        user.setRoles(Collections.singleton(new Role(1L, "ROLE_USER")));
+//        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
 
         // сохраняем в БД
-        userRepository.save(user);
-        return true;
+        return userRepository.save(user);
     }
 
     public boolean delete(Integer userId) {

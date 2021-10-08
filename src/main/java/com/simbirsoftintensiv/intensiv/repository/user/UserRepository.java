@@ -9,8 +9,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 //здесь можно выполнять стандартные запросы к БД
 public interface UserRepository extends JpaRepository<User, Integer> {
-    // ищем имя юзера в бд
-    User findByUsername(String username);
 
     @Transactional
     @Modifying
