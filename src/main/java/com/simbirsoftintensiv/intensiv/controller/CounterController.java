@@ -1,5 +1,6 @@
 package com.simbirsoftintensiv.intensiv.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -8,6 +9,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.simbirsoftintensiv.intensiv.entity.Counter;
 import com.simbirsoftintensiv.intensiv.entity.CounterValue;
@@ -71,19 +73,31 @@ public class CounterController {
 
     @PostMapping("/saveCounterValues")
     public String saveCounterValues(Model model,
-            @ModelAttribute("allCurrentValues") CounterValuesList counterValuesList) {
+            @ModelAttribute("allCurrentValues") CounterValuesList counterValuesList,
+            RedirectAttributes redirectAttrs) {
         // To create always new counter values with the same counter_id delete
         // <form:hidden path="counterValues[${status.index}].id"/> from counters.jsp
         int userId = 100_001;
         List<CounterValue> counterValues = counterValuesList.getCounterValues();
         List<Counter> counters = counterService.getAll(userId);
+        List<String> errors = new ArrayList<>();
         for (int i = 0; i < counters.size(); i++) {
             if (counterValues.get(i).getValue() != null) {
                 if (counterValues.get(i).getValue() != 0) {
-                    valueService.saveNewValue(counterValues.get(i), userId, counters.get(i).getId());
+                    if (counterValues.get(i).getId() == null
+                            || counterValues.get(i).getValue() >= valueService.get(counterValues.get(i).getId(), userId)
+                                    .getValue()) {
+                        valueService.saveNewValue(counterValues.get(i), userId, counters.get(i).getId());
+                        errors.add("");
+                    } else {
+                        errors.add("Введите значение больше предыдущего");
+                    }
                 }
+            } else {
+                errors.add("");
             }
         }
+        redirectAttrs.addFlashAttribute("allValueErrors", errors);
         return "redirect:/counters";
     }
 }

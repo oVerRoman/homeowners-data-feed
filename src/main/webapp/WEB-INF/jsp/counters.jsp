@@ -1,3 +1,4 @@
+<%@page import="org.apache.catalina.filters.ExpiresFilter.XServletOutputStream"%>
 <%@ page contentType="text/html;charset=utf-8" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
@@ -51,9 +52,11 @@
 					<td>${counter.name}</td>
 					<td>${allCounterValues[status.index].value}</td>
 					<td>
-						<form:input path="counterValues[${status.index}].value"/>
+						<form:input type="number" path="counterValues[${status.index}].value"
+						placeholder="Введите показания"/>
 						<form:hidden path="counterValues[${status.index}].id"/>
 					</td>
+					<td>${allValueErrors[status.index]}</td>
 				</tr>
 			</c:forEach>
 		</table>
