@@ -23,14 +23,10 @@ public class CounterController {
 
     final CounterService counterService;
     final ValueService valueService;
-//    final UserService userService;
 
-    public CounterController(CounterService counterService, ValueService valueService/*
-                                                                                      * , UserService userService
-                                                                                      */) {
+    public CounterController(CounterService counterService, ValueService valueService) {
         this.counterService = counterService;
         this.valueService = valueService;
-//        this.userService = userService;
     }
 
     @GetMapping("/counters")
