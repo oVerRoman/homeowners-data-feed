@@ -49,7 +49,8 @@ public class CounterController {
     }
 
     @GetMapping("/addCounter")
-    public String addCounter(Model model) {
+    public String addCounter(Model model,
+            @AuthenticationPrincipal User user) {
         // fixme тут нужно присваивать id авторизованного пользователя из
         // спринг-секьюрити
         int userId = 100_001;
@@ -58,8 +59,8 @@ public class CounterController {
     }
 
     @PostMapping("/saveCounter")
-    public String saveCounter(@ModelAttribute("counter") Counter counter) {
-        // TODO change client_id setting to current client
+    public String saveCounter(@ModelAttribute("counter") Counter counter,
+            @AuthenticationPrincipal User user) {
         // fixme тут нужно присваивать id авторизованного пользователя из
         // спринг-секьюрити
         int userId = 100_001;
@@ -70,7 +71,7 @@ public class CounterController {
     @PostMapping("/saveCounterValues")
     public String saveCounterValues(Model model,
             @ModelAttribute("allCurrentValues") CounterValuesList counterValuesList,
-            RedirectAttributes redirectAttrs) {
+            RedirectAttributes redirectAttrs, @AuthenticationPrincipal User user) {
         // To create always new counter values with the same counter_id delete
         // <form:hidden path="counterValues[${status.index}].id"/> from counters.jsp
         int userId = 100_001;
