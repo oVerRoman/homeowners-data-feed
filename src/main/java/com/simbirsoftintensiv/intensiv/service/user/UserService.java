@@ -2,6 +2,7 @@ package com.simbirsoftintensiv.intensiv.service.user;
 
 import com.simbirsoftintensiv.intensiv.entity.User;
 import com.simbirsoftintensiv.intensiv.repository.user.CrudUserRepository;
+import com.simbirsoftintensiv.intensiv.repository.user.UserRepository;
 import com.simbirsoftintensiv.intensiv.service.OtpService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -21,8 +22,8 @@ public class UserService implements UserDetailsService {
     private EntityManager em; // запрос к БД
     @Autowired
     CrudUserRepository userRepository;
-//    @Autowired
-//    RoleRepository roleRepository;
+    @Autowired
+    UserRepository dataRepository;
     @Autowired
     BCryptPasswordEncoder bCryptPasswordEncoder;
 
@@ -41,10 +42,10 @@ public class UserService implements UserDetailsService {
         return user;
     }
 
-    public boolean haveLoginInDB(String phone) {
+    public boolean haveLoginInDB(Long phone) {
         // находим Юзера в БД
-        System.out.println("haveLoginInDB " +Long.parseLong(phone));
-        User userFromDB = userRepository.getByPhone(Long.parseLong(phone));
+        System.out.println("haveLoginInDB " );
+        User userFromDB = userRepository.getByPhone(phone);
         System.out.println("userFromDB.getUsername " + userFromDB.getFirstName());
         if (userFromDB == null) {
             return false;
@@ -65,7 +66,7 @@ public class UserService implements UserDetailsService {
     }
 
     public List<User> getAll() {
-        return userRepository.getAll();
+        return  userRepository.getAll();
     }
 
     public User save(User user) {

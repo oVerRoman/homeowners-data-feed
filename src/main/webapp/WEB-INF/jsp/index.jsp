@@ -23,7 +23,7 @@
 <%--// а если авторизован что показваем на стартовой странице --%>
   <sec:authorize access="isAuthenticated()">
     <h4><a href="/logout">Выйти</a></h4>
-
+    <h4><a href="/news">Новости(для Юзеров)</a></h4>
     <h4><a href="/admin">Пользователи (только админ)</a></h4>
 
   </sec:authorize>

@@ -1,3 +1,4 @@
+<%@page import="org.apache.catalina.filters.ExpiresFilter.XServletOutputStream"%>
 <%@ page contentType="text/html;charset=utf-8" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
@@ -9,53 +10,69 @@
 <body>
 	<h2>Показания</h2>
 	<br><br>
-	
-	<table>
-		<tr>
-			<th>Счётчик</th>
-			<th>Предыдущее значение</th>
-			<th>Текущее значение</th>
-		</tr>
-		<c:forEach var="counter" items="${allCounters}" varStatus="status">
+	<%--<form:form action="getAllCounterValues" modelAttribute="address">
+		<table>
 			<tr>
-				<td>${counter.name}</td>
-				<td>${allCounterValues[status.index].value}</td>
+				<th>Город *</th>
+				<th>Улица *</th>
+				<th>Дом *</th>
+				<th>Корпус</th>
+				<th>Квартира *</th>
+			</tr>
+			<tr>
 				<td>
-					<input type="text" name="currentValue"
-					placeholder ="Введите показания счётчика">
+					<form:hidden path="id"/>
+					<form:input path="city"/>
+				</td>
+				<td>
+					<form:input path="street"/>
+				</td>
+				<td>
+					<form:input path="house"/>
+				</td>
+				<td>
+					<form:input path="building"/>
+				</td>
+				<td>
+					<form:input path="apartment"/>
 				</td>
 			</tr>
-		</c:forEach>
-	</table>
-	<br>
-	<table>
-		<tr>
-			<td>
-				<input type="button" value="+"
-				onclick="window.location.href='addCounter'"> Добавить счётчик
-			</td>
-			<td width=170></td>
-			<td>
-				<form:form action="saveCounterValues" modelAttribute="counterValue">
-					<input type="submit" value="Отправить">
-				</form:form>
-			</td>
-		</tr>
-	</table>
-	<%--<form action="counters" method="get">
-		<input type="text" name="counter"
-		placeholder ="Введите наименование счётчика">
-	</form>
-	<br>
-	<form:form action="counters" method="get" modelAttribute="value">
-		<ul>
-			<c:forEach var="counterName" items="${counter.names}"></c:forEach>
-			<li> ${counterName} </li>
-		</ul>
-		Счётчик ${counterValue.value} <form:input path="counterValue"
-		placeholder ="Введите показания счётчика"/>
+		</table>
+	</form:form>
+	<br> --%>
+	<form:form action="saveCounterValues" modelAttribute="allCurrentValues">
+		<table>
+			<tr>
+				<th>Счётчик</th>
+				<th>Предыдущее значение</th>
+				<th>Текущее значение</th>
+			</tr>
+			<c:forEach var="counter" items="${allCounters}" varStatus="status">
+				<tr>
+					<td>${counter.name}</td>
+					<td>${allCounterValues[status.index].value}</td>
+					<td>
+						<form:input type="Number" path="counterValues[${status.index}].value"
+						placeholder="Введите показания"/>
+						<form:hidden path="counterValues[${status.index}].id"/>
+					</td>
+					<td>${allValueErrors[status.index]}</td>
+				</tr>
+			</c:forEach>
+		</table>
 		<br>
-		<input type="submit" name="Отправить">
-	</form:form>--%>
+		<table>
+			<tr>
+				<td>
+					<input type="button" value="+"
+					onclick="window.location.href='addCounter'"> Добавить счётчик
+				</td>
+				<td width=170></td>
+				<td>
+					<input type="submit" value="Отправить">
+				</td>
+			</tr>
+		</table>
+	</form:form>
 </body>
 </html>

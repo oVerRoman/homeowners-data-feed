@@ -9,7 +9,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 //здесь можно выполнять стандартные запросы к БД
 public interface UserRepository extends JpaRepository<User, Integer> {
-
     @Transactional
     @Modifying
     @Query("DELETE FROM User u WHERE u.id=:id")

@@ -12,12 +12,12 @@ public class OtpService {
     //cache based on username and OPT MAX 8
     private static final Integer EXPIRE_MINS = 5;
 
-    private LoadingCache<String, Integer> otpCache;
+    private LoadingCache<Long, Integer> otpCache;
 
     public OtpService(){
         otpCache = CacheBuilder.newBuilder().
-                expireAfterWrite(EXPIRE_MINS, TimeUnit.MINUTES).build(new CacheLoader<String, Integer>() {
-            public Integer load(String key) {
+                expireAfterWrite(EXPIRE_MINS, TimeUnit.MINUTES).build(new CacheLoader<Long, Integer>() {
+            public Integer load(Long key) {
                 return 0;
             }
         });
@@ -25,7 +25,7 @@ public class OtpService {
 
     //This method is used to push the opt number against Key. Rewrite the OTP if it exists
     //Using user id  as key
-    public int generateOTP(String key){
+    public int generateOTP(Long key){
 
         Random random = new Random();
         int otp = 100000 + random.nextInt(900000);
@@ -34,7 +34,7 @@ public class OtpService {
     }
 
     //Этот метод используется для возврата номера OTP для Key-> Key values это username
-    public int getOtp(String key){
+    public int getOtp(Long key){
         try{
             return otpCache.get(key);
         }catch (Exception e){
