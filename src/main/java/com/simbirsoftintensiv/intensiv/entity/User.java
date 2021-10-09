@@ -1,22 +1,35 @@
 package com.simbirsoftintensiv.intensiv.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.Getter;
-import lombok.Setter;
+import java.util.Collection;
+import java.util.EnumSet;
+import java.util.Set;
+
+import javax.persistence.CascadeType;
+import javax.persistence.CollectionTable;
+import javax.persistence.Column;
+import javax.persistence.ElementCollection;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+import javax.persistence.UniqueConstraint;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
 import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-import java.util.Collection;
-import java.util.EnumSet;
-import java.util.Set;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
-@Entity //->поля класса имеют отображение в БД,
+@Entity // ->поля класса имеют отображение в БД,
 
 @Table(name = "users")
 public class User extends AbstractBaseEntity implements UserDetails {
@@ -37,8 +50,6 @@ public class User extends AbstractBaseEntity implements UserDetails {
     @Column(name = "patronymic")
     private String patronymic;
 
-    @Getter
-    @Setter
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "address_id")
     private Address address;
@@ -56,17 +67,18 @@ public class User extends AbstractBaseEntity implements UserDetails {
     private String passwordConfirm;
 
     @Enumerated(EnumType.STRING)
-    @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"),
-            uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id", "role"}, name = "uk_user_roles")})
+    @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"), uniqueConstraints = {
+            @UniqueConstraint(columnNames = { "user_id", "role" }, name = "uk_user_roles") })
     @Column(name = "role")
     @ElementCollection(fetch = FetchType.EAGER)
 //    @Fetch(FetchMode.SUBSELECT)
     @BatchSize(size = 200)
-    @JoinColumn(name = "user_id") //https://stackoverflow.com/a/62848296/548473
+    @JoinColumn(name = "user_id") // https://stackoverflow.com/a/62848296/548473
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Set<Role> roles;
 
-    public User() {}
+    public User() {
+    }
 
     public User(Long phone, String email, String firstName, String secondName, String patronymic, Role role) {
         this.phone = phone;
@@ -127,7 +139,7 @@ public class User extends AbstractBaseEntity implements UserDetails {
 
     @Override
     public String getUsername() {
-        return phone+"";
+        return phone + "";
     }
 
     @Override
@@ -172,4 +184,11 @@ public class User extends AbstractBaseEntity implements UserDetails {
         this.roles = roles;
     }
 
+    public Address getAddress() {
+        return address;
+    }
+
+    public void setAddress(Address address) {
+        this.address = address;
+    }
 }
