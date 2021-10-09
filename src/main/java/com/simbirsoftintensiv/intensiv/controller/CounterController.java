@@ -3,6 +3,8 @@ package com.simbirsoftintensiv.intensiv.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -31,7 +33,7 @@ public class CounterController {
 
     @GetMapping("/counters")
     public String getAllCounterValues(Model model,
-            @ModelAttribute("allCurrentValues") CounterValuesList currentValues,
+            @Valid @ModelAttribute("allCurrentValues") CounterValuesList currentValues,
             @AuthenticationPrincipal User user) {
         // fixme тут нужно присваивать id авторизованного пользователя из
         // спринг-секьюрити
@@ -82,8 +84,8 @@ public class CounterController {
             if (counterValues.get(i).getValue() != null) {
                 if (counterValues.get(i).getValue() != 0) {
                     if (counterValues.get(i).getId() == null
-                            || counterValues.get(i).getValue() >= valueService.get(counterValues.get(i).getId(), userId)
-                                    .getValue()) {
+                            || counterValues.get(i).getValue() >= valueService
+                                    .get(counterValues.get(i).getId().intValue(), userId).getValue()) {
                         valueService.saveNewValue(counterValues.get(i), userId, counters.get(i).getId());
                         errors.add("");
                     } else {

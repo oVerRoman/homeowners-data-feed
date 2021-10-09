@@ -52,7 +52,7 @@
 					<td>${counter.name}</td>
 					<td>${allCounterValues[status.index].value}</td>
 					<td>
-						<form:input type="number" path="counterValues[${status.index}].value"
+						<form:input type="Number" path="counterValues[${status.index}].value"
 						placeholder="Введите показания"/>
 						<form:hidden path="counterValues[${status.index}].id"/>
 					</td>
