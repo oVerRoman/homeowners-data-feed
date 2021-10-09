@@ -60,7 +60,6 @@ public class User extends AbstractBaseEntity implements UserDetails {
     private Company company;
 
     @Size(min = 2, message = "Не меньше 5 знаков")
-    @Transient
     private String password;
 
     @Transient // под этой анотации поле не имеет отображения в БД.
@@ -80,12 +79,14 @@ public class User extends AbstractBaseEntity implements UserDetails {
     public User() {
     }
 
-    public User(Long phone, String email, String firstName, String secondName, String patronymic, Role role) {
+    public User(Long phone, String email, String firstName, String secondName, String patronymic,String password, Role role) {
+        System.out.println("!!!!!!User->" + role);
         this.phone = phone;
         this.email = email;
         this.firstName = firstName;
         this.secondName = secondName;
         this.patronymic = patronymic;
+        this.password = password;
         this.roles = EnumSet.of(role);
     }
 
@@ -177,6 +178,7 @@ public class User extends AbstractBaseEntity implements UserDetails {
     }
 
     public Set<Role> getRoles() {
+        System.out.println("getRoles->" + roles);
         return roles;
     }
 
