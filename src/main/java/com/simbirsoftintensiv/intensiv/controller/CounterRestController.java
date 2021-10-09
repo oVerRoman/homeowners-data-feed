@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -33,13 +35,34 @@ public class CounterRestController {
     @GetMapping("/counters/{userPhone}")
     public List<CounterValue> getAllCounters(@PathVariable String userPhone) {
         User user = (User) userService.loadUserByUsername(userPhone);
-        System.out.println(user);
         if (user == null) {
             throw new NoSuchUserException("Пользователь с телефоном " + userPhone + " не зарегистрирован");
         }
-        int userId = user.getId();
-        List<Counter> allCounters = counterService.getAll(userId);
+        List<Counter> allCounters = counterService.getAll(user.getId());
         List<CounterValue> allValues = valueService.getAll(allCounters);
         return allValues;
+    }
+
+    @PostMapping("/counters/{userPhone}")
+    public Counter addNewCounter(@RequestBody Counter counter, @PathVariable String userPhone) {
+        User user = (User) userService.loadUserByUsername(userPhone);
+        if (user == null) {
+            throw new NoSuchUserException("Пользователь с телефоном " + userPhone + " не зарегистрирован");
+        }
+        counterService.save(counter, user.getId());
+        return counter;
+    }
+
+    // TODO this method
+    @PostMapping("/counters/{userPhone}/{counterNewValue}")
+    public CounterValue addOrUpdateCounterValue(@RequestBody CounterValue counterValue,
+            @PathVariable String userPhone, @PathVariable Integer counterNewValue) {
+        User user = (User) userService.loadUserByUsername(userPhone);
+        if (user == null) {
+            throw new NoSuchUserException("Пользователь с телефоном " + userPhone + " не зарегистрирован");
+        }
+        counterValue.setValue(counterNewValue);
+        valueService.saveNewValue(counterValue, user.getId(), counterValue.getCounter().getId());
+        return counterValue;
     }
 }
