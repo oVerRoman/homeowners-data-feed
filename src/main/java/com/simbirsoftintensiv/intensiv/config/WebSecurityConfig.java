@@ -35,6 +35,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/saveCounter").not().fullyAuthenticated()
                 .antMatchers("/saveCounterValues").not().fullyAuthenticated()
                 .antMatchers("/rest/counters").not().fullyAuthenticated()
+                .antMatchers("/rest/counters/**").not().fullyAuthenticated()
                 // Доступ только для пользователей с ролью Администратор
                 .antMatchers("/admin/**").hasRole("ADMIN")
                 .antMatchers("/news").hasRole("USER")
