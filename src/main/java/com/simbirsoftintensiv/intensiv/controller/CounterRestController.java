@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.simbirsoftintensiv.intensiv.entity.Counter;
 import com.simbirsoftintensiv.intensiv.entity.CounterValue;
 import com.simbirsoftintensiv.intensiv.entity.User;
+import com.simbirsoftintensiv.intensiv.exception_handling.NoSuchUserException;
 import com.simbirsoftintensiv.intensiv.service.counter.CounterService;
 import com.simbirsoftintensiv.intensiv.service.countervalue.ValueService;
 import com.simbirsoftintensiv.intensiv.service.user.UserService;
@@ -29,18 +30,13 @@ public class CounterRestController {
         this.userService = userService;
     }
 
-    @GetMapping("/counters")
-    public List<CounterValue> getAllCounters() {
-        int userId = 100_001;
-        List<Counter> allCounters = counterService.getAll(userId);
-        List<CounterValue> allValues = valueService.getAll(allCounters);
-        return allValues;
-    }
-
     @GetMapping("/counters/{userPhone}")
     public List<CounterValue> getAllCounters(@PathVariable String userPhone) {
-        System.out.println(userPhone);
         User user = (User) userService.loadUserByUsername(userPhone);
+        System.out.println(user);
+        if (user == null) {
+            throw new NoSuchUserException("Пользователь с телефоном " + userPhone + " не зарегистрирован");
+        }
         int userId = user.getId();
         List<Counter> allCounters = counterService.getAll(userId);
         List<CounterValue> allValues = valueService.getAll(allCounters);

@@ -1,8 +1,10 @@
 package com.simbirsoftintensiv.intensiv.service.user;
 
-import com.simbirsoftintensiv.intensiv.entity.User;
-import com.simbirsoftintensiv.intensiv.repository.user.CrudUserRepository;
-import com.simbirsoftintensiv.intensiv.service.OtpService;
+import java.util.List;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -10,9 +12,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import java.util.List;
+import com.simbirsoftintensiv.intensiv.entity.User;
+import com.simbirsoftintensiv.intensiv.repository.user.CrudUserRepository;
+import com.simbirsoftintensiv.intensiv.service.OtpService;
 
 @Service
 public class UserService implements UserDetailsService {
@@ -35,7 +37,7 @@ public class UserService implements UserDetailsService {
         User user = userRepository.getByPhone(Long.parseLong(phone));
 
         if (user == null) {
-            throw new UsernameNotFoundException("User not found");
+            throw new UsernameNotFoundException("User with phone " + phone + " not found");
         }
 
         return user;
@@ -71,7 +73,7 @@ public class UserService implements UserDetailsService {
     public User save(User user) {
 
         if (userRepository.getByPhone(user.getPhone()) != null) {
-            return null;//fixme нужно исключение пользователь с таким телефоном уже существует
+            return null;// fixme нужно исключение пользователь с таким телефоном уже существует
         }
 
 //        user.setRoles(Collections.singleton(new Role(1L, "ROLE_USER")));
