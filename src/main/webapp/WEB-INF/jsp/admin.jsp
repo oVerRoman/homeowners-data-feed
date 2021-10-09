@@ -30,7 +30,7 @@
         <td>
           <form action="${pageContext.request.contextPath}/admin" method="post">
             <input type="hidden" name="userId" value="${user.id}"/>
-            <input type="hidden" name="action" value="delete"/>
+            <input type="hidden" name="action" value="DELETE"/>
             <button type="submit">Delete</button>
           </form>
 

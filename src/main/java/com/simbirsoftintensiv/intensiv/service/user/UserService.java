@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import com.simbirsoftintensiv.intensiv.entity.User;
 import com.simbirsoftintensiv.intensiv.repository.user.CrudUserRepository;
+import com.simbirsoftintensiv.intensiv.repository.user.UserRepository;
 import com.simbirsoftintensiv.intensiv.service.OtpService;
 
 @Service
@@ -23,8 +24,8 @@ public class UserService implements UserDetailsService {
     private EntityManager em; // запрос к БД
     @Autowired
     CrudUserRepository userRepository;
-//    @Autowired
-//    RoleRepository roleRepository;
+    @Autowired
+    UserRepository dataRepository;
     @Autowired
     BCryptPasswordEncoder bCryptPasswordEncoder;
 
@@ -43,21 +44,21 @@ public class UserService implements UserDetailsService {
         return user;
     }
 
-    public boolean haveLoginInDB(String phone) {
+    public boolean haveLoginInDB(Long phone) {
         // находим Юзера в БД
-        User userFromDB = userRepository.getByPhone(Long.parseLong(phone));
-        System.out.println("checkLogin " + phone);
+        System.out.println("haveLoginInDB ");
+        User userFromDB = userRepository.getByPhone(phone);
+        System.out.println("userFromDB.getUsername " + userFromDB.getFirstName());
         if (userFromDB == null) {
             return false;
         } else {
-// получаем пароль с кэша
+            // получаем пароль с кэша
             int serverPassword = otpService.getOtp(phone);
             System.out.println("serverPassword " + serverPassword);
-// Юзеру закидываем пароль
+            // Юзеру закидываем пароль
             userFromDB.setPassword(bCryptPasswordEncoder.encode(String.valueOf(serverPassword)));
             // и сохраняем старого Юзера в БД
             userRepository.save(userFromDB);
-
             return true;
         }
     }
@@ -77,7 +78,7 @@ public class UserService implements UserDetailsService {
         }
 
 //        user.setRoles(Collections.singleton(new Role(1L, "ROLE_USER")));
-//        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
 
         // сохраняем в БД
         return userRepository.save(user);
@@ -95,4 +96,5 @@ public class UserService implements UserDetailsService {
         return em.createQuery("SELECT u FROM User u WHERE u.id > :paramId", User.class)
                 .setParameter("paramId", idMin).getResultList();
     }
+
 }

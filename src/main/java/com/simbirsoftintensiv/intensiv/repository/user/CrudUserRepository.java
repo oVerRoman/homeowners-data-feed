@@ -18,5 +18,6 @@ public interface CrudUserRepository {
     // null if not found
     User getByPhone(Long phone);
 
+
     List<User> getAll();
 }
