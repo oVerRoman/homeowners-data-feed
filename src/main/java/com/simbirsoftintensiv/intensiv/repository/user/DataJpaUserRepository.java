@@ -6,10 +6,7 @@ import org.springframework.stereotype.Repository;
 
 import com.simbirsoftintensiv.intensiv.entity.User;
 
-import lombok.AllArgsConstructor;
-
 @Repository
-@AllArgsConstructor
 public class DataJpaUserRepository implements CrudUserRepository {
 
     private final UserRepository userRepository;

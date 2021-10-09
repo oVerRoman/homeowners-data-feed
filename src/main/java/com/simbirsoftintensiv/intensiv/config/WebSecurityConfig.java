@@ -28,13 +28,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 // Доступ только для не зарегистрированных пользователей
                 .antMatchers("/registration").not().fullyAuthenticated()
                 .antMatchers("/username").not().fullyAuthenticated()
-                .antMatchers("/password").not().fullyAuthenticated()
                 .antMatchers("/counters").not().fullyAuthenticated()
                 .antMatchers("/addCounter").not().fullyAuthenticated()
                 .antMatchers("/saveCounter").not().fullyAuthenticated()
                 .antMatchers("/saveCounterValues").not().fullyAuthenticated()
                 // Доступ только для пользователей с ролью Администратор
+                .antMatchers("/admin").hasRole("ADMIN")
                 .antMatchers("/admin/**").hasRole("ADMIN")
+                .antMatchers("/news").hasRole("ADMIN")
                 .antMatchers("/news").hasRole("USER")
 //                .antMatchers("/counters").hasRole("USER")
 //                .antMatchers("/add-counter").hasRole("USER")

@@ -2,6 +2,7 @@ package com.simbirsoftintensiv.intensiv.controller;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,13 +14,11 @@ import com.simbirsoftintensiv.intensiv.entity.Role;
 import com.simbirsoftintensiv.intensiv.entity.User;
 import com.simbirsoftintensiv.intensiv.service.user.UserService;
 
-import lombok.AllArgsConstructor;
-
 @Controller
-@AllArgsConstructor
 @RequestMapping(value = "/registration")
 public class JspRegistrationController {
 
+    @Autowired
     private final UserService userService;
 
     public JspRegistrationController(UserService userService) {
@@ -40,6 +39,7 @@ public class JspRegistrationController {
                 request.getParameter("firstName"),
                 request.getParameter("secondName"),
                 request.getParameter("patronymic"),
+                request.getParameter("password"),
                 Role.USER);
         Address address = new Address(
                 request.getParameter("city"),
