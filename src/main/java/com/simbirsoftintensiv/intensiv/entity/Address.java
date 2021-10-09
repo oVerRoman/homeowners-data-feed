@@ -1,15 +1,14 @@
 package com.simbirsoftintensiv.intensiv.entity;
 
-import lombok.Getter;
-import lombok.Setter;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
 
-import javax.persistence.*;
-
-@Getter
-@Setter
 @Entity
 @Table(name = "addresses")
-public class Address extends AbstractBaseEntity{
+public class Address extends AbstractBaseEntity {
 
     @Column(name = "city")
     private String city;
@@ -29,7 +28,8 @@ public class Address extends AbstractBaseEntity{
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "address")
     private User user;
 
-    public Address() {}
+    public Address() {
+    }
 
     public Address(String city, String street, String house, String building, String apartment) {
         this.city = city;
@@ -37,5 +37,53 @@ public class Address extends AbstractBaseEntity{
         this.house = house;
         this.building = building;
         this.apartment = apartment;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getStreet() {
+        return street;
+    }
+
+    public void setStreet(String street) {
+        this.street = street;
+    }
+
+    public String getHouse() {
+        return house;
+    }
+
+    public void setHouse(String house) {
+        this.house = house;
+    }
+
+    public String getBuilding() {
+        return building;
+    }
+
+    public void setBuilding(String building) {
+        this.building = building;
+    }
+
+    public String getApartment() {
+        return apartment;
+    }
+
+    public void setApartment(String apartment) {
+        this.apartment = apartment;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }
