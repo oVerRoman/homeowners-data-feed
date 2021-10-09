@@ -1,6 +1,5 @@
 package com.simbirsoftintensiv.intensiv.config;
 
-import com.simbirsoftintensiv.intensiv.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -9,6 +8,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
+import com.simbirsoftintensiv.intensiv.service.user.UserService;
 
 @Configuration
 @EnableWebSecurity
@@ -33,6 +34,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/addCounter").not().fullyAuthenticated()
                 .antMatchers("/saveCounter").not().fullyAuthenticated()
                 .antMatchers("/saveCounterValues").not().fullyAuthenticated()
+                .antMatchers("/rest/counters").not().fullyAuthenticated()
                 // Доступ только для пользователей с ролью Администратор
                 .antMatchers("/admin/**").hasRole("ADMIN")
                 .antMatchers("/news").hasRole("USER")
