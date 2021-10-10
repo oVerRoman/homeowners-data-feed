@@ -29,8 +29,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 // Доступ только для не зарегистрированных пользователей
                 .antMatchers("/registration").not().fullyAuthenticated()
                 .antMatchers("/username").not().fullyAuthenticated()
-                .antMatchers("/counters").not().fullyAuthenticated()
-                .antMatchers("/addCounter").not().fullyAuthenticated()
+//                .antMatchers("/counters").not().fullyAuthenticated()
+//                .antMatchers("/addCounter").not().fullyAuthenticated()
                 .antMatchers("/saveCounter").not().fullyAuthenticated()
                 .antMatchers("/saveCounterValues").not().fullyAuthenticated()
                 .antMatchers("/rest/counters").not().fullyAuthenticated()
@@ -40,8 +40,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/admin/**").hasRole("ADMIN")
                 .antMatchers("/news").hasRole("ADMIN")
                 .antMatchers("/news").hasRole("USER")
-//                .antMatchers("/counters").hasRole("USER")
-//                .antMatchers("/add-counter").hasRole("USER")
+                .antMatchers("/counters").hasRole("USER")
+                .antMatchers("/add-counter").hasRole("USER")
+
+                .antMatchers("/saveCounter").hasRole("USER")
+                .antMatchers("/saveCounterValues").hasRole("USER")
+                .antMatchers("/rest/counters").hasRole("USER")
+                .antMatchers("/rest/counters/**").hasRole("USER")
+
                 // Доступ разрешен всем пользователей
                 .antMatchers("/", "/resources/**").permitAll()
                 // Все остальные страницы требуют аутентификации
@@ -49,10 +55,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 // Настройка для входа в систему
                 .formLogin()
 
-//                .loginPage("/password")
                 .loginPage("/login")
 
-                // Перенаправление на главную страницу после успешного входа
+                // Перенаправление на главную страницу после успешного выхода
                 .defaultSuccessUrl("/").permitAll().and().logout().permitAll().logoutSuccessUrl("/");
     }
 

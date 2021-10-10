@@ -10,23 +10,13 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 
-// как должно работать
-//фронт делает запрос на /username?username=22
-//ему приходит json c полями
-//        map.put("Code", 200);
-//        map.put("smsPassword", null);
-//        map.put("username", "false");
-//        где он получает правильное или не правильно имя пользователя ввел
-//+ смс пароль -> пока временно потом прикручу стороний сервис
-//и после этого фронт делает следующий запрос на /login?username=22&password=741777
-//и сеcсия должна авторизоваться(что вроде и делает)
+
 @Controller
 //@RestController
 //TODO когда не нужен будет jsp поменять на RestController
 public class LoginController {
     //TODO сделать обработку ошибок (ввод неправильного пароля и ввод неправльного имени)
     //@exceptionHandler или @ControllerAdvice
-    private Long UserName;
     @Autowired
     private UserService userService; // внедряем обьект
 
@@ -36,16 +26,13 @@ public class LoginController {
 
     // фронту это не надо будет
     @GetMapping("/username")
-    public String checkUser(Model model,
-                            @RequestParam(value = "username", required = false) Integer username
-    ) {
+    public String checkUser() {
         return "username";
     }
 
     @ResponseBody
     @PostMapping("/username")
-    public HashMap<String, String> addUser(@RequestParam(value = "username") Long username,
-                                           Model model) {
+    public HashMap<String, String> addUser(@RequestParam(value = "username") Long username) {
         int smsPassword = otpService.generateOTP(username);
         boolean itRightName = userService.haveLoginInDB(username);
         HashMap<String, String> map = new HashMap<>();
@@ -61,16 +48,11 @@ public class LoginController {
             map.put("username", "false");
             return map;
         }
-//localhost:8080/login?username=22&password=741777  POST
-
         SmsService.main(otpService.getOtp(username));
         map.put("username", String.valueOf(username));
         map.put("Code", "200 OK");
         map.put("smsPassword", String.valueOf(smsPassword));// временно
-        this.UserName = username;
-
-
-        return map;   // отдать фронту
+        return map;
     }
 
 }

@@ -68,11 +68,13 @@ public class UserService implements UserDetailsService {
     }
 
     public List<User> getAll() {
-        return userRepository.getAll();
+        List Users = userRepository.getAll();
+        System.out.println("отдали getAll");
+        return Users;
     }
 
     public User save(User user) {
-
+//TODO продумать как сделать
         if (userRepository.getByPhone(user.getPhone()) != null) {
             return null;// fixme нужно исключение пользователь с таким телефоном уже существует
         }
@@ -92,8 +94,8 @@ public class UserService implements UserDetailsService {
         return false;
     }
 
-    public List<User> usergtList(Long idMin) {
-        return em.createQuery("SELECT u FROM User u WHERE u.id > :paramId", User.class)
+    public List<User> usergtList(Integer idMin) {
+        return em.createQuery("SELECT u FROM User u WHERE u.id = :paramId", User.class)
                 .setParameter("paramId", idMin).getResultList();
     }
 
