@@ -1,10 +1,10 @@
 package com.simbirsoftintensiv.intensiv.exception_handling;
 
-public class UserIncorrectData {
+public class IncorrectData {
 
     private String info;
 
-    public UserIncorrectData() {
+    public IncorrectData() {
     }
 
     public String getInfo() {
