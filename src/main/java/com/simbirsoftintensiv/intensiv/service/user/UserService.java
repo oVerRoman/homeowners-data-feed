@@ -66,7 +66,9 @@ public class UserService implements UserDetailsService {
     }
 
     public List<User> getAll() {
-        return  userRepository.getAll();
+        List Users = userRepository.getAll();
+        System.out.println("отдали getAll");
+        return Users;
     }
 
     public User save(User user) {

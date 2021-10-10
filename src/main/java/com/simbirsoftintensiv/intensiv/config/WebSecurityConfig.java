@@ -46,10 +46,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 // Настройка для входа в систему
                 .formLogin()
 
-//                .loginPage("/password")
                 .loginPage("/login")
 
-                // Перенаправление на главную страницу после успешного входа
+                // Перенаправление на главную страницу после успешного выхода
                 .defaultSuccessUrl("/").permitAll().and().logout().permitAll().logoutSuccessUrl("/");
     }
 
