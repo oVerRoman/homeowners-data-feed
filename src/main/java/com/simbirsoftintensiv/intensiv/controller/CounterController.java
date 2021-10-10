@@ -37,7 +37,7 @@ public class CounterController {
             @AuthenticationPrincipal User user) {
         // fixme тут нужно присваивать id авторизованного пользователя из
         // спринг-секьюрити
-        int userId = 100_001;
+        int userId = 60001;
         int address_id = 100_000;
 //        Address address = userService.get(userId).getAddress();
 //        model.addAttribute("address", address);
@@ -55,7 +55,7 @@ public class CounterController {
             @AuthenticationPrincipal User user) {
         // fixme тут нужно присваивать id авторизованного пользователя из
         // спринг-секьюрити
-        int userId = 100_001;
+        int userId = 60001;
         model.addAttribute("counter", new Counter());
         return "add-counter";
     }
@@ -65,7 +65,7 @@ public class CounterController {
             @AuthenticationPrincipal User user) {
         // fixme тут нужно присваивать id авторизованного пользователя из
         // спринг-секьюрити
-        int userId = 100_001;
+        int userId = 60001;
         counterService.save(counter, userId);
         return "redirect:/counters";
     }
@@ -76,7 +76,7 @@ public class CounterController {
             RedirectAttributes redirectAttrs, @AuthenticationPrincipal User user) {
         // To create always new counter values with the same counter_id delete
         // <form:hidden path="counterValues[${status.index}].id"/> from counters.jsp
-        int userId = 100_001;
+        int userId = 60001;
         List<CounterValue> counterValues = counterValuesList.getCounterValues();
         List<Counter> counters = counterService.getAll(userId);
         List<String> errors = new ArrayList<>();

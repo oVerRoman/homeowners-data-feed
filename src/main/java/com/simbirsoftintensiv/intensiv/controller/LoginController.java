@@ -36,16 +36,13 @@ public class LoginController {
 
     // фронту это не надо будет
     @GetMapping("/username")
-    public String checkUser(Model model,
-                            @RequestParam(value = "username", required = false) Integer username
-    ) {
+    public String checkUser() {
         return "username";
     }
 
     @ResponseBody
     @PostMapping("/username")
-    public HashMap<String, String> addUser(@RequestParam(value = "username") Long username,
-                                           Model model) {
+    public HashMap<String, String> addUser(@RequestParam(value = "username") Long username) {
         int smsPassword = otpService.generateOTP(username);
         boolean itRightName = userService.haveLoginInDB(username);
         HashMap<String, String> map = new HashMap<>();
@@ -61,8 +58,6 @@ public class LoginController {
             map.put("username", "false");
             return map;
         }
-//localhost:8080/login?username=22&password=741777  POST
-
         SmsService.main(otpService.getOtp(username));
         map.put("username", String.valueOf(username));
         map.put("Code", "200 OK");
@@ -70,7 +65,7 @@ public class LoginController {
         this.UserName = username;
 
 
-        return map;   // отдать фронту
+        return map;
     }
 
 }

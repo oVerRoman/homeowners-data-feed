@@ -3,7 +3,6 @@ package com.simbirsoftintensiv.intensiv.controller;
 import com.simbirsoftintensiv.intensiv.entity.User;
 import com.simbirsoftintensiv.intensiv.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,19 +18,19 @@ import java.util.List;
  */
 
 
-@Controller
+@RestController
+@RequestMapping("/rest")
 public class AdminController {
     @Autowired
     private UserService userService;
 
     @ResponseBody
     @GetMapping("/admin")
-    public List<User> userList(Model model) {
+    public HashMap<String, List<User>> userList() {
         System.out.println("создаем массив с логинами юзеров");
-        model.addAttribute("allUsers", userService.getAll());
         HashMap<String, List<User>> map = new HashMap<>();
-        map.put("Users", userService.getAll());
-        return userService.getAll();
+        map.put("Content", userService.getAll());
+        return map;
     }
 
     @PostMapping("/admin")
