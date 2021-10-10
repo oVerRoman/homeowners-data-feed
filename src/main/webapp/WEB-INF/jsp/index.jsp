@@ -25,7 +25,8 @@
     <h4><a href="/logout">Выйти</a></h4>
     <h4><a href="/news">Новости(для Юзеров)</a></h4>
     <h4><a href="/rest/admin">Пользователи (только админ)</a></h4>
-
+    <h4><a href="/counters">Счетчики</a></h4>
+    <h4><a href="/add-counter">добавить счетчик</a></h4>
   </sec:authorize>
 </div>
 </body>

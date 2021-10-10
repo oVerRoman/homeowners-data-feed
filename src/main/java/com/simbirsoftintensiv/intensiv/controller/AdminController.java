@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -35,22 +36,34 @@ public class AdminController {
 
     @PostMapping("/admin")
     public HashMap<String, String> deleteUser(@RequestParam(required = true, defaultValue = "") Integer userId,
-                                              @RequestParam(required = true, defaultValue = "") String action,
-                                              Model model) {
+                                              @RequestParam(required = true, defaultValue = "") String action) {
 
         HashMap<String, String> map = new HashMap<>();
         if (action.equals("DELETE")) {
-            userService.delete(userId);
-            map.put("code", "200 OK");
-            map.put(String.valueOf(userId), action);
+            boolean itDelete = userService.delete(userId);
+            if (itDelete) {
+                map.put("code", "200 OK");
+            } else {
+                map.put("code", "404");
+            }
         }
         return map;
     }
 
     @GetMapping("/admin/gt/{userId}")
-    public String gtUser(@PathVariable("userId") Long userId, Model model) {
-        System.out.println(userId);
-        model.addAttribute("allUsers", userService.usergtList(userId));
-        return "admin";
+    public HashMap gtUser(@PathVariable("userId") Integer userId) {
+        List User = userService.usergtList(userId);
+            List<String> code ;
+        HashMap<String, List> map = new HashMap<>();
+        if (userList().size() > 0) {
+            code= Collections.singletonList("200");
+            System.out.println(userId);
+            map.put("Content", User);
+            map.put("code", code);
+        }
+        code= Collections.singletonList("404");
+        map.put("Content", User);
+        map.put("code", code);
+        return map;
     }
 }
