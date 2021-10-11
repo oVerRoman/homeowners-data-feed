@@ -5,6 +5,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+//TODO обязательно добавить логи тут
+
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -23,9 +25,19 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler
+    public ResponseEntity<IncorrectData> handleException(NumberFormatException exception) {
+        IncorrectData data = new IncorrectData();
+        data.setInfo(exception.getMessage());
+        return new ResponseEntity<>(data, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler
     public ResponseEntity<IncorrectData> handleException(Exception exception) {
         IncorrectData data = new IncorrectData();
         data.setInfo(exception.getMessage());
         return new ResponseEntity<>(data, HttpStatus.BAD_REQUEST);
     }
+
+
+
 }

@@ -1,9 +1,9 @@
 package com.simbirsoftintensiv.intensiv.controller;
 
 import com.simbirsoftintensiv.intensiv.entity.User;
+import com.simbirsoftintensiv.intensiv.exception_handling.NoSuchUserException;
 import com.simbirsoftintensiv.intensiv.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
@@ -36,7 +36,7 @@ public class AdminController {
 
     @PostMapping("/admin")
     public HashMap<String, String> deleteUser(@RequestParam(required = true, defaultValue = "") Integer userId,
-                                              @RequestParam(required = true, defaultValue = "") String action) {
+                                              @RequestParam(defaultValue = "") String action) {
 
         HashMap<String, String> map = new HashMap<>();
         if (action.equals("DELETE")) {
@@ -51,19 +51,39 @@ public class AdminController {
     }
 
     @GetMapping("/admin/gt/{userId}")
-    public HashMap gtUser(@PathVariable("userId") Integer userId) {
-        List User = userService.usergtList(userId);
-            List<String> code ;
+    public HashMap gtUser(@PathVariable("userId") String userId) {
+        Integer rightId;
+        List<String> code ;
         HashMap<String, List> map = new HashMap<>();
-        if (userList().size() > 0) {
-            code= Collections.singletonList("200");
-            System.out.println(userId);
-            map.put("Content", User);
-            map.put("code", code);
+        try {
+              rightId =Integer.parseInt(userId);
         }
-        code= Collections.singletonList("404");
+        catch (NumberFormatException exception){
+            code= Collections.singletonList("400");
+            map.put("code", code);
+            return map;
+        }
+        List User = userService.usergtList(rightId);
+
+        if (userList().size() == 1) {
+            code= Collections.singletonList("404");
+        }else {
+            System.out.println(userList().size());
+            code= Collections.singletonList("200");
+        }
         map.put("Content", User);
         map.put("code", code);
         return map;
     }
+
+    @ResponseBody
+    @GetMapping("/admin/count")
+    public HashMap<String, Integer> getUsersCount() {
+         HashMap<String, Integer> map = new HashMap<>();
+        Integer countUsers = userService.getAll().size();
+        map.put("code", 200);
+        map.put("Content", countUsers);
+        return map;
+    }
+
 }
