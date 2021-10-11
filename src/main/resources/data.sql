@@ -7,11 +7,11 @@ VALUES (80000, 'Чикаго', 'улица Ленина', '1', null, '11'),
        (80002, 'Чикаго', 'улица Ленина', '1', null, '31'),
        (80003, 'Чикаго', 'улица Ленина', '3', 'A', '3');
 
-INSERT INTO users (id, phone, email, first_name, second_name, patronymic, address_id, company_id, password)
-VALUES (60000, 70000000000, 'user0@mail.ru', 'Петр', 'Петров', 'Петрович', 80002, 50000, NULL),
-       (60001, 71111111111, 'user1@mail.ru', 'Сидор', 'Сидоров', 'Сидорович', 80000, 50000, NULL),
-       (60002, 72222222222, 'user2@mail.ru', 'Иван', 'Иванов', 'Иванович', 80001, 50000, NULL),
-       (60003, 73333333333, 'user3@mail.ru', 'Фирс', 'Фирсов', 'Фирсович', 80003, 50000, NULL);
+INSERT INTO users (id, phone, email, first_name, second_name, patronymic, address_id, company_id)
+VALUES (60000, 70000000000, 'user0@mail.ru', 'Петр', 'Петров', 'Петрович', 80002, 50000),
+       (60001, 71111111111, 'user1@mail.ru', 'Сидор', 'Сидоров', 'Сидорович', 80000, 50000),
+       (60002, 72222222222, 'user2@mail.ru', 'Иван', 'Иванов', 'Иванович', 80001, 50000),
+       (60003, 73333333333, 'user3@mail.ru', 'Фирс', 'Фирсов', 'Фирсович', 80003, 50000);
 
 INSERT INTO user_roles (role, user_id)
 VALUES ('USER', 60000),

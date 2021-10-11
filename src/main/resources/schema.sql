@@ -40,7 +40,7 @@ CREATE TABLE users
     first_name  TEXT    NOT NULL,
     second_name TEXT    NOT NULL,
     patronymic  TEXT    NOT NULL,
-    password    VARCHAR,
+--     password    VARCHAR,
     address_id  INTEGER,
     company_id  INTEGER,
     FOREIGN KEY (company_id) REFERENCES companies (id),

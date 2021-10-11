@@ -17,8 +17,7 @@
     <form method="POST" action="/onetimecode">
         <h2>Ввести логин(телефон)</h2>
         <div>
-            <input name="phone" type="text" placeholder="Username"
-                   autofocus="true"/>
+            <input name="phone" type="text" placeholder="Username" autofocus="true"/>
             <button type="submit">Log In</button>
             <h4><a href="/registration">Зарегистрироваться</a></h4>
         </div>

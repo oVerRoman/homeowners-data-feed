@@ -1,10 +1,9 @@
 package com.simbirsoftintensiv.intensiv.repository.user;
 
-import java.util.List;
-
+import com.simbirsoftintensiv.intensiv.entity.User;
 import org.springframework.stereotype.Repository;
 
-import com.simbirsoftintensiv.intensiv.entity.User;
+import java.util.List;
 
 @Repository
 public class DataJpaUserRepository implements CrudUserRepository {
@@ -21,13 +20,8 @@ public class DataJpaUserRepository implements CrudUserRepository {
     }
 
     @Override
-    public boolean delete(int id) {
-        return userRepository.delete(id) != 0;
-    }
-
-    @Override
-    public User get(int id) {
-        return userRepository.getById(id);
+    public boolean delete(Long phone) {
+        return userRepository.delete(phone) != 0;
     }
 
     @Override

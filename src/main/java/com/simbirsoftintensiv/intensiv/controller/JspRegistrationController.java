@@ -38,7 +38,7 @@ public class JspRegistrationController {
                 request.getParameter("firstName"),
                 request.getParameter("secondName"),
                 request.getParameter("patronymic"),
-                null,
+//                null,
                 Role.USER);
         Address address = new Address(
                 request.getParameter("city"),

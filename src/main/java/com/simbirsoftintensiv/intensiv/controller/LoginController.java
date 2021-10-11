@@ -2,7 +2,6 @@ package com.simbirsoftintensiv.intensiv.controller;
 
 import com.simbirsoftintensiv.intensiv.entity.User;
 import com.simbirsoftintensiv.intensiv.service.OtpService;
-import com.simbirsoftintensiv.intensiv.service.SmsService;
 import com.simbirsoftintensiv.intensiv.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -49,31 +48,37 @@ public class LoginController {
     @PostMapping("/onetimecode")
     public HashMap<String, String> getOneTimePassword(@RequestParam(value = "phone") Long phone,
                                            Model model) {
+
+        System.out.println("fffffffff");
+        System.out.println(phone);
         int oneTimePassword = otpService.generateOTP(phone);
-        User user = userService.loadUserByUsername(phone + "");
-        boolean isRightName = userService.haveLoginInDB(phone);
+
+        User user = userService.getByPhone(phone);
+//        boolean isRightName = userService.haveLoginInDB(phone);
         HashMap<String, String> map = new HashMap<>();
 
-        if(phone== null) {
+        if(user == null) {
+
             map.put("сode", "400");
             map.put("smsPassword", null);
             map.put("username", "false");
         }
-        if (!isRightName) {
-            map.put("сode", "404");
-            map.put("smsPassword", null);
-            map.put("username", "false");
-            return map;
-        }
+
+//        if (!isRightName) {
+//            map.put("сode", "404");
+//            map.put("smsPassword", null);
+//            map.put("username", "false");
+//            return map;
+//        }
+
 //localhost:8080/login?username=22&password=741777  POST
 
-        SmsService.main(otpService.getOtp(username));
-        map.put("username", String.valueOf(username));
+//        SmsService.main(otpService.getOtp(phone));
+        map.put("username", String.valueOf(phone));
         map.put("Code", "200 OK");
         map.put("smsPassword", String.valueOf(oneTimePassword));// временно
-        this.UserName = username;
 
-        userService.
+//        this.UserName = phone;
 
 
         return map;   // отдать фронту

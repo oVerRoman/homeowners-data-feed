@@ -1,5 +1,6 @@
 package com.simbirsoftintensiv.intensiv.config;
 
+import com.simbirsoftintensiv.intensiv.OtpAuthenticationProvider;
 import com.simbirsoftintensiv.intensiv.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -14,8 +15,13 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Autowired
-    UserService userService;
+    final UserService userService;
+    final OtpAuthenticationProvider otpAuthenticationProvider;
+
+    public WebSecurityConfig(OtpAuthenticationProvider otpAuthenticationProvider, UserService userService) {
+        this.otpAuthenticationProvider = otpAuthenticationProvider;
+        this.userService = userService;
+    }
 
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder() {
@@ -26,6 +32,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.csrf().disable().authorizeRequests()
                 // Доступ только для не зарегистрированных пользователей
+                .antMatchers("/onetimecode").not().fullyAuthenticated()
                 .antMatchers("/registration").not().fullyAuthenticated()
                 .antMatchers("/username").not().fullyAuthenticated()
                 .antMatchers("/counters").not().fullyAuthenticated()
@@ -51,6 +58,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
                 // Перенаправление на главную страницу после успешного входа
                 .defaultSuccessUrl("/").permitAll().and().logout().permitAll().logoutSuccessUrl("/");
+    }
+
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) {
+        auth.authenticationProvider(otpAuthenticationProvider);
     }
 
     @Autowired
