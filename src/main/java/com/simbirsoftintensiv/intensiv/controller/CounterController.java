@@ -35,14 +35,7 @@ public class CounterController {
     public String getAllCounterValues(Model model,
             @Valid @ModelAttribute("allCurrentValues") CounterValuesList currentValues,
             @AuthenticationPrincipal User user) {
-        // fixme тут нужно присваивать id авторизованного пользователя из
-        // спринг-секьюрити
-        int userId = 60001;
-        int address_id = 100_000;
-//        Address address = userService.get(userId).getAddress();
-//        model.addAttribute("address", address);
-        List<Counter> counters = counterService.getAll(userId);// fixme
-//        List<Counter> counters = counterService.getAll(user.getId());// fixme
+        List<Counter> counters = counterService.getAll(user.getId());
         model.addAttribute("allCounters", counters);
         List<CounterValue> counterValuesList = valueService.getAll(counters);
         currentValues.setCounterValues(counterValuesList);
@@ -51,11 +44,7 @@ public class CounterController {
     }
 
     @GetMapping("/addCounter")
-    public String addCounter(Model model,
-            @AuthenticationPrincipal User user) {
-        // fixme тут нужно присваивать id авторизованного пользователя из
-        // спринг-секьюрити
-        int userId = 60001;
+    public String addCounter(Model model) {
         model.addAttribute("counter", new Counter());
         return "add-counter";
     }
@@ -63,10 +52,7 @@ public class CounterController {
     @PostMapping("/saveCounter")
     public String saveCounter(@ModelAttribute("counter") Counter counter,
             @AuthenticationPrincipal User user) {
-        // fixme тут нужно присваивать id авторизованного пользователя из
-        // спринг-секьюрити
-        int userId = 60001;
-        counterService.save(counter, userId);
+        counterService.save(counter, user.getId());
         return "redirect:/counters";
     }
 
@@ -74,23 +60,22 @@ public class CounterController {
     public String saveCounterValues(Model model,
             @ModelAttribute("allCurrentValues") CounterValuesList counterValuesList,
             RedirectAttributes redirectAttrs, @AuthenticationPrincipal User user) {
-        // To create always new counter values with the same counter_id delete
-        // <form:hidden path="counterValues[${status.index}].id"/> from counters.jsp
-        int userId = 60001;
         List<CounterValue> counterValues = counterValuesList.getCounterValues();
-        List<Counter> counters = counterService.getAll(userId);
+        List<Counter> counters = counterService.getAll(user.getId());
         List<String> errors = new ArrayList<>();
         for (int i = 0; i < counters.size(); i++) {
             if (counterValues.get(i).getValue() != null) {
                 if (counterValues.get(i).getValue() != 0) {
                     if (counterValues.get(i).getId() == null
                             || counterValues.get(i).getValue() >= valueService
-                                    .get(counterValues.get(i).getId().intValue(), userId).getValue()) {
-                        valueService.saveNewValue(counterValues.get(i), userId, counters.get(i).getId());
+                                    .get(counterValues.get(i).getId().intValue(), user.getId()).getValue()) {
+                        valueService.saveNewValue(counterValues.get(i), user.getId(), counters.get(i).getId());
                         errors.add("");
                     } else {
                         errors.add("Введите значение больше предыдущего");
                     }
+                } else {
+                    errors.add("");
                 }
             } else {
                 errors.add("");

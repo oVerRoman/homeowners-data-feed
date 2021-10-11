@@ -2,8 +2,8 @@ package com.simbirsoftintensiv.intensiv.controller;
 
 import java.util.List;
 
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,6 +15,7 @@ import com.simbirsoftintensiv.intensiv.entity.CounterValue;
 import com.simbirsoftintensiv.intensiv.entity.User;
 import com.simbirsoftintensiv.intensiv.exception_handling.IncorrectCounterValueException;
 import com.simbirsoftintensiv.intensiv.exception_handling.NoSuchUserException;
+import com.simbirsoftintensiv.intensiv.exception_handling.RepeatedCounterNameException;
 import com.simbirsoftintensiv.intensiv.service.counter.CounterService;
 import com.simbirsoftintensiv.intensiv.service.countervalue.ValueService;
 import com.simbirsoftintensiv.intensiv.service.user.UserService;
@@ -34,11 +35,10 @@ public class CounterRestController {
         this.userService = userService;
     }
 
-    @GetMapping("/counters/{userPhone}")
-    public List<CounterValue> getAllCounters(@PathVariable String userPhone) {
-        User user = (User) userService.loadUserByUsername(userPhone);
+    @GetMapping("/counters")
+    public List<CounterValue> getAllCounters(@AuthenticationPrincipal User user) {
         if (user == null) {
-            throw new NoSuchUserException("Пользователь с телефоном " + userPhone + " не зарегистрирован");
+            throw new NoSuchUserException("Пользователь не зарегистрирован");
         }
         List<Counter> allCounters = counterService.getAll(user.getId());
         List<CounterValue> allValues = valueService.getAll(allCounters);
@@ -48,6 +48,11 @@ public class CounterRestController {
     @PostMapping("/counters")
     public Counter addNewCounter(@RequestBody Counter counter) {
         User user = counter.getUser();
+        for (Counter counterFromDB : counterService.getAll(user.getId())) {
+            if ((counter.getName().trim()).equals(counterFromDB.getName().trim())) {
+                throw new RepeatedCounterNameException("Счётчик с таким именем уже существует");
+            }
+        }
         counterService.save(counter, user.getId());
         CounterValue counterValue = new CounterValue();
         counterValue.setCounter(counter);
@@ -58,13 +63,14 @@ public class CounterRestController {
 
     @PutMapping("/counters")
     public List<CounterValue> addOrUpdateCounterValue(@RequestBody List<CounterValue> counterValues) {
-        if (counterValues.size() > 0) {
+        if (!counterValues.isEmpty()) {
             User user = counterValues.get(0).getCounter().getUser();
             for (CounterValue counterValue : counterValues) {
-                if (counterValue.getValue() >= valueService.get(counterValue.getId(), user.getId())
+                if (counterValue.getValue() > valueService.get(counterValue.getId(), user.getId())
                         .getValue()) {
                     valueService.saveNewValue(counterValue, user.getId(), counterValue.getCounter().getId());
-                } else {
+                } else if (counterValue.getValue() < valueService.get(counterValue.getId(), user.getId())
+                        .getValue()) {
                     throw new IncorrectCounterValueException(
                             "Введённое значение " + counterValue.getValue() + " меньше предыдущего");
                 }

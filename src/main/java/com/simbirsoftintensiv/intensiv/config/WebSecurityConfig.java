@@ -29,12 +29,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 // Доступ только для не зарегистрированных пользователей
                 .antMatchers("/registration").not().fullyAuthenticated()
                 .antMatchers("/username").not().fullyAuthenticated()
-//                .antMatchers("/counters").not().fullyAuthenticated()
-//                .antMatchers("/addCounter").not().fullyAuthenticated()
-                .antMatchers("/saveCounter").not().fullyAuthenticated()
-                .antMatchers("/saveCounterValues").not().fullyAuthenticated()
-                .antMatchers("/rest/counters").not().fullyAuthenticated()
-                .antMatchers("/rest/counters/**").not().fullyAuthenticated()
                 // Доступ только для пользователей с ролью Администратор
                 .antMatchers("/admin").hasRole("ADMIN")
                 .antMatchers("/admin/**").hasRole("ADMIN")
@@ -42,12 +36,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/news").hasRole("USER")
                 .antMatchers("/counters").hasRole("USER")
                 .antMatchers("/add-counter").hasRole("USER")
-
                 .antMatchers("/saveCounter").hasRole("USER")
                 .antMatchers("/saveCounterValues").hasRole("USER")
                 .antMatchers("/rest/counters").hasRole("USER")
-                .antMatchers("/rest/counters/**").hasRole("USER")
-
                 // Доступ разрешен всем пользователей
                 .antMatchers("/", "/resources/**").permitAll()
                 // Все остальные страницы требуют аутентификации
