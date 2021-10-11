@@ -3,9 +3,9 @@ DROP TABLE IF EXISTS client_company;
 DROP TABLE IF EXISTS requests;
 DROP TABLE IF EXISTS request_statuses;
 DROP TABLE IF EXISTS maters;
-DROP TABLE IF EXISTS addresses CASCADE ;
-DROP TABLE IF EXISTS users CASCADE ;
-DROP TABLE IF EXISTS user_roles  ;
+DROP TABLE IF EXISTS addresses CASCADE;
+DROP TABLE IF EXISTS users CASCADE;
+DROP TABLE IF EXISTS user_roles;
 DROP TABLE IF EXISTS companies;
 
 DROP SEQUENCE IF EXISTS global_seq CASCADE;
@@ -40,10 +40,11 @@ CREATE TABLE users
     first_name  TEXT    NOT NULL,
     second_name TEXT    NOT NULL,
     patronymic  TEXT    NOT NULL,
-    address_id     INTEGER ,
+    password    VARCHAR,
+    address_id  INTEGER,
     company_id  INTEGER,
     FOREIGN KEY (company_id) REFERENCES companies (id),
-    FOREIGN KEY (address_id) REFERENCES addresses (id)  ,
+    FOREIGN KEY (address_id) REFERENCES addresses (id),
     CONSTRAINT user_phone UNIQUE (phone)
 );
 
