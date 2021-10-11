@@ -28,4 +28,8 @@ public class CounterService {
     public List<Counter> getAll(int userId) {
         return counterRepository.getAll(userId);
     }
+
+    public List<Counter> getAll() {//fixme delete
+        return counterRepository.getAll();
+    }
 }

@@ -1,5 +1,7 @@
 package com.simbirsoftintensiv.intensiv.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 
 @Entity
@@ -21,6 +23,7 @@ public class Address extends AbstractBaseEntity {
     @Column(name = "apartment")
     private String apartment;
 
+    @JsonIgnore
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "address")
     private User user;
 

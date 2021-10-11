@@ -1,14 +1,14 @@
-package com.simbirsoftintensiv.intensiv.controller;
+package com.simbirsoftintensiv.intensiv.controller.user;
 
-import com.simbirsoftintensiv.intensiv.entity.User;
-import com.simbirsoftintensiv.intensiv.exception_handling.NoSuchUserException;
 import com.simbirsoftintensiv.intensiv.service.user.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.simbirsoftintensiv.intensiv.to.UserTo;
+import com.simbirsoftintensiv.intensiv.util.UserUtil;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /*
 После авторизации Юзера и если у него роль ADMIN
@@ -20,20 +20,37 @@ import java.util.List;
 
 
 @RestController
-@RequestMapping("/rest")
-public class AdminController {
-    @Autowired
-    private UserService userService;
+@RequestMapping(value = "/rest/admin/users")
+public class AdminRestController {
 
-    @ResponseBody
-    @GetMapping("/admin")
-    public HashMap<String, List<User>> userList() {
+    private final UserService userService;
+
+    public AdminRestController(UserService userService) {
+        this.userService = userService;
+    }
+
+    @GetMapping
+    public List<UserTo> getAll() {
+        return userService.getAll()
+                .stream()
+                .map(UserUtil::asTo)
+                .collect(Collectors.toList());
+    }
+   /* @ResponseBody
+    @GetMapping
+    public HashMap<String, List<User>> getAll() {
         System.out.println("создаем массив с логинами юзеров");
         HashMap<String, List<User>> map = new HashMap<>();
         map.put("Content", userService.getAll());
         return map;
-    }
+    }*/
 
+    @DeleteMapping("/{phone}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable("phone") long phone) {
+        userService.delete(phone);
+    }
+/*
     @PostMapping("/admin")
     public HashMap<String, String> deleteUser(@RequestParam(required = true, defaultValue = "") Integer userId,
                                               @RequestParam(defaultValue = "") String action) {
@@ -49,37 +66,41 @@ public class AdminController {
         }
         return map;
     }
-
-    @GetMapping("/admin/gt/{userId}")
+*/
+    @GetMapping("/{phone}")
+    public UserTo get(@PathVariable("phone") long phone) {
+        return UserUtil.asTo(userService.getByPhone(phone));
+    }
+/*
+    @GetMapping("/user/{phone}")
     public HashMap gtUser(@PathVariable("userId") String userId) {
         Integer rightId;
-        List<String> code ;
+        List<String> code;
         HashMap<String, List> map = new HashMap<>();
         try {
-              rightId =Integer.parseInt(userId);
-        }
-        catch (NumberFormatException exception){
-            code= Collections.singletonList("400");
+            rightId = Integer.parseInt(userId);
+        } catch (NumberFormatException exception) {
+            code = Collections.singletonList("400");
             map.put("code", code);
             return map;
         }
         List User = userService.usergtList(rightId);
 
-        if (userList().size() == 1) {
-            code= Collections.singletonList("404");
-        }else {
-            System.out.println(userList().size());
-            code= Collections.singletonList("200");
+        if (getAll().size() == 1) {
+            code = Collections.singletonList("404");
+        } else {
+            System.out.println(getAll().size());
+            code = Collections.singletonList("200");
         }
         map.put("Content", User);
         map.put("code", code);
         return map;
-    }
+    }*/
 
     @ResponseBody
     @GetMapping("/admin/count")
     public HashMap<String, Integer> getUsersCount() {
-         HashMap<String, Integer> map = new HashMap<>();
+        HashMap<String, Integer> map = new HashMap<>();
         Integer countUsers = userService.getAll().size();
         map.put("code", 200);
         map.put("Content", countUsers);

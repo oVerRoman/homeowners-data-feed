@@ -2,6 +2,7 @@ package com.simbirsoftintensiv.intensiv.service.user;
 
 import com.simbirsoftintensiv.intensiv.AuthorizedUser;
 import com.simbirsoftintensiv.intensiv.entity.User;
+import com.simbirsoftintensiv.intensiv.repository.CompanyRepository;
 import com.simbirsoftintensiv.intensiv.repository.user.CrudUserRepository;
 import com.simbirsoftintensiv.intensiv.service.OtpService;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -14,10 +15,12 @@ import java.util.List;
 public class UserService implements UserDetailsService {
 
     public final CrudUserRepository userRepository;
+    public final CompanyRepository companyRepository;
     public final OtpService otpService;
 
-    public UserService(CrudUserRepository userRepository, OtpService otpService) {
+    public UserService(CrudUserRepository userRepository, CompanyRepository companyRepository, OtpService otpService) {
         this.userRepository = userRepository;
+        this.companyRepository = companyRepository;
         this.otpService = otpService;
     }
 
@@ -44,7 +47,7 @@ public class UserService implements UserDetailsService {
         if (userRepository.getByPhone(user.getPhone()) != null) {
             return null;//fixme нужно исключение пользователь с таким телефоном уже существует
         }
-
+        user.setCompany(companyRepository.getById(50000));//заглушка
         return userRepository.save(user);
     }
 
@@ -56,11 +59,9 @@ public class UserService implements UserDetailsService {
         return userRepository.save(user);
     }
 
-    public boolean delete(Long phone) {
+    public void delete(Long phone) {//fixme проверки на наличие юзера в базе
         if (userRepository.getByPhone(phone) != null) {
             userRepository.delete(phone);
-            return true;
         }
-        return false;
     }
 }

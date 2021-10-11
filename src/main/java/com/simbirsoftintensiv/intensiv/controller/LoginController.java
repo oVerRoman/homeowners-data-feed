@@ -49,8 +49,6 @@ public class LoginController {
     public HashMap<String, String> getOneTimePassword(@RequestParam(value = "phone") Long phone,
                                            Model model) {
 
-        System.out.println("fffffffff");
-        System.out.println(phone);
         int oneTimePassword = otpService.generateOTP(phone);
 
         User user = userService.getByPhone(phone);

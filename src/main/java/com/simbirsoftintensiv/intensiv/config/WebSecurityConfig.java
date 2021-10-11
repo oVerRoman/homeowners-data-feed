@@ -11,8 +11,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-import com.simbirsoftintensiv.intensiv.service.user.UserService;
-
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
@@ -34,7 +32,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.csrf().disable().authorizeRequests()
                 // Доступ только для не зарегистрированных пользователей
+
+                .antMatchers("/rest/allcounters").not().fullyAuthenticated() //fixme delete
                 .antMatchers("/onetimecode").not().fullyAuthenticated()
+                .antMatchers("/rest/users").not().fullyAuthenticated()
                 .antMatchers("/registration").not().fullyAuthenticated()
                 .antMatchers("/username").not().fullyAuthenticated()
                 // Доступ только для пользователей с ролью Администратор
@@ -42,7 +43,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/admin/**").hasRole("ADMIN")
                 .antMatchers("/news").hasRole("ADMIN")
                 .antMatchers("/news").hasRole("USER")
-                .antMatchers("/counters").hasRole("USER")
+//                .antMatchers("/counters").hasRole("USER")
                 .antMatchers("/add-counter").hasRole("USER")
                 .antMatchers("/saveCounter").hasRole("USER")
                 .antMatchers("/saveCounterValues").hasRole("USER")
