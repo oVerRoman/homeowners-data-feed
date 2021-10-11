@@ -2,8 +2,8 @@ package com.simbirsoftintensiv.intensiv.controller;
 
 import java.util.List;
 
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -34,11 +34,10 @@ public class CounterRestController {
         this.userService = userService;
     }
 
-    @GetMapping("/counters/{userPhone}")
-    public List<CounterValue> getAllCounters(@PathVariable String userPhone) {
-        User user = (User) userService.loadUserByUsername(userPhone);
+    @GetMapping("/counters")
+    public List<CounterValue> getAllCounters(@AuthenticationPrincipal User user) {
         if (user == null) {
-            throw new NoSuchUserException("Пользователь с телефоном " + userPhone + " не зарегистрирован");
+            throw new NoSuchUserException("Пользователь не зарегистрирован");
         }
         List<Counter> allCounters = counterService.getAll(user.getId());
         List<CounterValue> allValues = valueService.getAll(allCounters);
@@ -58,13 +57,14 @@ public class CounterRestController {
 
     @PutMapping("/counters")
     public List<CounterValue> addOrUpdateCounterValue(@RequestBody List<CounterValue> counterValues) {
-        if (counterValues.size() > 0) {
+        if (!counterValues.isEmpty()) {
             User user = counterValues.get(0).getCounter().getUser();
             for (CounterValue counterValue : counterValues) {
-                if (counterValue.getValue() >= valueService.get(counterValue.getId(), user.getId())
+                if (counterValue.getValue() > valueService.get(counterValue.getId(), user.getId())
                         .getValue()) {
                     valueService.saveNewValue(counterValue, user.getId(), counterValue.getCounter().getId());
-                } else {
+                } else if (counterValue.getValue() < valueService.get(counterValue.getId(), user.getId())
+                        .getValue()) {
                     throw new IncorrectCounterValueException(
                             "Введённое значение " + counterValue.getValue() + " меньше предыдущего");
                 }
