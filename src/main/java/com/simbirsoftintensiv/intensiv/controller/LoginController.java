@@ -1,12 +1,16 @@
 package com.simbirsoftintensiv.intensiv.controller;
 
+import com.simbirsoftintensiv.intensiv.entity.User;
 import com.simbirsoftintensiv.intensiv.service.OtpService;
 import com.simbirsoftintensiv.intensiv.service.SmsService;
 import com.simbirsoftintensiv.intensiv.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.HashMap;
 
@@ -33,7 +37,6 @@ public class LoginController {
     @Autowired
     public OtpService otpService;
 
-
     // фронту это не надо будет
     @GetMapping("/username")
     public String checkUser(Model model,
@@ -43,19 +46,20 @@ public class LoginController {
     }
 
     @ResponseBody
-    @PostMapping("/username")
-    public HashMap<String, String> addUser(@RequestParam(value = "username") Long username,
+    @PostMapping("/onetimecode")
+    public HashMap<String, String> getOneTimePassword(@RequestParam(value = "phone") Long phone,
                                            Model model) {
-        int smsPassword = otpService.generateOTP(username);
-        boolean itRightName = userService.haveLoginInDB(username);
+        int oneTimePassword = otpService.generateOTP(phone);
+        User user = userService.loadUserByUsername(phone + "");
+        boolean isRightName = userService.haveLoginInDB(phone);
         HashMap<String, String> map = new HashMap<>();
 
-        if(username== null) {
+        if(phone== null) {
             map.put("сode", "400");
             map.put("smsPassword", null);
             map.put("username", "false");
         }
-        if (!itRightName) {
+        if (!isRightName) {
             map.put("сode", "404");
             map.put("smsPassword", null);
             map.put("username", "false");
@@ -66,8 +70,10 @@ public class LoginController {
         SmsService.main(otpService.getOtp(username));
         map.put("username", String.valueOf(username));
         map.put("Code", "200 OK");
-        map.put("smsPassword", String.valueOf(smsPassword));// временно
+        map.put("smsPassword", String.valueOf(oneTimePassword));// временно
         this.UserName = username;
+
+        userService.
 
 
         return map;   // отдать фронту
