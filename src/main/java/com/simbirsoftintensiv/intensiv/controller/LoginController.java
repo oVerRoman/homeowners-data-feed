@@ -12,8 +12,7 @@ import java.util.HashMap;
 
 
 @Controller
-//@RestController
-//TODO когда не нужен будет jsp поменять на RestController
+
 public class LoginController {
     //TODO сделать обработку ошибок (ввод неправильного пароля и ввод неправльного имени)
     //@exceptionHandler или @ControllerAdvice
@@ -32,24 +31,28 @@ public class LoginController {
 
     @ResponseBody
     @PostMapping("/username")
-    public HashMap<String, String> addUser(@RequestParam(value = "username") Long username) {
-        int smsPassword = otpService.generateOTP(username);
-        boolean itRightName = userService.haveLoginInDB(username);
+    public HashMap<String, String> addUser(@RequestParam(value = "username") String username) {
+        Long rightUsername;
         HashMap<String, String> map = new HashMap<>();
-
-        if(username== null) {
+        try {
+            rightUsername = Long.parseLong(username);
+        } catch (NumberFormatException exception) {
             map.put("сode", "400");
             map.put("smsPassword", null);
             map.put("username", "false");
+            return map;
         }
+
+        int smsPassword = otpService.generateOTP(rightUsername);
+        boolean itRightName = userService.haveLoginInDB(rightUsername);
         if (!itRightName) {
             map.put("сode", "404");
             map.put("smsPassword", null);
             map.put("username", "false");
             return map;
         }
-        SmsService.main(otpService.getOtp(username));
-        map.put("username", String.valueOf(username));
+        SmsService.main(otpService.getOtp(rightUsername));
+        map.put("username", username);
         map.put("Code", "200 OK");
         map.put("smsPassword", String.valueOf(smsPassword));// временно
         return map;

@@ -47,8 +47,15 @@ public class UserService implements UserDetailsService {
     public boolean haveLoginInDB(Long phone) {
         // находим Юзера в БД
         System.out.println("haveLoginInDB ");
-        User userFromDB = userRepository.getByPhone(phone);
-        System.out.println("userFromDB.getUsername " + userFromDB.getFirstName());
+        User userFromDB;
+                try{
+                    userFromDB = userRepository.getByPhone(phone);
+                    System.out.println("  userFromDB = userRepository.getByPhone(phone); ");
+                    System.out.println(userRepository.getByPhone(phone));
+                } catch (Exception e) {
+                    return false;
+                }
+
         if (userFromDB == null) {
             return false;
         } else {
