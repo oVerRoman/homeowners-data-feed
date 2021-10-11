@@ -81,9 +81,11 @@ public class UserService implements UserDetailsService {
     }
 
     public User save(User user) {
-//TODO продумать как сделать
+
         if (userRepository.getByPhone(user.getPhone()) != null) {
-            return null;// fixme нужно исключение пользователь с таким телефоном уже существует
+            return null;
+            // fixme нужно исключение пользователь с таким телефоном уже существует
+            //TODO продумать в авторизаии как будут обрабатывать искллчения
         }
 
 //        user.setRoles(Collections.singleton(new Role(1L, "ROLE_USER")));

@@ -102,7 +102,7 @@
 					<excludes>
 						<exclude>
 							<groupId>org.project</groupId>
-							<artifalombokctId>lombok</artifalombokctId>
+							<artifactId>lombok</artifactId>
 						</exclude>
 					</excludes>
 				</configuration>

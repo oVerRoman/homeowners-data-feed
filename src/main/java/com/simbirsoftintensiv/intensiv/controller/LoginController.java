@@ -5,16 +5,16 @@ import com.simbirsoftintensiv.intensiv.service.SmsService;
 import com.simbirsoftintensiv.intensiv.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
-
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import java.util.HashMap;
 
 
 @Controller
-
 public class LoginController {
-    //TODO сделать обработку ошибок (ввод неправильного пароля и ввод неправльного имени)
+
     //@exceptionHandler или @ControllerAdvice
     @Autowired
     private UserService userService; // внедряем обьект
@@ -34,6 +34,9 @@ public class LoginController {
     public HashMap<String, String> addUser(@RequestParam(value = "username") String username) {
         Long rightUsername;
         HashMap<String, String> map = new HashMap<>();
+
+
+
         try {
             rightUsername = Long.parseLong(username);
         } catch (NumberFormatException exception) {
@@ -42,6 +45,7 @@ public class LoginController {
             map.put("username", "false");
             return map;
         }
+
 
         int smsPassword = otpService.generateOTP(rightUsername);
         boolean itRightName = userService.haveLoginInDB(rightUsername);
