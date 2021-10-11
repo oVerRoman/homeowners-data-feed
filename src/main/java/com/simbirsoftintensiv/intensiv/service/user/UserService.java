@@ -69,6 +69,15 @@ public class UserService implements UserDetailsService {
         return  userRepository.getAll();
     }
 
+    public User create(User user) {
+
+        if (userRepository.getByPhone(user.getPhone()) != null) {
+            return null;//fixme нужно исключение пользователь с таким телефоном уже существует
+        }
+
+        return userRepository.save(user);
+    }
+
     public User save(User user) {
 
         if (userRepository.getByPhone(user.getPhone()) != null) {
