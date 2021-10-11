@@ -29,8 +29,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 // Доступ только для не зарегистрированных пользователей
                 .antMatchers("/registration").not().fullyAuthenticated()
                 .antMatchers("/username").not().fullyAuthenticated()
-//                .antMatchers("/rest/counters").not().fullyAuthenticated() // need for Postman demo
-//                .antMatchers("/rest/counters/**").not().fullyAuthenticated()
                 // Доступ только для пользователей с ролью Администратор
                 .antMatchers("/admin").hasRole("ADMIN")
                 .antMatchers("/admin/**").hasRole("ADMIN")
