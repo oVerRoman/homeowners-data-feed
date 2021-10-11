@@ -17,7 +17,8 @@ INSERT INTO user_roles (role, user_id)
 VALUES ('USER', 60000),
        ('USER', 60001),
        ('USER', 60003),
-       ('ADMIN', 60002);
+       ('ADMIN', 60002),
+       ('USER', 60002);
 
 INSERT INTO maters (id, name, user_id)
 VALUES (70000, 'эл.юз1', 60000),
