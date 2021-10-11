@@ -10,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -60,30 +61,24 @@ public class RequestController {
     ResponseEntity<List<Request>> getAllRequest(
             @RequestParam(value = "type", required = false) Integer type,
             @RequestParam(value = "title", required = false) String title,
-            @RequestParam(value = "date", required = false) Long date,
+            @RequestParam(value = "date", required = false) Instant date,
             @RequestParam(value = "address", required = false) Integer address,
             @RequestParam(value = "comment", required = false) String comment,
             @RequestParam(value = "status", required = false) Integer status,
             @RequestParam(value = "clientId", required = false) Integer clientId,
             @RequestParam(value = "pageNumber", defaultValue = "0") Integer pageNumber,
             @RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize,
-            @RequestParam(value = "order", defaultValue = "id") String order){
+            @RequestParam(value = "order", defaultValue = "id") String order,
+            @AuthenticationPrincipal User user){
         Pageable pageable = PageRequest.of(pageNumber,pageSize, Sort.by(order).descending());
-        List<Request> result = requestRepository.findAllBy(type,
-                title,
-                date,
-                address,
-                comment,
-                status,
-                clientId,
-                pageable).getContent();
+        List<Request> result = requestRepository.findAllBy(pageable).getContent();
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     // Получаем запрос килента по его id
     @GetMapping(path = "{id}")
     public @ResponseBody
-    ResponseEntity<Request> getRequestById(@PathVariable Integer id) {
+    ResponseEntity<Request> getRequestById(@PathVariable Integer id,  @AuthenticationPrincipal User user) {
         if (id>0) {
             if (requestRepository.findById(id).isPresent()) {
                 final Request result = requestRepository.findById(id).get();
@@ -106,38 +101,40 @@ public class RequestController {
             @RequestParam(value = "address", required = false) Address address,
             @RequestParam(value = "comment", required = false) String comment,
             @RequestParam(value = "status", required = false) Integer status,
-            @RequestParam(value = "clientId", required = false) User user,
+            @RequestParam(value = "clientId", required = false) User userid,
             @RequestParam(value = "pageNumber", defaultValue = "0") Integer pageNumber,
             @RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize,
-            @RequestParam(value = "order", defaultValue = "id") String order){
-        return requestRepository.countByParam(type,
-                title,
-                date,
-                address,
-                comment,
-                status,
-                user);
+            @RequestParam(value = "order", defaultValue = "id") String order,
+            @AuthenticationPrincipal User user){
+        return requestRepository.countAllBy();
     }
 
     // Добавление обращения пользователя
     @PostMapping(path = "")
-    public ResponseEntity<?> createRequest(@RequestBody Request request) {
-        try {
+    public ResponseEntity<?> createRequest(@RequestBody Request request,  @AuthenticationPrincipal User user) {
+
+        //request.setClient();
+        System.out.println(request.toString());
+        final Request result = requestRepository.save(request, user);
+      //  result.setClient(user);
+        return  new ResponseEntity<>(result,HttpStatus.OK);
+     /*   try {
             if (request != null) {
-                final Request result = requestRepository.save(request);
-                return  new ResponseEntity<>(result,HttpStatus.OK);
+             //   final Request result = requestRepository.save(request);
+            //    return  new ResponseEntity<>(result,HttpStatus.OK);
             } else {
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
+        } */
     }
 
     // Обновление обращения клиента
     @PostMapping(path = "{id}")
     public ResponseEntity<?> updateRequest(@PathVariable(name = "id")  Integer id,
-                                           @RequestBody Request request) {
+                                           @RequestBody Request request,
+                                           @AuthenticationPrincipal User user) {
         if (id <= 0) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         } else {
@@ -181,7 +178,7 @@ public class RequestController {
 
     // Удаление обращения клиента
     @DeleteMapping(path = "{id}")
-    public ResponseEntity<?> deleteById(@PathVariable Integer id) {
+    public ResponseEntity<?> deleteById(@PathVariable Integer id,  @AuthenticationPrincipal User user) {
         if (id > 0) {
             if (requestRepository.findById(id).isPresent()) {
                 requestRepository.deleteById(id);
