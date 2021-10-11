@@ -11,6 +11,8 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import com.simbirsoftintensiv.intensiv.service.user.UserService;
+
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
@@ -35,17 +37,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/onetimecode").not().fullyAuthenticated()
                 .antMatchers("/registration").not().fullyAuthenticated()
                 .antMatchers("/username").not().fullyAuthenticated()
-                .antMatchers("/counters").not().fullyAuthenticated()
-                .antMatchers("/addCounter").not().fullyAuthenticated()
-                .antMatchers("/saveCounter").not().fullyAuthenticated()
-                .antMatchers("/saveCounterValues").not().fullyAuthenticated()
                 // Доступ только для пользователей с ролью Администратор
                 .antMatchers("/admin").hasRole("ADMIN")
                 .antMatchers("/admin/**").hasRole("ADMIN")
                 .antMatchers("/news").hasRole("ADMIN")
                 .antMatchers("/news").hasRole("USER")
-//                .antMatchers("/counters").hasRole("USER")
-//                .antMatchers("/add-counter").hasRole("USER")
+                .antMatchers("/counters").hasRole("USER")
+                .antMatchers("/add-counter").hasRole("USER")
+                .antMatchers("/saveCounter").hasRole("USER")
+                .antMatchers("/saveCounterValues").hasRole("USER")
+                .antMatchers("/rest/counters").hasRole("USER")
                 // Доступ разрешен всем пользователей
                 .antMatchers("/", "/resources/**").permitAll()
                 // Все остальные страницы требуют аутентификации
@@ -56,7 +57,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 //                .loginPage("/password")
                 .loginPage("/login")
 
-                // Перенаправление на главную страницу после успешного входа
+                // Перенаправление на главную страницу после успешного выхода
                 .defaultSuccessUrl("/").permitAll().and().logout().permitAll().logoutSuccessUrl("/");
     }
 
