@@ -23,6 +23,13 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler
+    public ResponseEntity<IncorrectData> handleException(RepeatedCounterNameException exception) {
+        IncorrectData data = new IncorrectData();
+        data.setInfo(exception.getMessage());
+        return new ResponseEntity<>(data, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler
     public ResponseEntity<IncorrectData> handleException(Exception exception) {
         IncorrectData data = new IncorrectData();
         data.setInfo(exception.getMessage());

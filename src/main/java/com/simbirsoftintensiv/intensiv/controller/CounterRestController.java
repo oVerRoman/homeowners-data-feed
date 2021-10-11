@@ -15,6 +15,7 @@ import com.simbirsoftintensiv.intensiv.entity.CounterValue;
 import com.simbirsoftintensiv.intensiv.entity.User;
 import com.simbirsoftintensiv.intensiv.exception_handling.IncorrectCounterValueException;
 import com.simbirsoftintensiv.intensiv.exception_handling.NoSuchUserException;
+import com.simbirsoftintensiv.intensiv.exception_handling.RepeatedCounterNameException;
 import com.simbirsoftintensiv.intensiv.service.counter.CounterService;
 import com.simbirsoftintensiv.intensiv.service.countervalue.ValueService;
 import com.simbirsoftintensiv.intensiv.service.user.UserService;
@@ -47,6 +48,11 @@ public class CounterRestController {
     @PostMapping("/counters")
     public Counter addNewCounter(@RequestBody Counter counter) {
         User user = counter.getUser();
+        for (Counter counterFromDB : counterService.getAll(user.getId())) {
+            if ((counter.getName().trim()).equals(counterFromDB.getName().trim())) {
+                throw new RepeatedCounterNameException("Счётчик с таким именем уже существует");
+            }
+        }
         counterService.save(counter, user.getId());
         CounterValue counterValue = new CounterValue();
         counterValue.setCounter(counter);
