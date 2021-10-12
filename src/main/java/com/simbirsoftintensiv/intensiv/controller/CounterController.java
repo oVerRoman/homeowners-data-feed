@@ -13,10 +13,10 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.simbirsoftintensiv.intensiv.AuthorizedUser;
 import com.simbirsoftintensiv.intensiv.entity.Counter;
 import com.simbirsoftintensiv.intensiv.entity.CounterValue;
 import com.simbirsoftintensiv.intensiv.entity.CounterValuesList;
-import com.simbirsoftintensiv.intensiv.entity.User;
 import com.simbirsoftintensiv.intensiv.service.counter.CounterService;
 import com.simbirsoftintensiv.intensiv.service.countervalue.ValueService;
 
@@ -34,7 +34,7 @@ public class CounterController {
     @GetMapping("/counters")
     public String getAllCounterValues(Model model,
             @Valid @ModelAttribute("allCurrentValues") CounterValuesList currentValues,
-            @AuthenticationPrincipal User user) {
+            @AuthenticationPrincipal AuthorizedUser user) {
         List<Counter> counters = counterService.getAll(user.getId());
         model.addAttribute("allCounters", counters);
         List<CounterValue> counterValuesList = valueService.getAll(counters);
@@ -51,7 +51,7 @@ public class CounterController {
 
     @PostMapping("/saveCounter")
     public String saveCounter(@ModelAttribute("counter") Counter counter,
-            @AuthenticationPrincipal User user) {
+            @AuthenticationPrincipal AuthorizedUser user) {
         counterService.save(counter, user.getId());
         return "redirect:/counters";
     }
@@ -59,7 +59,7 @@ public class CounterController {
     @PostMapping("/saveCounterValues")
     public String saveCounterValues(Model model,
             @ModelAttribute("allCurrentValues") CounterValuesList counterValuesList,
-            RedirectAttributes redirectAttrs, @AuthenticationPrincipal User user) {
+            RedirectAttributes redirectAttrs, @AuthenticationPrincipal AuthorizedUser user) {
         List<CounterValue> counterValues = counterValuesList.getCounterValues();
         List<Counter> counters = counterService.getAll(user.getId());
         List<String> errors = new ArrayList<>();
