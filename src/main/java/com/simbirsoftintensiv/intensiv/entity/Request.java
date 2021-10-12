@@ -21,11 +21,9 @@ public class Request {
     @Column(name = "date", nullable = false)
     private Instant date;
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "address", nullable = false)
-    private Address address;
+    @Column(name = "address")
+    private Integer address;
 
-    @Lob
     @Column(name = "comment")
     private String comment;
 
@@ -60,11 +58,11 @@ public class Request {
         this.comment = comment;
     }
 
-    public Address getAddress() {
+    public Integer getAddress() {
         return address;
     }
 
-    public void setAddress(Address address) {
+    public void setAddress(Integer address) {
         this.address = address;
     }
 
@@ -103,5 +101,18 @@ public class Request {
                 || this.getAddress() != null
                 || this.getClient() != null
                 || this.getStatus() != null);
+    }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "(" +
+                "id = " + id + ", " +
+                "type = " + type + ", " +
+                "title = " + title + ", " +
+                "date = " + date + ", " +
+                "address = " + address + ", " +
+                "comment = " + comment + ", " +
+                "status = " + status + ", " +
+                "client = " + client + ")";
     }
 }
