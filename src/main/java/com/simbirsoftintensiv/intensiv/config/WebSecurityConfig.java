@@ -1,5 +1,7 @@
 package com.simbirsoftintensiv.intensiv.config;
 
+import com.simbirsoftintensiv.intensiv.OtpAuthenticationProvider;
+import com.simbirsoftintensiv.intensiv.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -9,14 +11,17 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-import com.simbirsoftintensiv.intensiv.service.user.UserService;
-
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Autowired
-    UserService userService;
+    final UserService userService;
+    final OtpAuthenticationProvider otpAuthenticationProvider;
+
+    public WebSecurityConfig(OtpAuthenticationProvider otpAuthenticationProvider, UserService userService) {
+        this.otpAuthenticationProvider = otpAuthenticationProvider;
+        this.userService = userService;
+    }
 
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder() {
@@ -27,6 +32,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.csrf().disable().authorizeRequests()
                 // Доступ только для не зарегистрированных пользователей
+
+                .antMatchers("/rest/allcounters").not().fullyAuthenticated() //fixme delete
+                .antMatchers("/onetimecode").not().fullyAuthenticated()
+                .antMatchers("/rest/users").not().fullyAuthenticated()
                 .antMatchers("/registration").not().fullyAuthenticated()
                 .antMatchers("/username").not().fullyAuthenticated()
                 // Доступ только для пользователей с ролью Администратор
@@ -34,7 +43,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/admin/**").hasRole("ADMIN")
                 .antMatchers("/news").hasRole("ADMIN")
                 .antMatchers("/news").hasRole("USER")
-                .antMatchers("/counters").hasRole("USER")
+//                .antMatchers("/counters").hasRole("USER")
                 .antMatchers("/add-counter").hasRole("USER")
                 .antMatchers("/saveCounter").hasRole("USER")
                 .antMatchers("/saveCounterValues").hasRole("USER")
@@ -46,10 +55,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 // Настройка для входа в систему
                 .formLogin()
 
+//                .loginPage("/password")
                 .loginPage("/login")
 
                 // Перенаправление на главную страницу после успешного выхода
                 .defaultSuccessUrl("/").permitAll().and().logout().permitAll().logoutSuccessUrl("/");
+    }
+
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) {
+        auth.authenticationProvider(otpAuthenticationProvider);
     }
 
     @Autowired

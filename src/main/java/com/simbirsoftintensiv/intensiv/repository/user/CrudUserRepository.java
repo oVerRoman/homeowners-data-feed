@@ -10,10 +10,7 @@ public interface CrudUserRepository {
     User save(User user);
 
     // false if not found
-    boolean delete(int id);
-
-    // null if not found
-    User get(int id);
+    boolean delete(Long phone);
 
     // null if not found
     User getByPhone(Long phone);

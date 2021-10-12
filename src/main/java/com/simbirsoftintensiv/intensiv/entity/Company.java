@@ -17,4 +17,12 @@ public class Company extends AbstractBaseEntity{
     @Column(name = "phone")
     private Long phone;
 
+    @Override
+    public String toString() {
+        return "Company{" +
+               "name='" + name + '\'' +
+               ", address='" + address + '\'' +
+               ", phone=" + phone +
+               '}';
+    }
 }

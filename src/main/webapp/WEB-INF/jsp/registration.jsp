@@ -17,11 +17,7 @@
       <dt>phone:</dt>
       <dd><input type="number" value="${user.phone}" name="phone" required></dd>
     </dl>
-    <dl>
-      <dt>password:</dt>
-      <dd><input type="text" value="${user.password}" name="password" required></dd>
-    </dl>
-    <dl>
+   
       <dt>email:</dt>
       <dd><input type="text" value="${user.email}" size=40 name="email" required></dd>
     </dl>

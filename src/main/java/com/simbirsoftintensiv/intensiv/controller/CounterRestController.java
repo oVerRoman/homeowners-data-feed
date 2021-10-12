@@ -1,15 +1,6 @@
 package com.simbirsoftintensiv.intensiv.controller;
 
-import java.util.List;
-
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
+import com.simbirsoftintensiv.intensiv.AuthorizedUser;
 import com.simbirsoftintensiv.intensiv.entity.Counter;
 import com.simbirsoftintensiv.intensiv.entity.CounterValue;
 import com.simbirsoftintensiv.intensiv.entity.User;
@@ -19,6 +10,10 @@ import com.simbirsoftintensiv.intensiv.exception_handling.RepeatedCounterNameExc
 import com.simbirsoftintensiv.intensiv.service.counter.CounterService;
 import com.simbirsoftintensiv.intensiv.service.countervalue.ValueService;
 import com.simbirsoftintensiv.intensiv.service.user.UserService;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/rest")
@@ -35,8 +30,14 @@ public class CounterRestController {
         this.userService = userService;
     }
 
+    @GetMapping("/allcounters")//fixme delete
+    public List<Counter> getAllCounters() {
+        return counterService.getAll();
+
+    }
+
     @GetMapping("/counters")
-    public List<CounterValue> getAllCounters(@AuthenticationPrincipal User user) {
+    public List<CounterValue> getAllCounters(@AuthenticationPrincipal AuthorizedUser user) {
         if (user == null) {
             throw new NoSuchUserException("Пользователь не зарегистрирован");
         }

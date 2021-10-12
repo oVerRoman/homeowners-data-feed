@@ -1,111 +1,67 @@
 package com.simbirsoftintensiv.intensiv.service.user;
 
-import java.util.List;
-
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UserDetails;
+import com.simbirsoftintensiv.intensiv.AuthorizedUser;
+import com.simbirsoftintensiv.intensiv.entity.User;
+import com.simbirsoftintensiv.intensiv.repository.CompanyRepository;
+import com.simbirsoftintensiv.intensiv.repository.user.CrudUserRepository;
+import com.simbirsoftintensiv.intensiv.service.OtpService;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.simbirsoftintensiv.intensiv.entity.User;
-import com.simbirsoftintensiv.intensiv.repository.user.CrudUserRepository;
-import com.simbirsoftintensiv.intensiv.repository.user.UserRepository;
-import com.simbirsoftintensiv.intensiv.service.OtpService;
+import java.util.List;
 
 @Service
 public class UserService implements UserDetailsService {
 
-    @PersistenceContext
-    private EntityManager em; // запрос к БД
-    @Autowired
-    CrudUserRepository userRepository;
-    @Autowired
-    UserRepository dataRepository;
-    @Autowired
-    BCryptPasswordEncoder bCryptPasswordEncoder;
+    public final CrudUserRepository userRepository;
+    public final CompanyRepository companyRepository;
+    public final OtpService otpService;
 
-    @Autowired
-    public OtpService otpService;
+    public UserService(CrudUserRepository userRepository, CompanyRepository companyRepository, OtpService otpService) {
+        this.userRepository = userRepository;
+        this.companyRepository = companyRepository;
+        this.otpService = otpService;
+    }
 
     @Override
-    public UserDetails loadUserByUsername(String phone) throws UsernameNotFoundException {
+    public AuthorizedUser loadUserByUsername(String phone) throws UsernameNotFoundException {
         System.out.println(phone);
         User user = userRepository.getByPhone(Long.parseLong(phone));
 
         if (user == null) {
-            throw new UsernameNotFoundException("User with phone " + phone + " not found");
+            throw new UsernameNotFoundException("User not found");
         }
-
-        return user;
+        return new AuthorizedUser(user);
     }
 
-    public boolean haveLoginInDB(Long phone) {
-        // находим Юзера в БД
-        System.out.println("haveLoginInDB ");
-        User userFromDB;
-                try{
-                    userFromDB = userRepository.getByPhone(phone);
-                    System.out.println("  userFromDB = userRepository.getByPhone(phone); ");
-                    System.out.println(userRepository.getByPhone(phone));
-                } catch (Exception e) {
-                    return false;
-                }
-
-        if (userFromDB == null) {
-            return false;
-        } else {
-            // получаем пароль с кэша
-            int serverPassword = otpService.getOtp(phone);
-            System.out.println("serverPassword " + serverPassword);
-            // Юзеру закидываем пароль
-            userFromDB.setPassword(bCryptPasswordEncoder.encode(String.valueOf(serverPassword)));
-            // и сохраняем старого Юзера в БД
-            userRepository.save(userFromDB);
-            return true;
-        }
-    }
-
-    public User get(int userId) {
-        return userRepository.get(userId);
+    public User getByPhone(Long phone) {//fixme del
+        return userRepository.getByPhone(phone);
     }
 
     public List<User> getAll() {
-        List Users = userRepository.getAll();
-        System.out.println("отдали getAll");
-        return Users;
+        return  userRepository.getAll();
     }
 
-    public User save(User user) {
-
+    public User create(User user) {
         if (userRepository.getByPhone(user.getPhone()) != null) {
-            return null;
-            // fixme нужно исключение пользователь с таким телефоном уже существует
-            //TODO продумать в авторизаии как будут обрабатывать искллчения
+            return null;//fixme нужно исключение пользователь с таким телефоном уже существует
         }
-
-//        user.setRoles(Collections.singleton(new Role(1L, "ROLE_USER")));
-        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-
-        // сохраняем в БД
+        user.setCompany(companyRepository.getById(50000));//заглушка
         return userRepository.save(user);
     }
 
-    public boolean delete(Integer userId) {
-        if (userRepository.get(userId) != null) {
-            userRepository.delete(userId);
-            return true;
+    public User save(User user) {
+        if (userRepository.getByPhone(user.getPhone()) != null) {
+            return null;//fixme нужно исключение пользователь с таким телефоном уже существует
         }
-        return false;
+//        user.setRoles(Collections.singleton(new Role(1L, "ROLE_USER")));
+        return userRepository.save(user);
     }
 
-    public List<User> usergtList(Integer idMin) {
-        return em.createQuery("SELECT u FROM User u WHERE u.id = :paramId", User.class)
-                .setParameter("paramId", idMin).getResultList();
+    public void delete(Long phone) {//fixme проверки на наличие юзера в базе
+        if (userRepository.getByPhone(phone) != null) {
+            userRepository.delete(phone);
+        }
     }
-
 }
