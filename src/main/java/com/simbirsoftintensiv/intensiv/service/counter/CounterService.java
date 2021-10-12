@@ -1,10 +1,11 @@
 package com.simbirsoftintensiv.intensiv.service.counter;
 
-import com.simbirsoftintensiv.intensiv.entity.Counter;
-import com.simbirsoftintensiv.intensiv.repository.counter.CrudCounterRepository;
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import com.simbirsoftintensiv.intensiv.entity.Counter;
+import com.simbirsoftintensiv.intensiv.repository.counter.CrudCounterRepository;
 
 @Service
 public class CounterService {
@@ -19,17 +20,19 @@ public class CounterService {
         return counterRepository.save(counter, userId);
     }
 
-    public Counter get(int id, int userId){
+    public Counter get(int id, int userId) {
         return counterRepository.get(id, userId);
     }
 
-    public void delete(int id, int userId) { counterRepository.delete(id, userId); }
+    public void delete(int id, int userId) {
+        counterRepository.delete(id, userId);
+    }
 
     public List<Counter> getAll(int userId) {
         return counterRepository.getAll(userId);
     }
 
-    public List<Counter> getAll() {//fixme delete
+    public List<Counter> getAll() {// fixme delete
         return counterRepository.getAll();
     }
 }
