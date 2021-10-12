@@ -34,6 +34,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 // Доступ только для не зарегистрированных пользователей
 
                 .antMatchers("/rest/allcounters").not().fullyAuthenticated() //fixme delete
+                .antMatchers("/rest/counters").not().fullyAuthenticated() //fixme delete
                 .antMatchers("/onetimecode").not().fullyAuthenticated()
                 .antMatchers("/rest/users").not().fullyAuthenticated()
                 .antMatchers("/registration").not().fullyAuthenticated()
