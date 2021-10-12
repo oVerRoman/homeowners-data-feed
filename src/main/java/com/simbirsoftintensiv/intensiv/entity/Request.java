@@ -30,17 +30,19 @@ public class Request {
     @Column(name = "status", nullable = false)
     private Integer status;
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "client_id", nullable = false)
-    private User client;
-
-    public User getClient() {
+    public Integer getClient() {
         return client;
     }
 
-    public void setClient(User client) {
+    public void setClient(Integer client) {
         this.client = client;
     }
+
+    // @ManyToOne(optional = false)
+    @Column(name = "client_id")
+    private Integer client;
+
+
 
     public Integer getStatus() {
         return status;

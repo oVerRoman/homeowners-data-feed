@@ -4,6 +4,8 @@ import com.simbirsoftintensiv.intensiv.entity.Address;
 import com.simbirsoftintensiv.intensiv.entity.Request;
 import com.simbirsoftintensiv.intensiv.entity.User;
 import com.simbirsoftintensiv.intensiv.repository.RequestRepository;
+import com.simbirsoftintensiv.intensiv.repository.user.UserRepository;
+import com.simbirsoftintensiv.intensiv.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -11,6 +13,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -54,6 +57,9 @@ public class RequestController {
     @Autowired
     private RequestRepository requestRepository;
 
+    @Autowired
+    private UserService userService;
+
     // получаем все запросы клиентов
     // ? Как фронт передает дату. В каком формате.
     @GetMapping(path = "")
@@ -69,16 +75,17 @@ public class RequestController {
             @RequestParam(value = "pageNumber", defaultValue = "0") Integer pageNumber,
             @RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize,
             @RequestParam(value = "order", defaultValue = "id") String order,
-            @AuthenticationPrincipal User user){
+            @AuthenticationPrincipal UserDetails userDetails){
+        User user = userService.getByPhone(Long.parseLong(userDetails.getUsername()));
         Pageable pageable = PageRequest.of(pageNumber,pageSize, Sort.by(order).descending());
-        List<Request> result = requestRepository.findAllBy(pageable).getContent();
+        List<Request> result = requestRepository.findAllBy(status,pageable).getContent();
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     // Получаем запрос килента по его id
     @GetMapping(path = "{id}")
     public @ResponseBody
-    ResponseEntity<Request> getRequestById(@PathVariable Integer id,  @AuthenticationPrincipal User user) {
+    ResponseEntity<Request> getRequestById(@PathVariable Integer id,  @AuthenticationPrincipal UserDetails user) {
         if (id>0) {
             if (requestRepository.findById(id).isPresent()) {
                 final Request result = requestRepository.findById(id).get();
@@ -105,17 +112,17 @@ public class RequestController {
             @RequestParam(value = "pageNumber", defaultValue = "0") Integer pageNumber,
             @RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize,
             @RequestParam(value = "order", defaultValue = "id") String order,
-            @AuthenticationPrincipal User user){
+            @AuthenticationPrincipal UserDetails user){
         return requestRepository.countAllBy();
     }
 
     // Добавление обращения пользователя
     @PostMapping(path = "")
-    public ResponseEntity<?> createRequest(@RequestBody Request request,  @AuthenticationPrincipal User user) {
+    public ResponseEntity<?> createRequest(@RequestBody Request request,  @AuthenticationPrincipal UserDetails user) {
 
         //request.setClient();
         System.out.println(request.toString());
-        final Request result = requestRepository.save(request, user);
+        final Request result = requestRepository.save(request);
       //  result.setClient(user);
         return  new ResponseEntity<>(result,HttpStatus.OK);
      /*   try {
@@ -134,7 +141,7 @@ public class RequestController {
     @PostMapping(path = "{id}")
     public ResponseEntity<?> updateRequest(@PathVariable(name = "id")  Integer id,
                                            @RequestBody Request request,
-                                           @AuthenticationPrincipal User user) {
+                                           @AuthenticationPrincipal UserDetails user) {
         if (id <= 0) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         } else {
@@ -178,7 +185,7 @@ public class RequestController {
 
     // Удаление обращения клиента
     @DeleteMapping(path = "{id}")
-    public ResponseEntity<?> deleteById(@PathVariable Integer id,  @AuthenticationPrincipal User user) {
+    public ResponseEntity<?> deleteById(@PathVariable Integer id,  @AuthenticationPrincipal UserDetails user) {
         if (id > 0) {
             if (requestRepository.findById(id).isPresent()) {
                 requestRepository.deleteById(id);
