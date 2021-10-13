@@ -9,6 +9,7 @@ import java.util.Random;
 import java.util.concurrent.TimeUnit;
 @Service
 public class OtpService {
+    //TODO проверить
     //cache based on username and OPT MAX 8
     private static final Integer EXPIRE_MINS = 5;
 
@@ -28,7 +29,7 @@ public class OtpService {
     public int generateOTP(Long key){
 
         Random random = new Random();
-        int otp = 100000 + random.nextInt(900000);
+        int otp = 10000 + random.nextInt(90000);
         otpCache.put(key, otp);
         return otp;
     }
