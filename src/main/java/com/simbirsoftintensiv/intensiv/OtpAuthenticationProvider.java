@@ -24,15 +24,12 @@ public class OtpAuthenticationProvider implements AuthenticationProvider {
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         String userName = authentication.getName();
-            System.out.println("authenticate userName - " +userName);
         String password = authentication.getCredentials().toString();
-          System.out.println("authenticate password- " + password);
         User user = userRepository.getByPhone(Long.parseLong(userName));
-        System.out.println(user);
         if (user == null) {
             throw new BadCredentialsException("Unknown user " + userName);
         }
-        String optPass = otpService.getOtp(Long.parseLong(userName)) +"";
+        String optPass = otpService.getOtp(Long.parseLong(userName)) + "";
         System.out.println("optPass" + optPass);
         if (!password.equals(optPass)) {
             throw new BadCredentialsException("Bad password");

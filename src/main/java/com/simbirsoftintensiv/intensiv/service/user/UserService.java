@@ -55,8 +55,7 @@ public class UserService implements UserDetailsService {
         if (userRepository.getByPhone(user.getPhone()) != null) {
             return null;//fixme нужно исключение пользователь с таким телефоном уже существует
         }
-//        user.setRoles(Collections.singleton(new Role(1L, "ROLE_USER")));
-        return userRepository.save(user);
+         return userRepository.save(user);
     }
 
     public void delete(Long phone) {//fixme проверки на наличие юзера в базе
