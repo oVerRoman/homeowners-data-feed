@@ -9,6 +9,8 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name = "maters")
 public class Counter extends AbstractBaseEntity {
@@ -21,6 +23,7 @@ public class Counter extends AbstractBaseEntity {
     @JoinColumn(name = "user_id")
     private User user;
 
+    @JsonIgnore
     @OneToOne(fetch = FetchType.EAGER, mappedBy = "counter")
     private CounterValue counterValues;
 

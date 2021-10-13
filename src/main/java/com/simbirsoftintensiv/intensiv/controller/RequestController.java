@@ -3,6 +3,8 @@ package com.simbirsoftintensiv.intensiv.controller;
 import com.simbirsoftintensiv.intensiv.entity.Request;
 import com.simbirsoftintensiv.intensiv.entity.User;
 import com.simbirsoftintensiv.intensiv.repository.RequestRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import com.simbirsoftintensiv.intensiv.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -53,6 +55,9 @@ import java.util.List;
 @Controller
 @RequestMapping(path = "rest/request")
 public class RequestController {
+    static final Logger log =
+            LoggerFactory.getLogger(LoginController.class);
+
     @Autowired
     private RequestRepository requestRepository;
 
@@ -140,6 +145,7 @@ public class RequestController {
      //   return  new ResponseEntity<>(result,HttpStatus.OK);
         try {
             if (request != null) {
+                log.info("Request creat " + request.getId() + " .");
               /*  User user = userService.getByPhone(Long.parseLong(userDetails.getUsername()));
                 if (user.getRoles().toString().equals("USER")) {
                     request.setClient(user.getId());
@@ -195,6 +201,8 @@ public class RequestController {
                     request1.setClient(user.getId());
                 }*/
                 final Request result = requestRepository.save(request1);
+                log.info("UpdateRequest " + request.getId() + ".");
+
                 return new ResponseEntity<>(result, HttpStatus.OK);
             } catch (Exception e) {
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -219,9 +227,10 @@ public class RequestController {
                     }
                 } else {*/
                     requestRepository.deleteById(id);
-                    return new ResponseEntity<>(HttpStatus.OK);
+                    log.warn("Deleting a client's request " + id + ".");return new ResponseEntity<>(HttpStatus.OK);
            //     }
             } else {
+                log.info("attempt to Delete a client's request "+ id +" .");
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
         } else {
