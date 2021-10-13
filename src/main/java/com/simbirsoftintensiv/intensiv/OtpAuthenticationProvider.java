@@ -8,7 +8,6 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -38,14 +37,11 @@ public class OtpAuthenticationProvider implements AuthenticationProvider {
         if (!password.equals(optPass)) {
             throw new BadCredentialsException("Bad password");
         }
-        UserDetails principal = org.springframework.security.core.userdetails.User.builder()
-                .username(user.getPhone().toString())
-                .password(otpService.getOtp(Long.parseLong(userName)) + "")
-                .authorities(user.getRoles())
-                .build();
+
+        AuthorizedUser principal = new AuthorizedUser(user);
+
         return new UsernamePasswordAuthenticationToken(
                 principal, password, principal.getAuthorities());
-
     }
 
     @Override

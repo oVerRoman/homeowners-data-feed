@@ -13,7 +13,7 @@ import java.util.Set;
 @Entity // ->поля класса имеют отображение в БД,
 
 @Table(name = "users")
-public class User extends AbstractBaseEntity/* implements UserDetails*/ {
+public class User extends AbstractBaseEntity {
 
     @Column(name = "phone")
     @NotNull
@@ -31,20 +31,20 @@ public class User extends AbstractBaseEntity/* implements UserDetails*/ {
     @Column(name = "patronymic")
     private String patronymic;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "address_id")
     private Address address;
 
     @JoinColumn(name = "company_id")
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JsonIgnore
     private Company company;
 
 //    @Size(min = 2, message = "Не меньше 5 знаков")
 //    private String password;
 
-    @Transient // под этой анотации поле не имеет отображения в БД.
-    private String passwordConfirm;
+//    @Transient // под этой анотации поле не имеет отображения в БД.
+//    private String passwordConfirm;
 
     @Enumerated(EnumType.STRING)
     @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"), uniqueConstraints = {

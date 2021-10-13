@@ -10,6 +10,7 @@ import com.simbirsoftintensiv.intensiv.exception_handling.RepeatedCounterNameExc
 import com.simbirsoftintensiv.intensiv.service.counter.CounterService;
 import com.simbirsoftintensiv.intensiv.service.countervalue.ValueService;
 import com.simbirsoftintensiv.intensiv.service.user.UserService;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,7 +32,8 @@ public class CounterRestController {
     }
 
     @GetMapping("/allcounters")//fixme delete
-    public List<Counter> getAllCounters() {
+    public List<Counter> getAllCounters(Authentication authentication) {
+        System.out.println(authentication.getPrincipal());
         return counterService.getAll();
 
     }
