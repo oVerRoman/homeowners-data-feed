@@ -1,7 +1,11 @@
 package com.simbirsoftintensiv.intensiv.entity;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import javax.persistence.*;
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.util.Date;
 
 
 @Entity
@@ -19,30 +23,31 @@ public class Request {
     private String title;
 
     @Column(name = "date", nullable = false)
-    private Instant date;
+  //  @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
+    private Date date;
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "address", nullable = false)
-    private Address address;
+    @Column(name = "address")
+    private Integer address;
 
-    @Lob
     @Column(name = "comment")
     private String comment;
 
     @Column(name = "status", nullable = false)
     private Integer status;
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "client_id", nullable = false)
-    private User client;
-
-    public User getClient() {
+    public Integer getClient() {
         return client;
     }
 
-    public void setClient(User client) {
+    public void setClient(Integer client) {
         this.client = client;
     }
+
+    // @ManyToOne(optional = false)
+    @Column(name = "client_id")
+    private Integer client;
+
+
 
     public Integer getStatus() {
         return status;
@@ -60,19 +65,19 @@ public class Request {
         this.comment = comment;
     }
 
-    public Address getAddress() {
+    public Integer getAddress() {
         return address;
     }
 
-    public void setAddress(Address address) {
+    public void setAddress(Integer address) {
         this.address = address;
     }
 
-    public Instant getDate() {
+    public Date getDate() {
         return date;
     }
 
-    public void setDate(Instant date) {
+    public void setDate(Date date) {
         this.date = date;
     }
 
@@ -103,5 +108,18 @@ public class Request {
                 || this.getAddress() != null
                 || this.getClient() != null
                 || this.getStatus() != null);
+    }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "(" +
+                "id = " + id + ", " +
+                "type = " + type + ", " +
+                "title = " + title + ", " +
+                "date = " + date + ", " +
+                "address = " + address + ", " +
+                "comment = " + comment + ", " +
+                "status = " + status + ", " +
+                "client = " + client + ")";
     }
 }

@@ -1,22 +1,25 @@
 package com.simbirsoftintensiv.intensiv.controller;
 
-import com.simbirsoftintensiv.intensiv.entity.Address;
 import com.simbirsoftintensiv.intensiv.entity.Request;
 import com.simbirsoftintensiv.intensiv.entity.User;
 import com.simbirsoftintensiv.intensiv.repository.RequestRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import com.simbirsoftintensiv.intensiv.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 
 import java.time.Instant;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -50,7 +53,7 @@ import java.util.List;
  */
 
 @Controller
-@RequestMapping(path = "request")
+@RequestMapping(path = "rest/request")
 public class RequestController {
     static final Logger log =
             LoggerFactory.getLogger(LoginController.class);
@@ -58,30 +61,31 @@ public class RequestController {
     @Autowired
     private RequestRepository requestRepository;
 
+    @Autowired
+    private UserService userService;
+
     // получаем все запросы клиентов
     // ? Как фронт передает дату. В каком формате.
     @GetMapping(path = "")
     public @ResponseBody
     ResponseEntity<List<Request>> getAllRequest(
             @RequestParam(value = "type", required = false) Integer type,
-            @RequestParam(value = "title", required = false) String title,
-            @RequestParam(value = "date", required = false) Long date,
-            @RequestParam(value = "address", required = false) Integer address,
-            @RequestParam(value = "comment", required = false) String comment,
+            @RequestParam(value = "date", required = false) Date date,
             @RequestParam(value = "status", required = false) Integer status,
             @RequestParam(value = "clientId", required = false) Integer clientId,
             @RequestParam(value = "pageNumber", defaultValue = "0") Integer pageNumber,
             @RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize,
-            @RequestParam(value = "order", defaultValue = "id") String order){
-        Pageable pageable = PageRequest.of(pageNumber,pageSize, Sort.by(order).descending());
-        List<Request> result = requestRepository.findAllBy(type,
-                title,
-                date,
-                address,
-                comment,
-                status,
-                clientId,
-                pageable).getContent();
+            @RequestParam(value = "order", defaultValue = "date") String order,
+            @AuthenticationPrincipal UserDetails userDetails){
+        User user = userService.getByPhone(Long.parseLong(userDetails.getUsername()));
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(order).descending());
+        Integer userId = clientId;
+     /*   if (user.getRoles().toString().equals("USER")) {
+            userId = user.getId();
+        }*/
+        List<Request> result = requestRepository.findAllBy(type, status,
+                //  date,
+                userId, pageable).getContent();
 
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
@@ -89,10 +93,15 @@ public class RequestController {
     // Получаем запрос килента по его id
     @GetMapping(path = "{id}")
     public @ResponseBody
-    ResponseEntity<Request> getRequestById(@PathVariable Integer id) {
+    ResponseEntity<Request> getRequestById(@PathVariable Integer id,  @AuthenticationPrincipal UserDetails userDetails) {
         if (id>0) {
+          /*  User user = userService.getByPhone(Long.parseLong(userDetails.getUsername()));
+            Integer userId = requestRepository.findById(id).get().getClient();
+            if (user.getRoles().toString().equals("USER")) {
+                userId = user.getId();
+            } */
             if (requestRepository.findById(id).isPresent()) {
-                final Request result = requestRepository.findById(id).get();
+                   final Request result = requestRepository.findById(id).get();
                 return new ResponseEntity<>(result, HttpStatus.OK);
             } else {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -107,32 +116,41 @@ public class RequestController {
     public @ResponseBody
     Long getRequestCount(
             @RequestParam(value = "type", required = false) Integer type,
-            @RequestParam(value = "title", required = false) String title,
             @RequestParam(value = "date", required = false) Instant date,
-            @RequestParam(value = "address", required = false) Address address,
-            @RequestParam(value = "comment", required = false) String comment,
             @RequestParam(value = "status", required = false) Integer status,
-            @RequestParam(value = "clientId", required = false) User user,
+            @RequestParam(value = "clientId", required = false) Integer clientId,
             @RequestParam(value = "pageNumber", defaultValue = "0") Integer pageNumber,
             @RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize,
-            @RequestParam(value = "order", defaultValue = "id") String order){
-        return requestRepository.countByParam(type,
-                title,
-                date,
-                address,
-                comment,
-                status,
-                user);
+            @RequestParam(value = "order", defaultValue = "id") String order,
+            @AuthenticationPrincipal UserDetails userDetails){
+        User user = userService.getByPhone(Long.parseLong(userDetails.getUsername()));
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(order).descending());
+        Integer userId = clientId;
+     /*   if (user.getRoles().toString().equals("USER")) {
+            userId = user.getId();
+        } */
+        return requestRepository.countAllBy(type, status,
+                //  date,
+                userId);
     }
 
     // Добавление обращения пользователя
     @PostMapping(path = "")
-    public ResponseEntity<?> createRequest(@RequestBody Request request) {
+    public ResponseEntity<?> createRequest(@RequestBody Request request,  @AuthenticationPrincipal UserDetails userDetails) {
+
+        //request.setClient();
+     //   System.out.println(request.toString());
+   //     final Request result = requestRepository.save(request);
+      //  result.setClient(user);
+     //   return  new ResponseEntity<>(result,HttpStatus.OK);
         try {
             if (request != null) {
                 log.info("Request creat " + request.getId() + " .");
+              /*  User user = userService.getByPhone(Long.parseLong(userDetails.getUsername()));
+                if (user.getRoles().toString().equals("USER")) {
+                    request.setClient(user.getId());
+                }*/
                 final Request result = requestRepository.save(request);
-
                 return  new ResponseEntity<>(result,HttpStatus.OK);
             } else {
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -145,7 +163,8 @@ public class RequestController {
     // Обновление обращения клиента
     @PostMapping(path = "{id}")
     public ResponseEntity<?> updateRequest(@PathVariable(name = "id")  Integer id,
-                                           @RequestBody Request request) {
+                                           @RequestBody Request request,
+                                           @AuthenticationPrincipal UserDetails userDetails) {
         if (id <= 0) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         } else {
@@ -177,6 +196,10 @@ public class RequestController {
                 if (request.getType() != null) {
                     request1.setType(request.getType());
                 }
+            /*    User user = userService.getByPhone(Long.parseLong(userDetails.getUsername()));
+                if (user.getRoles().toString().equals("USER")) {
+                    request1.setClient(user.getId());
+                }*/
                 final Request result = requestRepository.save(request1);
                 log.info("UpdateRequest " + request.getId() + ".");
 
@@ -191,12 +214,21 @@ public class RequestController {
 
     // Удаление обращения клиента
     @DeleteMapping(path = "{id}")
-    public ResponseEntity<?> deleteById(@PathVariable Integer id) {
+    public ResponseEntity<?> deleteById(@PathVariable Integer id,  @AuthenticationPrincipal UserDetails userDetails) {
         if (id > 0) {
             if (requestRepository.findById(id).isPresent()) {
-                requestRepository.deleteById(id);
-                log.warn("Deleting a client's request " + id + ".");
-                return new ResponseEntity<>(HttpStatus.OK);
+              /*  User user = userService.getByPhone(Long.parseLong(userDetails.getUsername()));
+                if (user.getRoles().toString().equals("USER")) {
+                    if (requestRepository.findById(id).get().getClient().intValue() == user.getId()) {
+                        requestRepository.deleteById(id);
+                        return new ResponseEntity<>(HttpStatus.OK);
+                    } else {
+                        return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+                    }
+                } else {*/
+                    requestRepository.deleteById(id);
+                    log.warn("Deleting a client's request " + id + ".");return new ResponseEntity<>(HttpStatus.OK);
+           //     }
             } else {
                 log.info("attempt to Delete a client's request "+ id +" .");
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
