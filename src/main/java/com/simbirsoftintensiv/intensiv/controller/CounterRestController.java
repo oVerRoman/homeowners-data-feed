@@ -10,6 +10,8 @@ import com.simbirsoftintensiv.intensiv.exception_handling.RepeatedCounterNameExc
 import com.simbirsoftintensiv.intensiv.service.counter.CounterService;
 import com.simbirsoftintensiv.intensiv.service.countervalue.ValueService;
 import com.simbirsoftintensiv.intensiv.service.user.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +21,8 @@ import java.util.List;
 @RestController
 @RequestMapping("/rest")
 public class CounterRestController {
-
+    static final Logger log =
+            LoggerFactory.getLogger(LoginController.class);
     final CounterService counterService;
     final ValueService valueService;
     final UserService userService;
@@ -53,6 +56,7 @@ public class CounterRestController {
         User user = counter.getUser();
         for (Counter counterFromDB : counterService.getAll(user.getId())) {
             if ((counter.getName().trim()).equals(counterFromDB.getName().trim())) {
+                log.info("Попытка добавить существующий счетчик"+ user.getPhone());
                 throw new RepeatedCounterNameException("Счётчик с таким именем уже существует");
             }
         }
@@ -61,6 +65,7 @@ public class CounterRestController {
         counterValue.setCounter(counter);
         counterValue.setValue(0);
         valueService.saveNewValue(counterValue, user.getId(), counter.getId());
+        log.info("Пользователь "+ user.getPhone() + "добавил новый счетчик" + counter.getName()+" .");
         return counter;
     }
 
@@ -74,6 +79,8 @@ public class CounterRestController {
                     valueService.saveNewValue(counterValue, user.getId(), counterValue.getCounter().getId());
                 } else if (counterValue.getValue() < valueService.get(counterValue.getId(), user.getId())
                         .getValue()) {
+                    log.info("Попытка внести меньшее значение в счетчик "+ user.getPhone());
+
                     throw new IncorrectCounterValueException(
                             "Введённое значение " + counterValue.getValue() + " меньше предыдущего");
                 }

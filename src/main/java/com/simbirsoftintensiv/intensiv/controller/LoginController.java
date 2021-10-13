@@ -1,11 +1,13 @@
 package com.simbirsoftintensiv.intensiv.controller;
 
 import com.simbirsoftintensiv.intensiv.entity.User;
+import com.simbirsoftintensiv.intensiv.exception_handling.NoSuchUserException;
 import com.simbirsoftintensiv.intensiv.service.OtpService;
 import com.simbirsoftintensiv.intensiv.service.user.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -13,23 +15,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.HashMap;
 
-// как должно работать
-//фронт делает запрос на /username?username=22
-//ему приходит json c полями
-//        map.put("Code", 200);
-//        map.put("smsPassword", null);
-//        map.put("username", "false");
-//        где он получает правильное или не правильно имя пользователя ввел
-//+ смс пароль -> пока временно потом прикручу стороний сервис
-//и после этого фронт делает следующий запрос на /login?username=22&password=741777
-//и сеcсия должна авторизоваться(что вроде и делает)
 @Controller
-//@RestController
-//TODO когда не нужен будет jsp поменять на RestController
 public class LoginController {
-    //TODO сделать обработку ошибок (ввод неправильного пароля и ввод неправльного имени)
-    //@exceptionHandler или @ControllerAdvice
-    private Long UserName;
+    static final Logger log =
+            LoggerFactory.getLogger(LoginController.class);
     @Autowired
     private UserService userService; // внедряем обьект
 
@@ -38,48 +27,28 @@ public class LoginController {
 
     // фронту это не надо будет
     @GetMapping("/username")
-    public String checkUser(Model model,
-                            @RequestParam(value = "username", required = false) Integer username
-    ) {
+    public String checkUser() {
+
         return "username";
     }
 
     @ResponseBody
     @PostMapping("/onetimecode")
-    public HashMap<String, String> getOneTimePassword(@RequestParam(value = "phone") Long phone,
-                                           Model model) {
-
+    public HashMap<String, String> getOneTimePassword(@RequestParam(value = "username") Long phone) {
+        log.info("Authorization attempt " + phone + ".");
         int oneTimePassword = otpService.generateOTP(phone);
 
         User user = userService.getByPhone(phone);
-//        boolean isRightName = userService.haveLoginInDB(phone);
         HashMap<String, String> map = new HashMap<>();
 
-        if(user == null) {
-
-            map.put("сode", "400");
-            map.put("smsPassword", null);
-            map.put("username", "false");
+        if (user == null) {
+            log.warn("User " + phone + " not find. ");
+            throw new NoSuchUserException("User " + phone + " not find. ");
         }
 
-//        if (!isRightName) {
-//            map.put("сode", "404");
-//            map.put("smsPassword", null);
-//            map.put("username", "false");
-//            return map;
-//        }
-
-//localhost:8080/login?username=22&password=741777  POST
-
-//        SmsService.main(otpService.getOtp(phone));
         map.put("username", String.valueOf(phone));
-        map.put("Code", "200 OK");
         map.put("smsPassword", String.valueOf(oneTimePassword));// временно
-
-//        this.UserName = phone;
-
-
-        return map;   // отдать фронту
+        return map;
     }
 
 }

@@ -11,9 +11,11 @@ public class AuthorizedUser extends org.springframework.security.core.userdetail
     private UserTo userTo;
 
     public AuthorizedUser(User user) {
-        super(user.getPhone().toString(), "1", user.isEnabled(),
-                true, true, true, user.getRoles());
-        this.userTo = UserUtil.asTo(user);
+        super(user.getPhone().toString(),
+                "1", user.isEnabled(),
+                true, true, true,
+                user.getRoles());
+         this.userTo = UserUtil.asTo(user);
     }
 
     public int getId() {

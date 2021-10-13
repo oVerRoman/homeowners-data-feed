@@ -5,6 +5,8 @@ import java.util.List;
 
 import javax.validation.Valid;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,7 +24,8 @@ import com.simbirsoftintensiv.intensiv.service.countervalue.ValueService;
 
 @Controller
 public class CounterController {
-
+    static final Logger log =
+            LoggerFactory.getLogger(LoginController.class);
     final CounterService counterService;
     final ValueService valueService;
 
