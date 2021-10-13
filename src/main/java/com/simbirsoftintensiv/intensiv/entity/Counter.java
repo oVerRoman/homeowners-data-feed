@@ -25,7 +25,7 @@ public class Counter extends AbstractBaseEntity {
 
     @JsonIgnore
     @OneToOne(fetch = FetchType.EAGER, mappedBy = "counter")
-    private CounterValue counterValues;
+    private CounterValue counterValue;
 
     public Counter() {
     }
