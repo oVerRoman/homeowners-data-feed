@@ -27,3 +27,5 @@ deploy:      # This job runs in the deploy stage.
   - ssh-add <(echo "$SSH_PRIVATE_KEY" | base64 -d)
   script:
     - ssh student@homeowners-data-app.autumn-training-2021.simbirsoft1.com "cd /home/student/backend && git checkout master && git pull origin master && sudo service hda restart && exit"
+  only:
+    - master
