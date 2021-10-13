@@ -1,7 +1,11 @@
 package com.simbirsoftintensiv.intensiv.entity;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import javax.persistence.*;
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.util.Date;
 
 
 @Entity
@@ -19,7 +23,8 @@ public class Request {
     private String title;
 
     @Column(name = "date", nullable = false)
-    private Instant date;
+  //  @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
+    private Date date;
 
     @Column(name = "address")
     private Integer address;
@@ -68,11 +73,11 @@ public class Request {
         this.address = address;
     }
 
-    public Instant getDate() {
+    public Date getDate() {
         return date;
     }
 
-    public void setDate(Instant date) {
+    public void setDate(Date date) {
         this.date = date;
     }
 

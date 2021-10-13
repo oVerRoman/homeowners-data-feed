@@ -1,10 +1,8 @@
 package com.simbirsoftintensiv.intensiv.controller;
 
-import com.simbirsoftintensiv.intensiv.entity.Address;
 import com.simbirsoftintensiv.intensiv.entity.Request;
 import com.simbirsoftintensiv.intensiv.entity.User;
 import com.simbirsoftintensiv.intensiv.repository.RequestRepository;
-import com.simbirsoftintensiv.intensiv.repository.user.UserRepository;
 import com.simbirsoftintensiv.intensiv.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -19,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 
 import java.time.Instant;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -52,7 +51,7 @@ import java.util.List;
  */
 
 @Controller
-@RequestMapping(path = "request")
+@RequestMapping(path = "rest/request")
 public class RequestController {
     @Autowired
     private RequestRepository requestRepository;
@@ -66,29 +65,38 @@ public class RequestController {
     public @ResponseBody
     ResponseEntity<List<Request>> getAllRequest(
             @RequestParam(value = "type", required = false) Integer type,
-            @RequestParam(value = "title", required = false) String title,
-            @RequestParam(value = "date", required = false) Instant date,
-            @RequestParam(value = "address", required = false) Integer address,
-            @RequestParam(value = "comment", required = false) String comment,
+            @RequestParam(value = "date", required = false) Date date,
             @RequestParam(value = "status", required = false) Integer status,
             @RequestParam(value = "clientId", required = false) Integer clientId,
             @RequestParam(value = "pageNumber", defaultValue = "0") Integer pageNumber,
             @RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize,
-            @RequestParam(value = "order", defaultValue = "id") String order,
+            @RequestParam(value = "order", defaultValue = "date") String order,
             @AuthenticationPrincipal UserDetails userDetails){
         User user = userService.getByPhone(Long.parseLong(userDetails.getUsername()));
-        Pageable pageable = PageRequest.of(pageNumber,pageSize, Sort.by(order).descending());
-        List<Request> result = requestRepository.findAllBy(status,pageable).getContent();
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(order).descending());
+        Integer userId = clientId;
+     /*   if (user.getRoles().toString().equals("USER")) {
+            userId = user.getId();
+        }*/
+        List<Request> result = requestRepository.findAllBy(type, status,
+                //  date,
+                userId, pageable).getContent();
+
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     // Получаем запрос килента по его id
     @GetMapping(path = "{id}")
     public @ResponseBody
-    ResponseEntity<Request> getRequestById(@PathVariable Integer id,  @AuthenticationPrincipal UserDetails user) {
+    ResponseEntity<Request> getRequestById(@PathVariable Integer id,  @AuthenticationPrincipal UserDetails userDetails) {
         if (id>0) {
+          /*  User user = userService.getByPhone(Long.parseLong(userDetails.getUsername()));
+            Integer userId = requestRepository.findById(id).get().getClient();
+            if (user.getRoles().toString().equals("USER")) {
+                userId = user.getId();
+            } */
             if (requestRepository.findById(id).isPresent()) {
-                final Request result = requestRepository.findById(id).get();
+                   final Request result = requestRepository.findById(id).get();
                 return new ResponseEntity<>(result, HttpStatus.OK);
             } else {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -103,45 +111,54 @@ public class RequestController {
     public @ResponseBody
     Long getRequestCount(
             @RequestParam(value = "type", required = false) Integer type,
-            @RequestParam(value = "title", required = false) String title,
             @RequestParam(value = "date", required = false) Instant date,
-            @RequestParam(value = "address", required = false) Address address,
-            @RequestParam(value = "comment", required = false) String comment,
             @RequestParam(value = "status", required = false) Integer status,
-            @RequestParam(value = "clientId", required = false) User userid,
+            @RequestParam(value = "clientId", required = false) Integer clientId,
             @RequestParam(value = "pageNumber", defaultValue = "0") Integer pageNumber,
             @RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize,
             @RequestParam(value = "order", defaultValue = "id") String order,
-            @AuthenticationPrincipal UserDetails user){
-        return requestRepository.countAllBy();
+            @AuthenticationPrincipal UserDetails userDetails){
+        User user = userService.getByPhone(Long.parseLong(userDetails.getUsername()));
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(order).descending());
+        Integer userId = clientId;
+     /*   if (user.getRoles().toString().equals("USER")) {
+            userId = user.getId();
+        } */
+        return requestRepository.countAllBy(type, status,
+                //  date,
+                userId);
     }
 
     // Добавление обращения пользователя
     @PostMapping(path = "")
-    public ResponseEntity<?> createRequest(@RequestBody Request request,  @AuthenticationPrincipal UserDetails user) {
+    public ResponseEntity<?> createRequest(@RequestBody Request request,  @AuthenticationPrincipal UserDetails userDetails) {
 
         //request.setClient();
-        System.out.println(request.toString());
-        final Request result = requestRepository.save(request);
+     //   System.out.println(request.toString());
+   //     final Request result = requestRepository.save(request);
       //  result.setClient(user);
-        return  new ResponseEntity<>(result,HttpStatus.OK);
-     /*   try {
+     //   return  new ResponseEntity<>(result,HttpStatus.OK);
+        try {
             if (request != null) {
-             //   final Request result = requestRepository.save(request);
-            //    return  new ResponseEntity<>(result,HttpStatus.OK);
+              /*  User user = userService.getByPhone(Long.parseLong(userDetails.getUsername()));
+                if (user.getRoles().toString().equals("USER")) {
+                    request.setClient(user.getId());
+                }*/
+                final Request result = requestRepository.save(request);
+                return  new ResponseEntity<>(result,HttpStatus.OK);
             } else {
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        } */
+        }
     }
 
     // Обновление обращения клиента
     @PostMapping(path = "{id}")
     public ResponseEntity<?> updateRequest(@PathVariable(name = "id")  Integer id,
                                            @RequestBody Request request,
-                                           @AuthenticationPrincipal UserDetails user) {
+                                           @AuthenticationPrincipal UserDetails userDetails) {
         if (id <= 0) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         } else {
@@ -173,6 +190,10 @@ public class RequestController {
                 if (request.getType() != null) {
                     request1.setType(request.getType());
                 }
+            /*    User user = userService.getByPhone(Long.parseLong(userDetails.getUsername()));
+                if (user.getRoles().toString().equals("USER")) {
+                    request1.setClient(user.getId());
+                }*/
                 final Request result = requestRepository.save(request1);
                 return new ResponseEntity<>(result, HttpStatus.OK);
             } catch (Exception e) {
@@ -185,11 +206,21 @@ public class RequestController {
 
     // Удаление обращения клиента
     @DeleteMapping(path = "{id}")
-    public ResponseEntity<?> deleteById(@PathVariable Integer id,  @AuthenticationPrincipal UserDetails user) {
+    public ResponseEntity<?> deleteById(@PathVariable Integer id,  @AuthenticationPrincipal UserDetails userDetails) {
         if (id > 0) {
             if (requestRepository.findById(id).isPresent()) {
-                requestRepository.deleteById(id);
-                return new ResponseEntity<>(HttpStatus.OK);
+              /*  User user = userService.getByPhone(Long.parseLong(userDetails.getUsername()));
+                if (user.getRoles().toString().equals("USER")) {
+                    if (requestRepository.findById(id).get().getClient().intValue() == user.getId()) {
+                        requestRepository.deleteById(id);
+                        return new ResponseEntity<>(HttpStatus.OK);
+                    } else {
+                        return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+                    }
+                } else {*/
+                    requestRepository.deleteById(id);
+                    return new ResponseEntity<>(HttpStatus.OK);
+           //     }
             } else {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
