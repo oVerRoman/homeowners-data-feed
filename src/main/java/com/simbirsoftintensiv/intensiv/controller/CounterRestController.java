@@ -5,7 +5,6 @@ import com.simbirsoftintensiv.intensiv.entity.Counter;
 import com.simbirsoftintensiv.intensiv.entity.CounterValue;
 import com.simbirsoftintensiv.intensiv.entity.User;
 import com.simbirsoftintensiv.intensiv.exception_handling.IncorrectCounterValueException;
-import com.simbirsoftintensiv.intensiv.exception_handling.NoSuchUserException;
 import com.simbirsoftintensiv.intensiv.exception_handling.RepeatedCounterNameException;
 import com.simbirsoftintensiv.intensiv.service.counter.CounterService;
 import com.simbirsoftintensiv.intensiv.service.countervalue.ValueService;
@@ -21,8 +20,8 @@ import java.util.List;
 @RestController
 @RequestMapping("/rest")
 public class CounterRestController {
-    static final Logger log =
-            LoggerFactory.getLogger(LoginController.class);
+    static final Logger log = LoggerFactory.getLogger(LoginController.class);
+
     final CounterService counterService;
     final ValueService valueService;
     final UserService userService;
@@ -38,14 +37,10 @@ public class CounterRestController {
     public List<Counter> getAllCounters(Authentication authentication) {
         System.out.println(authentication.getPrincipal());
         return counterService.getAll();
-
     }
 
     @GetMapping("/counters")
     public List<CounterValue> getAllCounters(@AuthenticationPrincipal AuthorizedUser user) {
-        if (user == null) {
-            throw new NoSuchUserException("Пользователь не зарегистрирован");
-        }
         List<Counter> allCounters = counterService.getAll(user.getId());
         List<CounterValue> allValues = valueService.getAll(allCounters);
         return allValues;

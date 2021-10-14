@@ -1,5 +1,7 @@
 package com.simbirsoftintensiv.intensiv.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.simbirsoftintensiv.intensiv.JsonUtil;
 import com.simbirsoftintensiv.intensiv.OtpAuthenticationProvider;
 import com.simbirsoftintensiv.intensiv.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,16 +13,20 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import javax.annotation.PostConstruct;
+
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     final UserService userService;
     final OtpAuthenticationProvider otpAuthenticationProvider;
+    private final ObjectMapper objectMapper;
 
-    public WebSecurityConfig(OtpAuthenticationProvider otpAuthenticationProvider, UserService userService) {
+    public WebSecurityConfig(OtpAuthenticationProvider otpAuthenticationProvider, UserService userService, ObjectMapper objectMapper) {
         this.otpAuthenticationProvider = otpAuthenticationProvider;
         this.userService = userService;
+        this.objectMapper = objectMapper;
     }
 
     @Bean
@@ -39,6 +45,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/rest/users").not().fullyAuthenticated()
                 .antMatchers("/registration").not().fullyAuthenticated()
                 .antMatchers("/username").not().fullyAuthenticated()
+                .antMatchers("/rest/profile").authenticated()
                 // Доступ только для пользователей с ролью Администратор
                 .antMatchers("/rest/admin").hasRole("ADMIN")
                 .antMatchers("/rest/admin/**").hasRole("ADMIN")
@@ -73,5 +80,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     protected void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userService).passwordEncoder(bCryptPasswordEncoder());
+    }
+
+    @PostConstruct
+    void setMapper() {
+        JsonUtil.setObjectMapper(objectMapper);
     }
 }

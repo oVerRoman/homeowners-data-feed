@@ -22,6 +22,9 @@ public class AuthorizedUser extends org.springframework.security.core.userdetail
         return userTo.id();
     }
 
+    public UserTo getUserTo() {
+        return userTo;
+    }
 }
 
 

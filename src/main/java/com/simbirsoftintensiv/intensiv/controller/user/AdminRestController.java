@@ -9,7 +9,6 @@ import com.simbirsoftintensiv.intensiv.util.UserUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -20,8 +19,7 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping(value = "/rest/admin/users")
 public class AdminRestController {
-    static final Logger log =
-            LoggerFactory.getLogger(LoginController.class);
+    static final Logger log = LoggerFactory.getLogger(LoginController.class);
     private final UserService userService;
 
     public AdminRestController(UserService userService) {
@@ -37,7 +35,6 @@ public class AdminRestController {
                 .map(UserUtil::asTo)
                 .collect(Collectors.toList());
     }
-
 
     @DeleteMapping("/{phone}")
     @ResponseStatus(HttpStatus.NO_CONTENT)

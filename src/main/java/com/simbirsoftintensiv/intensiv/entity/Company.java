@@ -6,7 +6,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "companies")
-public class Company extends AbstractBaseEntity{
+public class Company extends AbstractBaseEntity {
 
     @Column(name = "name")
     private String name;
@@ -16,6 +16,21 @@ public class Company extends AbstractBaseEntity{
 
     @Column(name = "phone")
     private Long phone;
+
+    public Company() {}
+
+    public Company(String name, String address, Long phone) {
+        this.name = name;
+        this.address = address;
+        this.phone = phone;
+    }
+
+    public Company(Integer id, String name, String address, Long phone) {
+        super(id);
+        this.name = name;
+        this.address = address;
+        this.phone = phone;
+    }
 
     @Override
     public String toString() {
