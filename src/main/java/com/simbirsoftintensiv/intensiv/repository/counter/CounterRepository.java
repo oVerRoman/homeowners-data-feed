@@ -13,7 +13,6 @@ import com.simbirsoftintensiv.intensiv.entity.Counter;
 public interface CounterRepository extends JpaRepository<Counter, Integer> {
 
     @Query("SELECT c FROM Counter c WHERE c.user.id=:userId ORDER BY c.id DESC")
-//    @Query("SELECT c FROM Counter c WHERE c.user.id=:userId ORDER BY c.name ASC")
     List<Counter> getAll(@Param("userId") int userId);
 
     @Modifying
