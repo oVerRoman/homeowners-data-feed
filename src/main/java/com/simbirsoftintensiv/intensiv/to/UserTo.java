@@ -71,4 +71,9 @@ public class UserTo implements HasId, Serializable {
     public String getCompany() {
         return company;
     }
+
+    public String info() {
+        return "user:" + phone + "," + "email:" + email + "," + "firstName: " + firstName + "," + "secondName:" + secondName + "," +
+                "patronymic:" + patronymic + "," + "address:" + address + "," + "company" + company;
+    }
 }

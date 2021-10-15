@@ -3,6 +3,8 @@ package com.simbirsoftintensiv.intensiv.config;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.simbirsoftintensiv.intensiv.AuthSuccessHandler;
 import com.simbirsoftintensiv.intensiv.OtpAuthenticationProvider;
+import com.simbirsoftintensiv.intensiv.config.handler.CustomAuthenticationFailureHandler;
+import com.simbirsoftintensiv.intensiv.config.handler.MySimpleUrlAuthenticationSuccessHandler;
 import com.simbirsoftintensiv.intensiv.service.user.UserService;
 import com.simbirsoftintensiv.intensiv.util.JsonUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +19,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 
 import javax.annotation.PostConstruct;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
 @Configuration
 @EnableWebSecurity
@@ -56,11 +59,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 // Доступ только для пользователей с ролью Администратор
                 .antMatchers("/rest/admin").hasRole("ADMIN")
                 .antMatchers("/rest/admin/**").hasRole("ADMIN")
-                .antMatchers("/news").hasRole("ADMIN")
+                //TODO разобраться
+//                .antMatchers("/news").hasAnyAuthority("USER", "ADMIN")// почему то так не работает
                 .antMatchers("/news").hasRole("USER")
 //                .antMatchers("/counters").hasRole("USER")
                 .antMatchers("/add-counter").hasRole("USER")
                 .antMatchers("/saveCounter").hasRole("USER")
+                .antMatchers("/upload").hasRole("USER")
                 .antMatchers("/saveCounterValues").hasRole("USER")
                 .antMatchers("/rest/counters").hasRole("USER")
                 .antMatchers("/request").hasRole("USER")
@@ -72,9 +77,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 // Настройка для входа в систему
                 .formLogin()
 
-//                .loginPage("/password")
                 .loginPage("/login")
 
+                // Перенаправление на главную страницу после успешного входа
+//                .defaultSuccessUrl("/success").permitAll()
+                // обработчик успешного входа
+                .successHandler(myAuthenticationSuccessHandler())
+                // не успешного входа
+                .failureHandler(new CustomAuthenticationFailureHandler())
+                .and()
+                .logout().permitAll()
                 // Перенаправление на главную страницу после успешного выхода
                 .defaultSuccessUrl("/").permitAll().
 
@@ -102,5 +114,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @PostConstruct
     void setMapper() {
         JsonUtil.setObjectMapper(objectMapper);
+    }
+    @Bean
+    public AuthenticationSuccessHandler myAuthenticationSuccessHandler(){
+        return new MySimpleUrlAuthenticationSuccessHandler();
     }
 }
