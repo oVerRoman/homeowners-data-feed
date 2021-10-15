@@ -1,8 +1,6 @@
 package com.simbirsoftintensiv.intensiv.controller.user;
 
 import com.simbirsoftintensiv.intensiv.controller.LoginController;
-import com.simbirsoftintensiv.intensiv.entity.User;
-import com.simbirsoftintensiv.intensiv.exception_handling.NoSuchUserException;
 import com.simbirsoftintensiv.intensiv.service.user.UserService;
 import com.simbirsoftintensiv.intensiv.to.UserTo;
 import com.simbirsoftintensiv.intensiv.util.UserUtil;
@@ -29,7 +27,7 @@ public class AdminRestController {
     @GetMapping
     public List<UserTo> getAll() {
         log.info("Админ получил данные на всех пользователей.");
-//TODO а если несколько админов то надо будет сделать какой конкретно
+        //TODO а если несколько админов то надо будет сделать какой конкретно
         return userService.getAll()
                 .stream()
                 .map(UserUtil::asTo)
@@ -39,24 +37,24 @@ public class AdminRestController {
     @DeleteMapping("/{phone}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable("phone") long phone) {
-        User user = userService.getByPhone(phone);
-        if (user == null) {
-            log.warn("Попытка удаление не существующего пользователя.");
-            throw new NoSuchUserException("User" +phone + " not find ");
-        }
-        log.warn("User " + phone + "deleting.");
+//        User user = userService.getByPhone(phone);
+//        if (user == null) {
+//            log.warn("Попытка удаление не существующего пользователя.");
+//            throw new NotFoundException("User" + phone + " not find ");
+//        }
+//        log.warn("User " + phone + "deleting.");
 
         userService.delete(phone);
     }
 
     @GetMapping("/{phone}")
     public UserTo get(@PathVariable("phone") long phone) {
-        User user = userService.getByPhone(phone);
-        if (user == null) {
-            log.warn("Попытка получение данных не существующего пользователя.");
-            throw new NoSuchUserException("User" +phone + " not find ");
-        }
-        log.info("Админ получил данные на пользователя " + phone);
+//        User user = userService.getByPhone(phone);
+//        if (user == null) {
+//            log.warn("Попытка получение данных не существующего пользователя.");
+//            throw new NotFoundException("User" + phone + " not find ");
+//        }
+//        log.info("Админ получил данные на пользователя " + phone);
         return UserUtil.asTo(userService.getByPhone(phone));
     }
 

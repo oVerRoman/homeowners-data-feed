@@ -1,17 +1,20 @@
 package com.simbirsoftintensiv.intensiv.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.simbirsoftintensiv.intensiv.JsonUtil;
+import com.simbirsoftintensiv.intensiv.AuthSuccessHandler;
 import com.simbirsoftintensiv.intensiv.OtpAuthenticationProvider;
 import com.simbirsoftintensiv.intensiv.service.user.UserService;
+import com.simbirsoftintensiv.intensiv.util.JsonUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 
 import javax.annotation.PostConstruct;
 
@@ -19,11 +22,15 @@ import javax.annotation.PostConstruct;
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
+    final AuthSuccessHandler authSuccessHandler;
     final UserService userService;
     final OtpAuthenticationProvider otpAuthenticationProvider;
     private final ObjectMapper objectMapper;
 
-    public WebSecurityConfig(OtpAuthenticationProvider otpAuthenticationProvider, UserService userService, ObjectMapper objectMapper) {
+    public WebSecurityConfig(AuthSuccessHandler authSuccessHandler,
+                             OtpAuthenticationProvider otpAuthenticationProvider,
+                             UserService userService, ObjectMapper objectMapper) {
+        this.authSuccessHandler = authSuccessHandler;
         this.otpAuthenticationProvider = otpAuthenticationProvider;
         this.userService = userService;
         this.objectMapper = objectMapper;
@@ -39,12 +46,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         httpSecurity.csrf().disable().authorizeRequests()
                 // Доступ только для не зарегистрированных пользователей
 
-                .antMatchers("/rest/allcounters").not().fullyAuthenticated() //fixme delete
-                .antMatchers("/rest/counters").not().fullyAuthenticated() //fixme delete
-                .antMatchers("/onetimecode").not().fullyAuthenticated()
-                .antMatchers("/rest/users").not().fullyAuthenticated()
-                .antMatchers("/registration").not().fullyAuthenticated()
-                .antMatchers("/username").not().fullyAuthenticated()
+                .antMatchers("/rest/allcounters").not().authenticated() //fixme delete
+                .antMatchers("/rest/counters").not().authenticated() //fixme delete
+                .antMatchers("/onetimecode").not().authenticated()
+                .antMatchers("/rest/users").not().authenticated()
+                .antMatchers("/registration").not().authenticated()
+                .antMatchers("/username").not().authenticated()
                 .antMatchers("/rest/profile").authenticated()
                 // Доступ только для пользователей с ролью Администратор
                 .antMatchers("/rest/admin").hasRole("ADMIN")
@@ -69,7 +76,17 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .loginPage("/login")
 
                 // Перенаправление на главную страницу после успешного выхода
-                .defaultSuccessUrl("/").permitAll().and().logout().permitAll().logoutSuccessUrl("/");
+                .defaultSuccessUrl("/").permitAll().
+
+                successHandler(authSuccessHandler).
+
+                and()
+                .logout()
+                .permitAll().logoutSuccessUrl("/")
+        ;
+
+        httpSecurity.exceptionHandling()
+                .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED));
     }
 
     @Override

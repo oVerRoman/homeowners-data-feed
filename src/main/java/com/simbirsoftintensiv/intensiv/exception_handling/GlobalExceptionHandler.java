@@ -5,13 +5,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-//TODO обязательно добавить логи тут
+ //todo обязательно добавить логи тут
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
     @ExceptionHandler
-    public ResponseEntity<IncorrectData> handleException(NoSuchUserException exception) {
+    public ResponseEntity<IncorrectData> handleException(NotFoundException exception) {
         IncorrectData data = new IncorrectData();
         data.setInfo(exception.getMessage());
         return new ResponseEntity<>(data, HttpStatus.NOT_FOUND);

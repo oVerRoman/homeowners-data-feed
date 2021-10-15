@@ -5,6 +5,7 @@ import com.simbirsoftintensiv.intensiv.entity.User;
 import com.simbirsoftintensiv.intensiv.repository.CompanyRepository;
 import com.simbirsoftintensiv.intensiv.repository.user.CrudUserRepository;
 import com.simbirsoftintensiv.intensiv.service.OtpService;
+import com.simbirsoftintensiv.intensiv.util.ValidationUtil;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -36,7 +37,7 @@ public class UserService implements UserDetailsService {
     }
 
     public User getByPhone(Long phone) {//fixme del
-        return userRepository.getByPhone(phone);
+        return ValidationUtil.checkNotFoundWithPhone(userRepository.getByPhone(phone), phone);
     }
 
     public List<User> getAll() {
@@ -58,9 +59,7 @@ public class UserService implements UserDetailsService {
          return userRepository.save(user);
     }
 
-    public void delete(Long phone) {//fixme проверки на наличие юзера в базе
-        if (userRepository.getByPhone(phone) != null) {
-            userRepository.delete(phone);
-        }
+    public void delete(Long phone) {
+            ValidationUtil.checkNotFoundWithPhone(userRepository.delete(phone), phone);
     }
 }

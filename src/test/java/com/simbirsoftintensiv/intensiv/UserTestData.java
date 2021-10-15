@@ -6,6 +6,7 @@ import com.simbirsoftintensiv.intensiv.entity.Company;
 import com.simbirsoftintensiv.intensiv.entity.Role;
 import com.simbirsoftintensiv.intensiv.entity.User;
 import com.simbirsoftintensiv.intensiv.to.UserTo;
+import com.simbirsoftintensiv.intensiv.util.JsonUtil;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultMatcher;
 
