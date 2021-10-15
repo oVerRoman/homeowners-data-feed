@@ -4,7 +4,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class IntensivApplication {
+ public class IntensivApplication {
 
     public static void main(String[] args) {
 
