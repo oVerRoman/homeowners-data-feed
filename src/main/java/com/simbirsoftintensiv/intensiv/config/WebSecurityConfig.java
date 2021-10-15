@@ -1,7 +1,6 @@
 package com.simbirsoftintensiv.intensiv.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.simbirsoftintensiv.intensiv.AuthSuccessHandler;
 import com.simbirsoftintensiv.intensiv.OtpAuthenticationProvider;
 import com.simbirsoftintensiv.intensiv.config.handler.CustomAuthenticationFailureHandler;
 import com.simbirsoftintensiv.intensiv.config.handler.MySimpleUrlAuthenticationSuccessHandler;
@@ -19,21 +18,20 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 
 import javax.annotation.PostConstruct;
-import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    final AuthSuccessHandler authSuccessHandler;
-    final UserService userService;
-    final OtpAuthenticationProvider otpAuthenticationProvider;
+    private final MySimpleUrlAuthenticationSuccessHandler authenticationSuccessHandler;
+    private final UserService userService;
+    private final OtpAuthenticationProvider otpAuthenticationProvider;
     private final ObjectMapper objectMapper;
 
-    public WebSecurityConfig(AuthSuccessHandler authSuccessHandler,
+    public WebSecurityConfig(MySimpleUrlAuthenticationSuccessHandler authenticationSuccessHandler,
                              OtpAuthenticationProvider otpAuthenticationProvider,
                              UserService userService, ObjectMapper objectMapper) {
-        this.authSuccessHandler = authSuccessHandler;
+        this.authenticationSuccessHandler = authenticationSuccessHandler;
         this.otpAuthenticationProvider = otpAuthenticationProvider;
         this.userService = userService;
         this.objectMapper = objectMapper;
@@ -79,22 +77,25 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
                 .loginPage("/login")
 
+                .defaultSuccessUrl("/").permitAll()
+                .successHandler(authenticationSuccessHandler)
+                .failureHandler(new CustomAuthenticationFailureHandler())
+//                successHandler(authSuccessHandler).
+//
+                .and()
+                .logout()
+                .permitAll().logoutSuccessUrl("/")
+
                 // Перенаправление на главную страницу после успешного входа
 //                .defaultSuccessUrl("/success").permitAll()
                 // обработчик успешного входа
-                .successHandler(myAuthenticationSuccessHandler())
+
                 // не успешного входа
-                .failureHandler(new CustomAuthenticationFailureHandler())
+
                 .and()
                 .logout().permitAll()
-                // Перенаправление на главную страницу после успешного выхода
-                .defaultSuccessUrl("/").permitAll().
-
-                successHandler(authSuccessHandler).
-
-                and()
-                .logout()
-                .permitAll().logoutSuccessUrl("/")
+        // Перенаправление на главную страницу после успешного выхода
+//                .defaultSuccessUrl("/").permitAll()
         ;
 
         httpSecurity.exceptionHandling()
@@ -114,9 +115,5 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @PostConstruct
     void setMapper() {
         JsonUtil.setObjectMapper(objectMapper);
-    }
-    @Bean
-    public AuthenticationSuccessHandler myAuthenticationSuccessHandler(){
-        return new MySimpleUrlAuthenticationSuccessHandler();
     }
 }
