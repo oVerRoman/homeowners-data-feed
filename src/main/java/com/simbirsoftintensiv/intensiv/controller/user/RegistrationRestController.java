@@ -15,8 +15,10 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.net.URI;
 
 @RestController
-@RequestMapping(value = "/rest/users")
+@RequestMapping(value = RegistrationRestController.REST_URL)
 public class RegistrationRestController {
+
+    static final String REST_URL = "/rest/users";
 
     private final UserService userService;
 

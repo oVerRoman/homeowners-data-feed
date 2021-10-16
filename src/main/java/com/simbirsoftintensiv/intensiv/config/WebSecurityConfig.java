@@ -1,29 +1,40 @@
 package com.simbirsoftintensiv.intensiv.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.simbirsoftintensiv.intensiv.OtpAuthenticationProvider;
 import com.simbirsoftintensiv.intensiv.config.handler.CustomAuthenticationFailureHandler;
 import com.simbirsoftintensiv.intensiv.config.handler.MySimpleUrlAuthenticationSuccessHandler;
 import com.simbirsoftintensiv.intensiv.service.user.UserService;
+import com.simbirsoftintensiv.intensiv.util.JsonUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.HttpStatusEntryPoint;
+
+import javax.annotation.PostConstruct;
 
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    final UserService userService;
-    final OtpAuthenticationProvider otpAuthenticationProvider;
+    private final MySimpleUrlAuthenticationSuccessHandler authenticationSuccessHandler;
+    private final UserService userService;
+    private final OtpAuthenticationProvider otpAuthenticationProvider;
+    private final ObjectMapper objectMapper;
 
-    public WebSecurityConfig(OtpAuthenticationProvider otpAuthenticationProvider, UserService userService) {
+    public WebSecurityConfig(MySimpleUrlAuthenticationSuccessHandler authenticationSuccessHandler,
+                             OtpAuthenticationProvider otpAuthenticationProvider,
+                             UserService userService, ObjectMapper objectMapper) {
+        this.authenticationSuccessHandler = authenticationSuccessHandler;
         this.otpAuthenticationProvider = otpAuthenticationProvider;
         this.userService = userService;
+        this.objectMapper = objectMapper;
     }
 
     @Bean
@@ -36,12 +47,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         httpSecurity.csrf().disable().authorizeRequests()
                 // Доступ только для не зарегистрированных пользователей
 
-                .antMatchers("/rest/allcounters").not().fullyAuthenticated() //fixme delete
-                .antMatchers("/rest/counters").not().fullyAuthenticated() //fixme delete
-                .antMatchers("/onetimecode").not().fullyAuthenticated()
-                .antMatchers("/rest/users").not().fullyAuthenticated()
-                .antMatchers("/registration").not().fullyAuthenticated()
-                .antMatchers("/username").not().fullyAuthenticated()
+                .antMatchers("/rest/allcounters").not().authenticated() //fixme delete
+                .antMatchers("/rest/counters").not().authenticated() //fixme delete
+                .antMatchers("/onetimecode").not().authenticated()
+                .antMatchers("/rest/users").not().authenticated()
+                .antMatchers("/registration").not().authenticated()
+                .antMatchers("/username").not().authenticated()
+                .antMatchers("/rest/profile").authenticated()
                 // Доступ только для пользователей с ролью Администратор
                 .antMatchers("/rest/admin").hasRole("ADMIN")
                 .antMatchers("/rest/admin/**").hasRole("ADMIN")
@@ -65,16 +77,29 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
                 .loginPage("/login")
 
+                .defaultSuccessUrl("/").permitAll()
+                .successHandler(authenticationSuccessHandler)
+                .failureHandler(new CustomAuthenticationFailureHandler())
+//                successHandler(authSuccessHandler).
+//
+                .and()
+                .logout()
+                .permitAll().logoutSuccessUrl("/")
+
                 // Перенаправление на главную страницу после успешного входа
 //                .defaultSuccessUrl("/success").permitAll()
                 // обработчик успешного входа
-                .successHandler(myAuthenticationSuccessHandler())
+
                 // не успешного входа
-                .failureHandler(new CustomAuthenticationFailureHandler())
+
                 .and()
                 .logout().permitAll()
-                // Перенаправление на главную страницу после успешного выхода
-                .logoutSuccessUrl("/");
+        // Перенаправление на главную страницу после успешного выхода
+//                .defaultSuccessUrl("/").permitAll()
+        ;
+
+        httpSecurity.exceptionHandling()
+                .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED));
     }
 
     @Override
@@ -86,8 +111,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userService).passwordEncoder(bCryptPasswordEncoder());
     }
-    @Bean
-    public AuthenticationSuccessHandler myAuthenticationSuccessHandler(){
-        return new MySimpleUrlAuthenticationSuccessHandler();
+
+    @PostConstruct
+    void setMapper() {
+        JsonUtil.setObjectMapper(objectMapper);
     }
 }

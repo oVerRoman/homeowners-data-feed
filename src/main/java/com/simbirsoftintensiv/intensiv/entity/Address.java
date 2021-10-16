@@ -30,6 +30,15 @@ public class Address extends AbstractBaseEntity {
     public Address() {
     }
 
+    public Address(Integer id, String city, String street, String house, String building, String apartment) {
+        super(id);
+        this.city = city;
+        this.street = street;
+        this.house = house;
+        this.building = building;
+        this.apartment = apartment;
+    }
+
     public Address(String city, String street, String house, String building, String apartment) {
         this.city = city;
         this.street = street;

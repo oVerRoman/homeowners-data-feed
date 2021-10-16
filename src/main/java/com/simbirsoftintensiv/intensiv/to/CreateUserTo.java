@@ -1,14 +1,16 @@
 package com.simbirsoftintensiv.intensiv.to;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.simbirsoftintensiv.intensiv.entity.HasId;
 
 import java.beans.ConstructorProperties;
+import java.io.Serializable;
 
 import static com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility.ANY;
 import static com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility.NONE;
 
 @JsonAutoDetect(fieldVisibility = ANY, getterVisibility = NONE, isGetterVisibility = NONE, setterVisibility = NONE)
-public class CreateUserTo {
+public class CreateUserTo implements HasId, Serializable {
 
     private final String phone;
     private final String email;
@@ -75,5 +77,15 @@ public class CreateUserTo {
 
     public String getApartment() {
         return apartment;
+    }
+
+    @Override
+    public Integer getId() {
+        return null;
+    }
+
+    @Override
+    public void setId(Integer id) {
+
     }
 }

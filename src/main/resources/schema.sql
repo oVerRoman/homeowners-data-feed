@@ -63,7 +63,7 @@ CREATE TABLE maters
     id      INTEGER PRIMARY KEY DEFAULT nextval('global_seq'),
     name    VARCHAR NOT NULL,
     user_id INTEGER,
-    FOREIGN KEY (user_id) REFERENCES users (id)
+    FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
 );
 
 CREATE TABLE mater_values
@@ -72,7 +72,7 @@ CREATE TABLE mater_values
     mater_id INTEGER   NOT NULL,
     date     TIMESTAMP NOT NULL,
     value    INTEGER   NOT NULL,
-    FOREIGN KEY (mater_id) REFERENCES maters (id)
+    FOREIGN KEY (mater_id) REFERENCES maters (id) ON DELETE CASCADE
 );
 
 
@@ -88,6 +88,6 @@ CREATE TABLE requests
     status    INTEGER     NOT NULL,
     client_id INTEGER     NOT NULL,
 --     FOREIGN KEY (address) REFERENCES addresses (id),
-    FOREIGN KEY (client_id) REFERENCES users (id)
+    FOREIGN KEY (client_id) REFERENCES users (id) ON DELETE CASCADE
 );
 

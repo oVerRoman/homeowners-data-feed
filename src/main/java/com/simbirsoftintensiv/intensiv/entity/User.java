@@ -57,10 +57,21 @@ public class User extends AbstractBaseEntity {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Set<Role> roles;
 
-    public User() {
+    public User() {}
+
+    public User(int id, Long phone, String email, String firstName, String secondName, String patronymic,
+                Role role, Role... roles){
+        super(id);
+        this.phone = phone;
+        this.email = email;
+        this.firstName = firstName;
+        this.secondName = secondName;
+        this.patronymic = patronymic;
+        this.roles = EnumSet.of(role, roles);
     }
 
-    public User(Long phone, String email, String firstName, String secondName, String patronymic,/*String password,*/ Role role) {
+    public User(Long phone, String email, String firstName, String secondName, String patronymic,/*String password,*/
+                Role role, Role... roles) {
         System.out.println("!!!!!!User->" + role);
         this.phone = phone;
         this.email = email;
@@ -68,7 +79,7 @@ public class User extends AbstractBaseEntity {
         this.secondName = secondName;
         this.patronymic = patronymic;
 //        this.password = password;
-        this.roles = EnumSet.of(role);
+        this.roles = EnumSet.of(role, roles);
     }
 
     public Long getPhone() {

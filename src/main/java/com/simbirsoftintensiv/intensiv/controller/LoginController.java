@@ -1,7 +1,7 @@
 package com.simbirsoftintensiv.intensiv.controller;
 
 import com.simbirsoftintensiv.intensiv.entity.User;
-import com.simbirsoftintensiv.intensiv.exception_handling.NoSuchUserException;
+import com.simbirsoftintensiv.intensiv.exception_handling.NotFoundException;
 import com.simbirsoftintensiv.intensiv.service.OtpService;
 import com.simbirsoftintensiv.intensiv.service.user.UserService;
 import org.slf4j.Logger;
@@ -43,7 +43,7 @@ public class LoginController {
 
         if (user == null) {
             log.warn("User " + phone + " not find. ");
-            throw new NoSuchUserException("User " + phone + " not find. ");
+            throw new NotFoundException("User " + phone + " not find. ");
         }
 
         map.put("username", String.valueOf(phone));
