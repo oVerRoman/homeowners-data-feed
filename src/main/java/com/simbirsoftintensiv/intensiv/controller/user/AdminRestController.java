@@ -42,8 +42,8 @@ public class AdminRestController {
 //            log.warn("Попытка удаление не существующего пользователя.");
 //            throw new NotFoundException("User" + phone + " not find ");
 //        }
-//        log.warn("User " + phone + "deleting.");
 
+        log.info("User " + phone + "deleting.");
         userService.delete(phone);
     }
 
@@ -54,7 +54,7 @@ public class AdminRestController {
 //            log.warn("Попытка получение данных не существующего пользователя.");
 //            throw new NotFoundException("User" + phone + " not find ");
 //        }
-//        log.info("Админ получил данные на пользователя " + phone);
+        log.info("Админ получил данные на пользователя " + phone);
         return UserUtil.asTo(userService.getByPhone(phone));
     }
 
@@ -69,4 +69,12 @@ public class AdminRestController {
         return map;
     }
 
+
+    @ResponseBody
+    @GetMapping("/news")
+    public HashMap<String, Integer> getlogInfo() {
+        HashMap<String, Integer> map = new HashMap<>();
+
+        return map;
+    }
 }

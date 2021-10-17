@@ -42,7 +42,7 @@ public class LoginController {
         HashMap<String, String> map = new HashMap<>();
 
         if (user == null) {
-            log.warn("User " + phone + " not find. ");
+            log.info("User " + phone + " not find. ");
             throw new NotFoundException("User " + phone + " not find. ");
         }
 

@@ -45,8 +45,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.csrf().disable().authorizeRequests()
-                // Доступ только для не зарегистрированных пользователей
-
                 .antMatchers("/rest/allcounters").not().authenticated() //fixme delete
                 .antMatchers("/rest/counters").not().authenticated() //fixme delete
                 .antMatchers("/onetimecode").not().authenticated()
@@ -80,18 +78,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .defaultSuccessUrl("/").permitAll()
                 .successHandler(authenticationSuccessHandler)
                 .failureHandler(new CustomAuthenticationFailureHandler())
-//                successHandler(authSuccessHandler).
 //
                 .and()
                 .logout()
                 .permitAll().logoutSuccessUrl("/")
-
-                // Перенаправление на главную страницу после успешного входа
-//                .defaultSuccessUrl("/success").permitAll()
-                // обработчик успешного входа
-
-                // не успешного входа
-
                 .and()
                 .logout().permitAll()
         // Перенаправление на главную страницу после успешного выхода

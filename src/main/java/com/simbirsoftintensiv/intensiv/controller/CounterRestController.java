@@ -72,6 +72,7 @@ public class CounterRestController {
                 if (counterValue.getValue() > valueService.get(counterValue.getId(), user.getId())
                         .getValue()) {
                     valueService.saveNewValue(counterValue, user.getId(), counterValue.getCounter().getId());
+                    log.info("Пользователь " + user.getPhone() +  "отправил новые значение счетчика");
                 } else if (counterValue.getValue() < valueService.get(counterValue.getId(), user.getId())
                         .getValue()) {
                     log.info("Попытка внести меньшее значение в счетчик "+ user.getPhone());

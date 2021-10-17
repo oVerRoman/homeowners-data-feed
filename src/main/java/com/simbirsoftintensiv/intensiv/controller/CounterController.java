@@ -55,6 +55,7 @@ public class CounterController {
     @PostMapping("/saveCounter")
     public String saveCounter(@ModelAttribute("counter") Counter counter,
             @AuthenticationPrincipal AuthorizedUser user) {
+
         counterService.save(counter, user.getId());
         return "redirect:/counters";
     }
