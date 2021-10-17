@@ -5,6 +5,7 @@ import com.simbirsoftintensiv.intensiv.service.user.UserService;
 import com.simbirsoftintensiv.intensiv.to.CreateUserTo;
 import com.simbirsoftintensiv.intensiv.to.UserTo;
 import com.simbirsoftintensiv.intensiv.util.UserUtil;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,6 +16,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.net.URI;
 
 @RestController
+@Tag(name = "Контроллер регистрации")
 @RequestMapping(value = RegistrationRestController.REST_URL)
 public class RegistrationRestController {
 

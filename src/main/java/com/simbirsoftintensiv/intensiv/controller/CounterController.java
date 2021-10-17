@@ -1,10 +1,12 @@
 package com.simbirsoftintensiv.intensiv.controller;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.validation.Valid;
-
+import com.simbirsoftintensiv.intensiv.AuthorizedUser;
+import com.simbirsoftintensiv.intensiv.entity.Counter;
+import com.simbirsoftintensiv.intensiv.entity.CounterValue;
+import com.simbirsoftintensiv.intensiv.entity.CounterValuesList;
+import com.simbirsoftintensiv.intensiv.service.counter.CounterService;
+import com.simbirsoftintensiv.intensiv.service.countervalue.ValueService;
+import io.swagger.v3.oas.annotations.Parameter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -15,12 +17,9 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.simbirsoftintensiv.intensiv.AuthorizedUser;
-import com.simbirsoftintensiv.intensiv.entity.Counter;
-import com.simbirsoftintensiv.intensiv.entity.CounterValue;
-import com.simbirsoftintensiv.intensiv.entity.CounterValuesList;
-import com.simbirsoftintensiv.intensiv.service.counter.CounterService;
-import com.simbirsoftintensiv.intensiv.service.countervalue.ValueService;
+import javax.validation.Valid;
+import java.util.ArrayList;
+import java.util.List;
 
 @Controller
 public class CounterController {
@@ -36,8 +35,8 @@ public class CounterController {
 
     @GetMapping("/counters")
     public String getAllCounterValues(Model model,
-            @Valid @ModelAttribute("allCurrentValues") CounterValuesList currentValues,
-            @AuthenticationPrincipal AuthorizedUser user) {
+                                      @Valid @ModelAttribute("allCurrentValues") CounterValuesList currentValues,
+                                      @Parameter(hidden = true) @AuthenticationPrincipal AuthorizedUser user) {
         List<Counter> counters = counterService.getAll(user.getId());
         model.addAttribute("allCounters", counters);
         List<CounterValue> counterValuesList = valueService.getAll(counters);
@@ -54,16 +53,16 @@ public class CounterController {
 
     @PostMapping("/saveCounter")
     public String saveCounter(@ModelAttribute("counter") Counter counter,
-            @AuthenticationPrincipal AuthorizedUser user) {
-
+                              @Parameter(hidden = true) @AuthenticationPrincipal AuthorizedUser user) {
         counterService.save(counter, user.getId());
         return "redirect:/counters";
     }
 
     @PostMapping("/saveCounterValues")
     public String saveCounterValues(Model model,
-            @ModelAttribute("allCurrentValues") CounterValuesList counterValuesList,
-            RedirectAttributes redirectAttrs, @AuthenticationPrincipal AuthorizedUser user) {
+                                    @ModelAttribute("allCurrentValues") CounterValuesList counterValuesList,
+                                    RedirectAttributes redirectAttrs,
+                                    @Parameter(hidden = true) @AuthenticationPrincipal AuthorizedUser user) {
         List<CounterValue> counterValues = counterValuesList.getCounterValues();
         List<Counter> counters = counterService.getAll(user.getId());
         List<String> errors = new ArrayList<>();
@@ -71,8 +70,8 @@ public class CounterController {
             if (counterValues.get(i).getValue() != null) {
                 if (counterValues.get(i).getValue() != 0) {
                     if (counterValues.get(i).getId() == null
-                            || counterValues.get(i).getValue() >= valueService
-                                    .get(counterValues.get(i).getId().intValue(), user.getId()).getValue()) {
+                        || counterValues.get(i).getValue() >= valueService
+                            .get(counterValues.get(i).getId().intValue(), user.getId()).getValue()) {
                         valueService.saveNewValue(counterValues.get(i), user.getId(), counters.get(i).getId());
                         errors.add("");
                     } else {
