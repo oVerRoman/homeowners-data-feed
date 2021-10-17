@@ -19,6 +19,8 @@ import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import javax.annotation.PostConstruct;
 
@@ -53,7 +55,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.csrf().disable().authorizeRequests()
                 // Доступ только для не зарегистрированных пользователей
-
                 .antMatchers( "/v2/api-docs",
                         "/swagger-resources",
                         "/swagger-resources/**",
@@ -96,18 +97,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .defaultSuccessUrl("/").permitAll()
                 .successHandler(authenticationSuccessHandler)
                 .failureHandler(new CustomAuthenticationFailureHandler())
-//                successHandler(authSuccessHandler).
 //
                 .and()
                 .logout()
                 .permitAll().logoutSuccessUrl("/")
-
-                // Перенаправление на главную страницу после успешного входа
-//                .defaultSuccessUrl("/success").permitAll()
-                // обработчик успешного входа
-
-                // не успешного входа
-
                 .and()
                 .logout().permitAll()
         // Перенаправление на главную страницу после успешного выхода
@@ -115,22 +108,22 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
         ;
 
-        // Евтефеев - Добавил поддержку запросов CORS
-        httpSecurity.cors(withDefaults());
 
         httpSecurity.exceptionHandling()
                 .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED));
     }
 
-    // Евтефеев - Настройки запросов CORS. Разрешены все запросы с любого адреса
+    // Насстройки запросов CORS. Разрешены все запросы с любого адреса
     @Bean
-    CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("*"));
-        configuration.setAllowedMethods(Arrays.asList("*"));
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
-        return source;
+    public WebMvcConfigurer corsConfigurer() {
+        return new WebMvcConfigurer() {
+            @Override
+            public void addCorsMappings(CorsRegistry registry) {
+                registry.addMapping("/**")
+                        .allowedOrigins("*")
+                        .allowedMethods("GET", "PUT", "POST", "PATCH", "DELETE", "OPTIONS");
+            }
+        };
     }
 
     @Override

@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.util.HashMap;
 
 @Component
 public class MySimpleUrlAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
@@ -26,10 +27,14 @@ public class MySimpleUrlAuthenticationSuccessHandler implements AuthenticationSu
         clearAuthenticationAttributes(request);
         AuthorizedUser authorizedUser = (AuthorizedUser) authentication.getPrincipal();
         UserTo authUserTo = authorizedUser.getUserTo();
+        HashMap UserFoFront = authUserTo.info();
+        String role = String.valueOf(authentication.getAuthorities());
+        String roleForFront = role.substring(1, role.length() - 1);
 
+        UserFoFront.put("role", roleForFront);
         response.setCharacterEncoding("UTF-8");
         response.setContentType("application/json;charset=UTF-8");
-        response.getWriter().write(JsonUtil.writeValue(authUserTo));
+        response.getWriter().write(JsonUtil.writeValue(UserFoFront));
         response.setStatus(200);
     }
 

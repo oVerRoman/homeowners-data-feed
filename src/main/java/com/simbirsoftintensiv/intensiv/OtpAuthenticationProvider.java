@@ -39,7 +39,7 @@ public class OtpAuthenticationProvider implements AuthenticationProvider {
             log.info("Неудачная попытка авторизации "+ userName+" .");
             throw new BadCredentialsException("Bad password");
         }
-        log.info("Пользователь "+ userName+" авторизирован .");
+        log.info("User "+ userName+" authorized .");
 
         AuthorizedUser principal = new AuthorizedUser(user);
 
