@@ -46,4 +46,19 @@ public class UserUtil {
     public static List<UserTo> asTos(List<User> users){
         return users.stream().map(UserUtil::asTo).collect(Collectors.toList());
     }
+
+    public static CreateUserTo asCreateTo(User user) {
+        return new CreateUserTo(
+                user.getId(),
+                user.getPhone() + "",
+                user.getEmail(),
+                user.getFirstName(),
+                user.getSecondName(),
+                user.getPatronymic(),
+                user.getAddress().getCity(),
+                user.getAddress().getStreet(),
+                user.getAddress().getHouse(),
+                user.getAddress().getBuilding(),
+                user.getAddress().getApartment());
+    }
 }
