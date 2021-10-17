@@ -54,6 +54,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         httpSecurity.csrf().disable().authorizeRequests()
                 // Доступ только для не зарегистрированных пользователей
 
+                .antMatchers( "/v2/api-docs",
+                        "/swagger-resources",
+                        "/swagger-resources/**",
+                        "/configuration/ui",
+                        "/configuration/security",
+                        "/swagger-ui.html",
+                        "/webjars/**","/", "/resources/**", "/v3/api-docs/**",
+                        "/swagger-ui/**").permitAll()
                 .antMatchers("/rest/allcounters").not().authenticated() //fixme delete
                 .antMatchers("/rest/counters").not().authenticated() //fixme delete
                 .antMatchers("/onetimecode").not().authenticated()
@@ -76,7 +84,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/request").hasRole("USER")
                 .antMatchers("/request/**").hasRole("USER")
                 // Доступ разрешен всем пользователей
-                .antMatchers("/", "/resources/**").permitAll()
+//                .antMatchers("/", "/resources/**", "/v3/api-docs/**",
+//                        "/swagger-ui/**").permitAll()
                 // Все остальные страницы требуют аутентификации
                 .anyRequest().authenticated().and()
                 // Настройка для входа в систему
@@ -103,6 +112,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .logout().permitAll()
         // Перенаправление на главную страницу после успешного выхода
 //                .defaultSuccessUrl("/").permitAll()
+
         ;
 
         // Евтефеев - Добавил поддержку запросов CORS
