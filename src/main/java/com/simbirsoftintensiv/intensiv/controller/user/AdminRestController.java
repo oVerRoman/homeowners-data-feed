@@ -4,6 +4,7 @@ import com.simbirsoftintensiv.intensiv.controller.LoginController;
 import com.simbirsoftintensiv.intensiv.service.user.UserService;
 import com.simbirsoftintensiv.intensiv.to.UserTo;
 import com.simbirsoftintensiv.intensiv.util.UserUtil;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -13,7 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
-
+@Tag(name = "Админский user контроллер")
 @RestController
 @RequestMapping(value = "/rest/admin/users")
 public class AdminRestController {
