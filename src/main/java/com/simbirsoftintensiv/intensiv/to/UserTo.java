@@ -5,6 +5,7 @@ import com.simbirsoftintensiv.intensiv.entity.HasId;
 
 import java.beans.ConstructorProperties;
 import java.io.Serializable;
+import java.util.HashMap;
 
 import static com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility.ANY;
 import static com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility.NONE;
@@ -72,8 +73,17 @@ public class UserTo implements HasId, Serializable {
         return company;
     }
 
-    public String info() {
-        return "user:" + phone + "," + "email:" + email + "," + "firstName: " + firstName + "," + "secondName:" + secondName + "," +
-                "patronymic:" + patronymic + "," + "address:" + address + "," + "company" + company;
+    public HashMap<String, String> info() {
+        String[] words = address.substring(7).split(", user=com");
+        String addressForFront = words[0]+"}";
+        HashMap<String, String> map = new HashMap<>();
+        map.put("user", String.valueOf(phone));
+        map.put("email", email);
+        map.put("firstName", firstName);
+        map.put("secondName", secondName);
+        map.put("patronymic", patronymic);
+        map.put("address", addressForFront);
+
+        return map;
     }
 }

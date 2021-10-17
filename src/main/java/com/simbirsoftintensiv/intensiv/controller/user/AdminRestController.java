@@ -6,9 +6,14 @@ import com.simbirsoftintensiv.intensiv.to.UserTo;
 import com.simbirsoftintensiv.intensiv.util.UserUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -26,7 +31,7 @@ public class AdminRestController {
 
     @GetMapping
     public List<UserTo> getAll() {
-        log.info("Админ получил данные на всех пользователей.");
+        log.info("The admin has received data for all users.");
         //TODO а если несколько админов то надо будет сделать какой конкретно
         return userService.getAll()
                 .stream()
@@ -64,17 +69,47 @@ public class AdminRestController {
         HashMap<String, Integer> map = new HashMap<>();
         Integer countUsers = userService.getAll().size();
         map.put("allUsers", countUsers);
-        log.info("Админ запрашивал кол-во пользователей");
+        log.info("The admin requested the number of users.");
 
         return map;
     }
 
+    @ResponseBody
+    @GetMapping("/logi")
+    public List getlogInfo(
+            @RequestParam(value = "pageNumber", defaultValue = "0") Integer pageNumber,
+            @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize
+    ) {
+        //rest/admin/users/logi
+        log.info("The admin looks at the logs.");
+        List<String> list = null;
+        try {
+            Path path = Path.of("appintensiv.log");
+            list = Files.readAllLines(path);
+        } catch (Exception e) {
+            log.warn("not find file", e);
+        }
+        Integer from = pageNumber*pageSize;
+        Integer to = from + pageSize;
+        List answer = list.subList(from,to);
+        System.out.println("list" + list.size());
+        System.out.println("answer" + answer.size());
+        return answer;
+    }
 
     @ResponseBody
-    @GetMapping("/news")
-    public HashMap<String, Integer> getlogInfo() {
-        HashMap<String, Integer> map = new HashMap<>();
+    @GetMapping("/givemelogs")
+    public List getAllLogInfo() {
 
-        return map;
+        log.info("The admin looks at the logs.");
+        List<String> list = null;
+        try {
+            Path path = Path.of("appintensiv.log");
+            list = Files.readAllLines(path);
+        } catch (Exception e) {
+            log.warn("Not find file", e);
+        }
+
+        return list;
     }
 }
