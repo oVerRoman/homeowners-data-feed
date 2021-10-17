@@ -76,7 +76,7 @@ public class AdminRestController {
 
     @ResponseBody
     @GetMapping("/logi")
-    public List getlogInfo(
+    public List<String> getlogInfo(
             @RequestParam(value = "pageNumber", defaultValue = "0") Integer pageNumber,
             @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize
     ) {
@@ -89,17 +89,15 @@ public class AdminRestController {
         } catch (Exception e) {
             log.warn("not find file", e);
         }
-        Integer from = pageNumber*pageSize;
-        Integer to = from + pageSize;
-        List answer = list.subList(from,to);
-        System.out.println("list" + list.size());
-        System.out.println("answer" + answer.size());
-        return answer;
+        int from = pageNumber*pageSize;
+        int to = from + pageSize;
+        assert list != null;
+        return list.subList(from,to);
     }
 
     @ResponseBody
     @GetMapping("/givemelogs")
-    public List getAllLogInfo() {
+    public List<String> getAllLogInfo() {
 
         log.info("The admin looks at the logs.");
         List<String> list = null;
