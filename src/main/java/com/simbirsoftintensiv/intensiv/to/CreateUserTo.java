@@ -1,15 +1,14 @@
 package com.simbirsoftintensiv.intensiv.to;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.simbirsoftintensiv.intensiv.entity.HasId;
-import com.simbirsoftintensiv.intensiv.exception_handling.IncorectDataDuringRegistration;
-import com.simbirsoftintensiv.intensiv.exception_handling.NotFoundException;
+import static com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility.ANY;
+import static com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility.NONE;
 
 import java.beans.ConstructorProperties;
 import java.io.Serializable;
 
-import static com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility.ANY;
-import static com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility.NONE;
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.simbirsoftintensiv.intensiv.entity.HasId;
+import com.simbirsoftintensiv.intensiv.exception_handling.IncorectDataDuringRegistration;
 
 @JsonAutoDetect(fieldVisibility = ANY, getterVisibility = NONE, isGetterVisibility = NONE, setterVisibility = NONE)
 public class CreateUserTo implements HasId, Serializable {
@@ -25,10 +24,10 @@ public class CreateUserTo implements HasId, Serializable {
     private final String building;
     private final String apartment;
 
-    @ConstructorProperties({"phone", "email", "firstName", "secondName", "patronymic", "city", "street",  "house",
-            "building", "apartment"})
+    @ConstructorProperties({ "phone", "email", "firstName", "secondName", "patronymic", "city", "street", "house",
+            "building", "apartment" })
     public CreateUserTo(String phone, String email, String firstName, String secondName, String patronymic,
-                        String city, String street, String house, String building, String apartment) {
+            String city, String street, String house, String building, String apartment) {
         this.phone = phone;
         this.email = email;
         this.firstName = firstName;
@@ -42,30 +41,29 @@ public class CreateUserTo implements HasId, Serializable {
     }
 
     public String getPhone() {
-        if(phone.length()<11){
+        if (phone.length() < 11) {
             throw new IncorectDataDuringRegistration("Length " + phone + " < 11");
         }
-        if(phone.length()>11){
+        if (phone.length() > 11) {
             throw new IncorectDataDuringRegistration("Length " + phone + " > 11");
         }
         char firstSymbol = '7';
         char secondSymbol = '9';
         System.out.println("getPhone " + phone.charAt(1));
 
-        if(phone.charAt(0) != firstSymbol){
+        if (phone.charAt(0) != firstSymbol) {
             throw new IncorectDataDuringRegistration("The first digit is not 7.");
         }
-        if(phone.charAt(1) != secondSymbol){
+        if (phone.charAt(1) != secondSymbol) {
             throw new IncorectDataDuringRegistration("The second digit is not 9.");
         }
-
 
         return phone;
     }
 
     public String getEmail() {
         String checkEmail = "@";
-        if(email.contains(checkEmail)){
+        if (!email.contains(checkEmail)) {
             throw new IncorectDataDuringRegistration("This no email.");
         }
 
