@@ -1,11 +1,13 @@
 package com.simbirsoftintensiv.intensiv.entity;
 
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 
@@ -24,8 +26,8 @@ public class Counter extends AbstractBaseEntity {
     private User user;
 
     @JsonIgnore
-    @OneToOne(fetch = FetchType.EAGER, mappedBy = "counter")
-    private CounterValue counterValues;
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "counter")
+    private List<CounterValue> counterValues;
 
     public Counter() {
     }

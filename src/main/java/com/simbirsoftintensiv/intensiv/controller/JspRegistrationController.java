@@ -4,6 +4,8 @@ import com.simbirsoftintensiv.intensiv.entity.Address;
 import com.simbirsoftintensiv.intensiv.entity.Role;
 import com.simbirsoftintensiv.intensiv.entity.User;
 import com.simbirsoftintensiv.intensiv.service.user.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,7 +18,8 @@ import javax.servlet.http.HttpServletRequest;
 @Controller
 @RequestMapping(value = "/registration")
 public class JspRegistrationController {
-
+    static final Logger log =
+            LoggerFactory.getLogger(JspRegistrationController.class);
     @Autowired
     private final UserService userService;
 
@@ -49,6 +52,7 @@ public class JspRegistrationController {
 
         user.setAddress(address);
         userService.create(user);
+        log.info("Added a new user with phone={}", Long.parseLong(request.getParameter("phone")));
         return "redirect:/";
     }
 }

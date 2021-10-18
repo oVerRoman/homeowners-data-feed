@@ -87,6 +87,7 @@ CREATE TABLE requests
     comment   TEXT,
     status    INTEGER     NOT NULL,
     client_id INTEGER     NOT NULL,
+    file      VARCHAR(50),
 --     FOREIGN KEY (address) REFERENCES addresses (id),
     FOREIGN KEY (client_id) REFERENCES users (id) ON DELETE CASCADE
 );
