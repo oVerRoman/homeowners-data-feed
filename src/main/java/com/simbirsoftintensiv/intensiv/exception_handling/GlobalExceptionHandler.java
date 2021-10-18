@@ -47,5 +47,11 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(data, HttpStatus.BAD_REQUEST);
     }
 
-
+    @ExceptionHandler
+    public ResponseEntity<IncorrectData> handleException(IncorectDataDuringRegistration exception) {
+        IncorrectData data = new IncorrectData();
+        data.setInfo(exception.getMessage());
+        log.warn("Incorrect data during registration !", exception );
+        return new ResponseEntity<>(data, HttpStatus.BAD_REQUEST);
+    }
 }
