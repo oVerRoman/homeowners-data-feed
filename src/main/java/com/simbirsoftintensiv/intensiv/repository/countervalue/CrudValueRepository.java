@@ -18,7 +18,9 @@ public interface CrudValueRepository {
     // ORDERED dateTime desc
     List<CounterValue> getAll(int userId);
 
-    CounterValue getByCounter(Counter counter);
+    CounterValue getLastByCounter(Counter counter);
+
+    List<CounterValue> getByCounter(Counter counter);
 
     CounterValue saveNewValue(CounterValue value, int userId, int counterId);
 }

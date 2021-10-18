@@ -54,7 +54,7 @@
 					<td>
 						<form:input type="Number" path="counterValues[${status.index}].value"
 						placeholder="Введите показания"/>
-						<form:hidden path="counterValues[${status.index}].id"/>
+						<%-- <form:hidden path="counterValues[${status.index}].id"/> --%>
 					</td>
 					<td>${allValueErrors[status.index]}</td>
 				</tr>
