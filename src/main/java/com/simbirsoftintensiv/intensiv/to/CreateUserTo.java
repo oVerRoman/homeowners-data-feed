@@ -2,6 +2,8 @@ package com.simbirsoftintensiv.intensiv.to;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.simbirsoftintensiv.intensiv.entity.HasId;
+import com.simbirsoftintensiv.intensiv.exception_handling.IncorectDataDuringRegistration;
+import com.simbirsoftintensiv.intensiv.exception_handling.NotFoundException;
 
 import java.beans.ConstructorProperties;
 import java.io.Serializable;
@@ -40,22 +42,48 @@ public class CreateUserTo implements HasId, Serializable {
     }
 
     public String getPhone() {
+        if(phone.length()<11){
+            throw new IncorectDataDuringRegistration("Length " + phone + " < 11");
+        }
+        if(phone.length()>11){
+            throw new IncorectDataDuringRegistration("Length " + phone + " > 11");
+        }
+        char firstSymbol = '7';
+        char secondSymbol = '9';
+        System.out.println("getPhone " + phone.charAt(1));
+
+        if(phone.charAt(0) != firstSymbol){
+            throw new IncorectDataDuringRegistration("The first digit is not 7.");
+        }
+        if(phone.charAt(1) != secondSymbol){
+            throw new IncorectDataDuringRegistration("The second digit is not 9.");
+        }
+
+
         return phone;
     }
 
     public String getEmail() {
+        String checkEmail = "@";
+        if(email.contains(checkEmail)){
+            throw new IncorectDataDuringRegistration("This no email.");
+        }
+
         return email;
     }
 
     public String getFirstName() {
+
         return firstName;
     }
 
     public String getSecondName() {
+
         return secondName;
     }
 
     public String getPatronymic() {
+
         return patronymic;
     }
 
