@@ -1,5 +1,18 @@
 package com.simbirsoftintensiv.intensiv.controller;
 
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.simbirsoftintensiv.intensiv.AuthorizedUser;
 import com.simbirsoftintensiv.intensiv.entity.Counter;
 import com.simbirsoftintensiv.intensiv.entity.CounterValue;
@@ -9,20 +22,15 @@ import com.simbirsoftintensiv.intensiv.exception_handling.RepeatedCounterNameExc
 import com.simbirsoftintensiv.intensiv.service.counter.CounterService;
 import com.simbirsoftintensiv.intensiv.service.countervalue.ValueService;
 import com.simbirsoftintensiv.intensiv.service.user.UserService;
+
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @Tag(name = "Контроллер показаний счетчиков")
 @RequestMapping("/rest")
 public class CounterRestController {
+
     static final Logger log = LoggerFactory.getLogger(LoginController.class);
 
     final CounterService counterService;
@@ -36,7 +44,7 @@ public class CounterRestController {
         this.userService = userService;
     }
 
-    @GetMapping("/allcounters")//fixme delete
+    @GetMapping("/allcounters") // fixme delete
     public List<Counter> getAllCounters(Authentication authentication) {
         System.out.println(authentication.getPrincipal());
         return counterService.getAll();
@@ -54,7 +62,7 @@ public class CounterRestController {
         User user = counter.getUser();
         for (Counter counterFromDB : counterService.getAll(user.getId())) {
             if ((counter.getName().trim()).equals(counterFromDB.getName().trim())) {
-                log.info("Попытка добавить существующий счетчик"+ user.getPhone());
+                log.info("Попытка добавить существующий счетчик " + counter.getName() + ".");
                 throw new RepeatedCounterNameException("Счётчик с таким именем уже существует");
             }
         }
@@ -63,28 +71,36 @@ public class CounterRestController {
         counterValue.setCounter(counter);
         counterValue.setValue(0);
         valueService.saveNewValue(counterValue, user.getId(), counter.getId());
-        log.info("Пользователь "+ user.getPhone() + "добавил новый счетчик" + counter.getName()+" .");
+        log.info("Пользователь " + user.getPhone() + " добавил новый счетчик " + counter.getName() + ".");
         return counter;
     }
 
     @PutMapping("/counters")
-    public List<CounterValue> addOrUpdateCounterValue(@RequestBody List<CounterValue> counterValues) {
+    public List<CounterValue> addCounterValue(@RequestBody List<CounterValue> counterValues) {
         if (!counterValues.isEmpty()) {
             User user = counterValues.get(0).getCounter().getUser();
             for (CounterValue counterValue : counterValues) {
-                if (counterValue.getValue() > valueService.get(counterValue.getId(), user.getId())
+                if (counterValue.getValue() > valueService.getLast(counterValue.getCounter()).getValue()) {
+                    CounterValue newCounterValue = new CounterValue();
+                    newCounterValue.setValue(counterValue.getValue());
+                    valueService.saveNewValue(newCounterValue, user.getId(), counterValue.getCounter().getId());
+                    log.info("Пользователь " + user.getPhone() + " отправил новые значение счетчика.");
+                } else if (counterValue.getValue() < valueService.getLast(counterValue.getCounter())
                         .getValue()) {
-                    valueService.saveNewValue(counterValue, user.getId(), counterValue.getCounter().getId());
-                    log.info("Пользователь " + user.getPhone() +  "отправил новые значение счетчика");
-                } else if (counterValue.getValue() < valueService.get(counterValue.getId(), user.getId())
-                        .getValue()) {
-                    log.info("Попытка внести меньшее значение в счетчик "+ user.getPhone());
-
+                    log.info("Попытка внести меньшее значение в счетчик " + user.getPhone());
                     throw new IncorrectCounterValueException(
                             "Введённое значение " + counterValue.getValue() + " меньше предыдущего");
                 }
             }
         }
         return counterValues;
+    }
+
+    @GetMapping("/counters/history")
+    public List<CounterValue> getAllCountersHistory(
+            @Parameter(hidden = true) @AuthenticationPrincipal AuthorizedUser user) {
+        List<Counter> allCounters = counterService.getAll(user.getId());
+        List<CounterValue> allValues = valueService.getAllHistory(allCounters);
+        return allValues;
     }
 }

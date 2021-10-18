@@ -20,5 +20,7 @@ public interface CrudValueRepository {
 
     CounterValue getLastByCounter(Counter counter);
 
+    List<CounterValue> getByCounter(Counter counter);
+
     CounterValue saveNewValue(CounterValue value, int userId, int counterId);
 }

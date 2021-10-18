@@ -53,6 +53,11 @@ public class DataJpaValueRepository implements CrudValueRepository {
     }
 
     @Override
+    public List<CounterValue> getByCounter(Counter counter) {
+        return valueRepository.getByCounter(counter);
+    }
+
+    @Override
     public CounterValue saveNewValue(CounterValue value, int userId, int counterId) {
         value.setCounter(counterRepository.getById(counterId));
         value.setDateTime(LocalDateTime.now());

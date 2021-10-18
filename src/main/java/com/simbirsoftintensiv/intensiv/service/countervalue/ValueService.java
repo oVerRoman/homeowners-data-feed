@@ -22,6 +22,10 @@ public class ValueService {
         return repository.get(id, userId);
     }
 
+    public CounterValue getLast(Counter counter) {
+        return repository.getLastByCounter(counter);
+    }
+
     public void delete(int id, int userId) {
         repository.delete(id, userId);
     }
@@ -36,6 +40,18 @@ public class ValueService {
         for (Counter counter : counters) {
             value = repository.getLastByCounter(counter);
             values.add(value);
+        }
+        return values;
+    }
+
+    public List<CounterValue> getAllHistory(List<Counter> counters) {
+        List<CounterValue> values = new ArrayList<>();
+        List<CounterValue> historyValues;
+        for (Counter counter : counters) {
+            historyValues = repository.getByCounter(counter);
+            for (CounterValue historyValue : historyValues) {
+                values.add(historyValue);
+            }
         }
         return values;
     }
