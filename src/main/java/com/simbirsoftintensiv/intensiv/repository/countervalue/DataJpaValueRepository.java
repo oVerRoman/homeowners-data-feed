@@ -48,8 +48,8 @@ public class DataJpaValueRepository implements CrudValueRepository {
     }
 
     @Override
-    public CounterValue getByCounter(Counter counter) {
-        return valueRepository.getByCounter(counter);
+    public CounterValue getLastByCounter(Counter counter) {
+        return valueRepository.getLastByCounter(counter);
     }
 
     @Override

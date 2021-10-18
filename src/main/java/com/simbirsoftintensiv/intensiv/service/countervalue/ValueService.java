@@ -34,7 +34,7 @@ public class ValueService {
         List<CounterValue> values = new ArrayList<>();
         CounterValue value;
         for (Counter counter : counters) {
-            value = repository.getByCounter(counter);
+            value = repository.getLastByCounter(counter);
             values.add(value);
         }
         return values;
