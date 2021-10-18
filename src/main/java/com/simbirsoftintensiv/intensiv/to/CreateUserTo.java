@@ -26,7 +26,7 @@ public class CreateUserTo implements HasId, Serializable {
 
     @ConstructorProperties({"id", "phone", "email", "firstName", "secondName", "patronymic", "city", "street", "house",
             "building", "apartment"})
-    public CreateUserTo(int id, String phone, String email, String firstName, String secondName, String patronymic,
+    public CreateUserTo(Integer id, String phone, String email, String firstName, String secondName, String patronymic,
                         String city, String street, String house, String building, String apartment) {
         this.id = id;
         this.phone = phone;
@@ -40,24 +40,6 @@ public class CreateUserTo implements HasId, Serializable {
         this.building = building;
         this.apartment = apartment;
     }
-/*
-
-    public CreateUserTo(int id, String phone, String email, String firstName, String secondName, String patronymic,
-                        String city, String street, String house, String building, String apartment) {
-        this.id = id;
-        this.phone = phone;
-        this.email = email;
-        this.firstName = firstName;
-        this.secondName = secondName;
-        this.patronymic = patronymic;
-        this.city = city;
-        this.street = street;
-        this.house = house;
-        this.building = building;
-        this.apartment = apartment;
-    }
-*/
-
 
     public String getPhone() {
         return phone;

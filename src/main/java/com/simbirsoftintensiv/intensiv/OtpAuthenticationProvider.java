@@ -29,11 +29,9 @@ public class OtpAuthenticationProvider implements AuthenticationProvider {
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         String userName = authentication.getName();
         String password = authentication.getCredentials().toString();
-        User user = userRepository.getByPhone(Long.parseLong(userName));
-        if (user == null) {
-            log.warn("User " + userName + " not find. ");
-            throw new BadCredentialsException("Unknown user " + userName);
-        }
+        User user = userRepository.getByPhone(Long.parseLong(userName))
+                .orElseThrow(() -> new BadCredentialsException("Unknown user " + userName));
+
         String optPass = otpService.getOtp(Long.parseLong(userName)) + "";
          if (!password.equals(optPass)) {
             log.info("Неудачная попытка авторизации "+ userName+" .");

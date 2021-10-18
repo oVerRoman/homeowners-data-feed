@@ -61,4 +61,21 @@ public class UserUtil {
                 user.getAddress().getBuilding(),
                 user.getAddress().getApartment());
     }
+
+    public static User updateFromTo(User user, CreateUserTo createUserTo) {
+
+        Address address = user.getAddress();
+        address.setCity(createUserTo.getCity());
+        address.setStreet(createUserTo.getStreet());
+        address.setHouse(createUserTo.getHouse());
+        address.setBuilding(createUserTo.getBuilding());
+        address.setApartment(createUserTo.getApartment());
+
+        user.setFirstName(createUserTo.getFirstName());
+        user.setSecondName(createUserTo.getSecondName());
+        user.setPatronymic(createUserTo.getPatronymic());
+        user.setEmail(createUserTo.getEmail());
+
+        return user;
+    }
 }

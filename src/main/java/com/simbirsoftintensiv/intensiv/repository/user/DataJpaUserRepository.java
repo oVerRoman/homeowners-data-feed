@@ -26,7 +26,7 @@ public class DataJpaUserRepository implements CrudUserRepository {
 
     @Override
     public User getByPhone(Long phone) {
-        return userRepository.getByPhone(phone);
+        return userRepository.getByPhone(phone).orElse(null);
     }
 
     @Override
