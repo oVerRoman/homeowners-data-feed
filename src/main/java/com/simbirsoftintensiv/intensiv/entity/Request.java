@@ -35,6 +35,17 @@ public class Request {
     @Column(name = "status", nullable = false)
     private Integer status;
 
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
+
+    @Column(name = "file")
+    private String fileName;
+
     public Integer getClient() {
         return client;
     }
