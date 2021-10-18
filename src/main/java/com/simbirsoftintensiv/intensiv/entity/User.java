@@ -40,12 +40,6 @@ public class User extends AbstractBaseEntity {
     @JsonIgnore
     private Company company;
 
-//    @Size(min = 2, message = "Не меньше 5 знаков")
-//    private String password;
-
-//    @Transient // под этой анотации поле не имеет отображения в БД.
-//    private String passwordConfirm;
-
     @Enumerated(EnumType.STRING)
     @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"), uniqueConstraints = {
             @UniqueConstraint(columnNames = { "user_id", "role" }, name = "uk_user_roles") })
@@ -78,7 +72,6 @@ public class User extends AbstractBaseEntity {
         this.firstName = firstName;
         this.secondName = secondName;
         this.patronymic = patronymic;
-//        this.password = password;
         this.roles = EnumSet.of(role, roles);
     }
 

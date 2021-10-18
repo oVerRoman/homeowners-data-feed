@@ -2,6 +2,7 @@ package com.simbirsoftintensiv.intensiv.to;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.simbirsoftintensiv.intensiv.entity.HasId;
+import com.simbirsoftintensiv.intensiv.exception_handling.NotFoundException;
 
 import java.beans.ConstructorProperties;
 import java.io.Serializable;
@@ -40,22 +41,36 @@ public class CreateUserTo implements HasId, Serializable {
     }
 
     public String getPhone() {
+        if(phone.length()<11){
+            throw new NotFoundException("User " + phone + " not find. ");
+
+        }
+        System.out.println("getPhone " + phone);
+
         return phone;
     }
 
     public String getEmail() {
+        System.out.println("getPhone " + phone);
+
         return email;
     }
 
     public String getFirstName() {
+        System.out.println("getPhone " + phone);
+
         return firstName;
     }
 
     public String getSecondName() {
+        System.out.println("getPhone " + phone);
+
         return secondName;
     }
 
     public String getPatronymic() {
+        System.out.println("getPhone " + phone);
+
         return patronymic;
     }
 
