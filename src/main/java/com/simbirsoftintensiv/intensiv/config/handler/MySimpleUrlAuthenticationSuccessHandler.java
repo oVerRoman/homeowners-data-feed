@@ -27,14 +27,10 @@ public class MySimpleUrlAuthenticationSuccessHandler implements AuthenticationSu
         clearAuthenticationAttributes(request);
         AuthorizedUser authorizedUser = (AuthorizedUser) authentication.getPrincipal();
         UserTo authUserTo = authorizedUser.getUserTo();
-        HashMap UserFoFront = authUserTo.info();
-        String role = String.valueOf(authentication.getAuthorities());
-        String roleForFront = role.substring(1, role.length() - 1);
 
-        UserFoFront.put("role", roleForFront);
         response.setCharacterEncoding("UTF-8");
         response.setContentType("application/json;charset=UTF-8");
-        response.getWriter().write(JsonUtil.writeValue(UserFoFront));
+        response.getWriter().write(JsonUtil.writeValue(authUserTo));
         response.setStatus(200);
     }
 

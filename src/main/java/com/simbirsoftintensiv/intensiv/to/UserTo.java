@@ -21,10 +21,12 @@ public class UserTo implements HasId, Serializable {
     private final String patronymic;
     private final String address;
     private final String company;
+    private final String role;
 
-    @ConstructorProperties({"id", "phone", "email", "firstName", "secondName", "patronymic", "address", "company"})
+
+    @ConstructorProperties({"id", "phone", "email", "firstName", "secondName", "patronymic", "address", "company", "role"})
     public UserTo(Integer id, Long phone, String email, String firstName, String secondName, String patronymic,
-                  String address, String company) {
+                  String address, String company, String role) {
         this.id = id;
         this.phone = phone;
         this.email = email;
@@ -33,6 +35,7 @@ public class UserTo implements HasId, Serializable {
         this.patronymic = patronymic;
         this.address = address;
         this.company = company;
+        this.role = role;
     }
 
     @Override
@@ -67,6 +70,10 @@ public class UserTo implements HasId, Serializable {
 
     public String getAddress() {
         return address;
+    }
+
+    public String getRole() {
+        return role;
     }
 
     public String getCompany() {
