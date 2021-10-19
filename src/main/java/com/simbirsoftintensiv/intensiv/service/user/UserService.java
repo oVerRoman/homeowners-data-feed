@@ -5,6 +5,8 @@ import com.simbirsoftintensiv.intensiv.entity.User;
 import com.simbirsoftintensiv.intensiv.repository.CompanyRepository;
 import com.simbirsoftintensiv.intensiv.repository.user.CrudUserRepository;
 import com.simbirsoftintensiv.intensiv.service.OtpService;
+import com.simbirsoftintensiv.intensiv.to.CreateUserTo;
+import com.simbirsoftintensiv.intensiv.util.UserUtil;
 import com.simbirsoftintensiv.intensiv.util.ValidationUtil;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -36,30 +38,31 @@ public class UserService implements UserDetailsService {
         return new AuthorizedUser(user);
     }
 
-    public User getByPhone(Long phone) {//fixme del
+    public User getByPhone(Long phone) {
         return ValidationUtil.checkNotFoundWithPhone(userRepository.getByPhone(phone), phone);
     }
 
     public List<User> getAll() {
-        return  userRepository.getAll();
+        return userRepository.getAll();
     }
 
     public User create(User user) {
-        if (userRepository.getByPhone(user.getPhone()) != null) {
-            return null;//fixme нужно исключение пользователь с таким телефоном уже существует
-        }
-        user.setCompany(companyRepository.getById(50000));//заглушка
+        ValidationUtil.checkPhone(userRepository.getByPhone(user.getPhone()) != null);
+        user.setCompany(companyRepository.getById(50000));// fixme заглушка
         return userRepository.save(user);
     }
 
-    public User save(User user) {
-        if (userRepository.getByPhone(user.getPhone()) != null) {
-            return null;//fixme нужно исключение пользователь с таким телефоном уже существует
-        }
-         return userRepository.save(user);
+    public void update(CreateUserTo createUserTo, int authUserId) {
+        ValidationUtil.checkIdEquality(createUserTo, authUserId);
+
+        User user = getByPhone(Long.parseLong(createUserTo.getPhone()));
+        //User cannot change phone number! Only the administrator can..
+        ValidationUtil.checkPhoneEquality(createUserTo, user.getPhone());
+
+        userRepository.save(UserUtil.updateFromTo(user, createUserTo));
     }
 
     public void delete(Long phone) {
-            ValidationUtil.checkNotFoundWithPhone(userRepository.delete(phone), phone);
+        ValidationUtil.checkNotFoundWithPhone(userRepository.delete(phone), phone);
     }
 }

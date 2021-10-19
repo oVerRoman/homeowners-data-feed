@@ -84,6 +84,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/rest/counters").hasRole("USER")
                 .antMatchers("/request").hasRole("USER")
                 .antMatchers("/request/**").hasRole("USER")
+                .antMatchers("/files/**").hasRole("USER")
                 // Доступ разрешен всем пользователей
 //                .antMatchers("/", "/resources/**", "/v3/api-docs/**",
 //                        "/swagger-ui/**").permitAll()

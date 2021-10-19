@@ -196,6 +196,9 @@ public class RequestController {
                 if (request.getType() != null) {
                     request1.setType(request.getType());
                 }
+                if (request.getFileName() != null) {
+                    request1.setFileName(request.getFileName());
+                }
             /*    User user = userService.getByPhone(Long.parseLong(userDetails.getUsername()));
                 if (user.getRoles().toString().equals("USER")) {
                     request1.setClient(user.getId());
