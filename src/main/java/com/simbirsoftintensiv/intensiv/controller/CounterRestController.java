@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.simbirsoftintensiv.intensiv.AuthorizedUser;
 import com.simbirsoftintensiv.intensiv.entity.Counter;
 import com.simbirsoftintensiv.intensiv.entity.CounterValue;
-import com.simbirsoftintensiv.intensiv.entity.User;
 import com.simbirsoftintensiv.intensiv.exception_handling.IncorrectCounterValueException;
 import com.simbirsoftintensiv.intensiv.exception_handling.RepeatedCounterNameException;
 import com.simbirsoftintensiv.intensiv.service.counter.CounterService;
@@ -27,12 +26,11 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
-@Tag(name = "Контроллер показаний счетчиков")
+@Tag(name = "Counters values controller")
 @RequestMapping("/rest")
 public class CounterRestController {
 
     static final Logger log = LoggerFactory.getLogger(LoginController.class);
-
     final CounterService counterService;
     final ValueService valueService;
     final UserService userService;
@@ -58,8 +56,8 @@ public class CounterRestController {
     }
 
     @PostMapping("/counters")
-    public Counter addNewCounter(@RequestBody Counter counter) {
-        User user = counter.getUser();
+    public Counter addNewCounter(@Parameter(hidden = true) @AuthenticationPrincipal AuthorizedUser user,
+            @RequestBody Counter counter) {
         for (Counter counterFromDB : counterService.getAll(user.getId())) {
             if ((counter.getName().trim()).equals(counterFromDB.getName().trim())) {
                 log.info("Попытка добавить существующий счетчик " + counter.getName() + ".");
@@ -71,29 +69,29 @@ public class CounterRestController {
         counterValue.setCounter(counter);
         counterValue.setValue(0);
         valueService.saveNewValue(counterValue, user.getId(), counter.getId());
-        log.info("Пользователь " + user.getPhone() + " добавил новый счетчик " + counter.getName() + ".");
+        log.info("Пользователь " + user.getUsername() + " добавил новый счетчик " + counter.getName() + ".");
         return counter;
     }
 
     @PutMapping("/counters")
-    public List<CounterValue> addCounterValue(@RequestBody List<CounterValue> counterValues) {
+    public List<CounterValue> addCounterValue(@Parameter(hidden = true) @AuthenticationPrincipal AuthorizedUser user,
+            @RequestBody List<CounterValue> counterValues) {
         if (!counterValues.isEmpty()) {
-            User user = counterValues.get(0).getCounter().getUser();
             for (CounterValue counterValue : counterValues) {
                 if (counterValue.getValue() > valueService.getLast(counterValue.getCounter()).getValue()) {
                     CounterValue newCounterValue = new CounterValue();
                     newCounterValue.setValue(counterValue.getValue());
                     valueService.saveNewValue(newCounterValue, user.getId(), counterValue.getCounter().getId());
-                    log.info("Пользователь " + user.getPhone() + " отправил новые значение счетчика.");
+                    log.info("Пользователь " + user.getUsername() + " отправил новые значение счетчика.");
                 } else if (counterValue.getValue() < valueService.getLast(counterValue.getCounter())
                         .getValue()) {
-                    log.info("Попытка внести меньшее значение в счетчик " + user.getPhone());
+                    log.info("Попытка внести меньшее значение в счетчик пользователем " + user.getUsername() + ".");
                     throw new IncorrectCounterValueException(
                             "Введённое значение " + counterValue.getValue() + " меньше предыдущего");
                 }
             }
         }
-        return counterValues;
+        return valueService.getAll(counterService.getAll(user.getId()));
     }
 
     @GetMapping("/counters/history")

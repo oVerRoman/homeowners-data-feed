@@ -2,6 +2,7 @@ package com.simbirsoftintensiv.intensiv.repository.countervalue;
 
 import java.util.List;
 
+import org.springframework.dao.DataAccessResourceFailureException;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -20,7 +21,7 @@ public interface ValueRepository extends JpaRepository<CounterValue, Integer> {
 
     @Query("SELECT cv FROM CounterValue cv WHERE cv.counter=:counter AND cv.dateTime="
             + "(SELECT max(cv.dateTime) FROM CounterValue cv WHERE cv.counter=:counter)")
-    CounterValue getLastByCounter(@Param("counter") Counter counter);
+    CounterValue getLastByCounter(@Param("counter") Counter counter) throws DataAccessResourceFailureException;
 
-    List<CounterValue> getByCounter(@Param("counter") Counter counter);
+    List<CounterValue> getByCounter(@Param("counter") Counter counter) throws DataAccessResourceFailureException;
 }

@@ -3,10 +3,12 @@ package com.simbirsoftintensiv.intensiv.repository.countervalue;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.springframework.dao.DataAccessResourceFailureException;
 import org.springframework.stereotype.Repository;
 
 import com.simbirsoftintensiv.intensiv.entity.Counter;
 import com.simbirsoftintensiv.intensiv.entity.CounterValue;
+import com.simbirsoftintensiv.intensiv.exception_handling.TimeOutSQLException;
 import com.simbirsoftintensiv.intensiv.repository.counter.CounterRepository;
 
 @Repository
@@ -49,7 +51,13 @@ public class DataJpaValueRepository implements CrudValueRepository {
 
     @Override
     public CounterValue getLastByCounter(Counter counter) {
-        return valueRepository.getLastByCounter(counter);
+        CounterValue counterValue;
+        try {
+            counterValue = valueRepository.getLastByCounter(counter);
+        } catch (DataAccessResourceFailureException e) {
+            throw new TimeOutSQLException("Соединение прервано. Попробуйте позже.");
+        }
+        return counterValue;
     }
 
     @Override
