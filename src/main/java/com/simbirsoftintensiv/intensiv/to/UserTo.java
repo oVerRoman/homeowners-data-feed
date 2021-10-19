@@ -77,7 +77,8 @@ public class UserTo implements HasId, Serializable {
         String[] words = address.substring(7).split(", user=com");
         String addressForFront = words[0]+"}";
         HashMap<String, String> map = new HashMap<>();
-        map.put("user", String.valueOf(phone));
+        map.put("id", String.valueOf(getId()));
+        map.put("phone", String.valueOf(phone));
         map.put("email", email);
         map.put("firstName", firstName);
         map.put("secondName", secondName);
