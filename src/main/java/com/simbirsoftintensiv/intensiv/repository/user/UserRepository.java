@@ -7,6 +7,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 //здесь можно выполнять стандартные запросы к БД
 public interface UserRepository extends JpaRepository<User, Integer> {
     @Transactional
@@ -15,5 +17,5 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     int delete(@Param("phone") Long phone);
 
     @Query("SELECT u FROM User u WHERE u.phone =:phone")
-    User getByPhone(@Param("phone") Long phone);
+    Optional<User> getByPhone(@Param("phone") Long phone);
 }

@@ -13,6 +13,7 @@ import com.simbirsoftintensiv.intensiv.exception_handling.IncorectDataDuringRegi
 @JsonAutoDetect(fieldVisibility = ANY, getterVisibility = NONE, isGetterVisibility = NONE, setterVisibility = NONE)
 public class CreateUserTo implements HasId, Serializable {
 
+    private Integer id;
     private final String phone;
     private final String email;
     private final String firstName;
@@ -24,10 +25,11 @@ public class CreateUserTo implements HasId, Serializable {
     private final String building;
     private final String apartment;
 
-    @ConstructorProperties({ "phone", "email", "firstName", "secondName", "patronymic", "city", "street", "house",
-            "building", "apartment" })
-    public CreateUserTo(String phone, String email, String firstName, String secondName, String patronymic,
-            String city, String street, String house, String building, String apartment) {
+    @ConstructorProperties({"id", "phone", "email", "firstName", "secondName", "patronymic", "city", "street", "house",
+            "building", "apartment"})
+    public CreateUserTo(Integer id, String phone, String email, String firstName, String secondName, String patronymic,
+                        String city, String street, String house, String building, String apartment) {
+        this.id = id;
         this.phone = phone;
         this.email = email;
         this.firstName = firstName;
@@ -71,17 +73,14 @@ public class CreateUserTo implements HasId, Serializable {
     }
 
     public String getFirstName() {
-
         return firstName;
     }
 
     public String getSecondName() {
-
         return secondName;
     }
 
     public String getPatronymic() {
-
         return patronymic;
     }
 
@@ -107,11 +106,11 @@ public class CreateUserTo implements HasId, Serializable {
 
     @Override
     public Integer getId() {
-        return null;
+        return this.id;
     }
 
     @Override
     public void setId(Integer id) {
-
+        this.id = id;
     }
 }
