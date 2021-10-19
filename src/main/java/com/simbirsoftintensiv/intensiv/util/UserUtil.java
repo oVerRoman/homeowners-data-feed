@@ -6,6 +6,7 @@ import com.simbirsoftintensiv.intensiv.entity.User;
 import com.simbirsoftintensiv.intensiv.to.CreateUserTo;
 import com.simbirsoftintensiv.intensiv.to.UserTo;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -20,7 +21,8 @@ public class UserUtil {
                 user.getSecondName(),
                 user.getPatronymic(),
                 user.getAddress().toString(),
-                user.getCompany().toString());
+                user.getCompany().toString(),
+                String.join(",", user.getRoles().stream().map(Enum::toString).collect(Collectors.joining())));
     }
 
     public static User toEntity(CreateUserTo createUserTo) {
