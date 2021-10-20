@@ -4,7 +4,7 @@ package com.simbirsoftintensiv.intensiv.util;
 import com.simbirsoftintensiv.intensiv.entity.HasId;
 import com.simbirsoftintensiv.intensiv.entity.User;
 import com.simbirsoftintensiv.intensiv.exception_handling.NotFoundException;
-import com.simbirsoftintensiv.intensiv.to.CreateUserTo;
+import com.simbirsoftintensiv.intensiv.to.UserTo;
 
 public class ValidationUtil {
 
@@ -43,8 +43,8 @@ public class ValidationUtil {
         }
     }
 
-    public static void checkPhoneEquality(CreateUserTo createUserTo, long phone) {
-        if (Long.parseLong(createUserTo.getPhone()) != phone) {
+    public static void checkPhoneEquality(UserTo userTo, long phone) {
+        if (Long.parseLong(userTo.getPhone()) != phone) {
             throw new NotFoundException("User cannot change phone number! Only the administrator can..");
         }
     }

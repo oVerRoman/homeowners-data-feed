@@ -3,8 +3,8 @@ package com.simbirsoftintensiv.intensiv.controller.user;
 import com.simbirsoftintensiv.intensiv.UserTestData;
 import com.simbirsoftintensiv.intensiv.exception_handling.NotFoundException;
 import com.simbirsoftintensiv.intensiv.service.user.UserService;
-import com.simbirsoftintensiv.intensiv.to.CreateUserTo;
 import com.simbirsoftintensiv.intensiv.to.UserTo;
+import com.simbirsoftintensiv.intensiv.to.UserToToDelete;
 import com.simbirsoftintensiv.intensiv.util.JsonUtil;
 import com.simbirsoftintensiv.intensiv.util.UserUtil;
 import org.junit.jupiter.api.Test;
@@ -23,11 +23,11 @@ class RegistrationRestControllerTest extends AbstractUserRestControllerTest {
 
     @Test
     void register() throws Exception {
-        CreateUserTo newUserTo = new CreateUserTo(null, "79999999999", "qwe@asd.re", "fname",
+        UserTo newUserTo = new UserTo(null, "79999999999", "qwe@asd.re", "fname",
                 "sname", "pname", "city", "street", "house",
                 "building", "apartment");
 
-        UserTo registeredTo = UserTestData.asUserTo(perform(MockMvcRequestBuilders.post(REST_URL)
+        UserToToDelete registeredTo = UserTestData.asUserTo(perform(MockMvcRequestBuilders.post(REST_URL)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(newUserTo)))
                 .andExpect(status().isCreated())
@@ -43,7 +43,7 @@ class RegistrationRestControllerTest extends AbstractUserRestControllerTest {
 
     @Test
     void doubleRegisterForSamePhone() {
-        CreateUserTo newUserTo = new CreateUserTo(null, "79999999999", "qwe@asd.re", "fname",
+        UserTo newUserTo = new UserTo(null, "79999999999", "qwe@asd.re", "fname",
                 "sname", "pname", "city", "street", "house",
                 "building", "apartment");
 

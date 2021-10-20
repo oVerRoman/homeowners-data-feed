@@ -5,7 +5,6 @@ import com.simbirsoftintensiv.intensiv.entity.Address;
 import com.simbirsoftintensiv.intensiv.entity.Company;
 import com.simbirsoftintensiv.intensiv.entity.Role;
 import com.simbirsoftintensiv.intensiv.entity.User;
-import com.simbirsoftintensiv.intensiv.to.UserTo;
 import com.simbirsoftintensiv.intensiv.util.JsonUtil;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultMatcher;
@@ -66,23 +65,23 @@ public class UserTestData {
         assertThat(actual).usingRecursiveComparison().ignoringFields("address.id", "company", "id").isEqualTo(expected);
     }
 
-    public static ResultMatcher jsonMatcher(UserTo expected, BiConsumer<UserTo, UserTo> equalsAssertion) {
+    public static ResultMatcher jsonMatcher(UserToToDelete expected, BiConsumer<UserToToDelete, UserToToDelete> equalsAssertion) {
         return mvcResult -> equalsAssertion.accept(asUserTo(mvcResult), expected);
     }
 
-    public static ResultMatcher jsonListMatcher(List<UserTo> expected, BiConsumer<List<UserTo>, List<UserTo>> equalsAssertion) {
+    public static ResultMatcher jsonListMatcher(List<UserToToDelete> expected, BiConsumer<List<UserToToDelete>, List<UserToToDelete>> equalsAssertion) {
         return mvcResult -> equalsAssertion.accept(asUserTos(mvcResult), expected);
     }
 
-    public static List<UserTo> asUserTos(MvcResult mvcResult) throws IOException {
+    public static List<UserToToDelete> asUserTos(MvcResult mvcResult) throws IOException {
         String jsonActual = mvcResult.getResponse().getContentAsString();
-        return JsonUtil.readValues(jsonActual, UserTo.class);
+        return JsonUtil.readValues(jsonActual, UserToToDelete.class);
     }
 
 
-    public static UserTo asUserTo(MvcResult mvcResult) throws UnsupportedEncodingException, JsonProcessingException {
+    public static UserToToDelete asUserTo(MvcResult mvcResult) throws UnsupportedEncodingException, JsonProcessingException {
         String jsonActual = mvcResult.getResponse().getContentAsString();
-        return JsonUtil.readValue(jsonActual, UserTo.class);
+        return JsonUtil.readValue(jsonActual, UserToToDelete.class);
     }
 
     public static User asUser(MvcResult mvcResult) throws UnsupportedEncodingException, JsonProcessingException {

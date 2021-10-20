@@ -2,8 +2,8 @@ package com.simbirsoftintensiv.intensiv.controller.user;
 
 import com.simbirsoftintensiv.intensiv.AuthorizedUser;
 import com.simbirsoftintensiv.intensiv.service.user.UserService;
-import com.simbirsoftintensiv.intensiv.to.CreateUserTo;
 import com.simbirsoftintensiv.intensiv.to.UserTo;
+import com.simbirsoftintensiv.intensiv.to.UserToToDelete;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
@@ -22,22 +22,22 @@ public class ProfileRestController {
     }
 
     @GetMapping()
-    public UserTo get(@Parameter(hidden = true) @AuthenticationPrincipal AuthorizedUser authorizedUser) {
+    public UserToToDelete get(@Parameter(hidden = true) @AuthenticationPrincipal AuthorizedUser authorizedUser) {
         return authorizedUser.getUserTo();
     }
 
     @GetMapping(value = "/update")
-    public CreateUserTo getUserForUpdate(
+    public UserTo getUserForUpdate(
             @Parameter(hidden = true) @AuthenticationPrincipal AuthorizedUser authorizedUser) {
         return authorizedUser.getCreateUserTo();
     }
 
     @PutMapping(value = "/update")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void update(@RequestBody CreateUserTo createUserTo,
+    public void update(@RequestBody UserTo userTo,
                        @Parameter(hidden = true) @AuthenticationPrincipal AuthorizedUser authorizedUser) {
 
-        userService.update(createUserTo, authorizedUser.getId());
+        userService.update(userTo, authorizedUser.getId());
     }
 
 }

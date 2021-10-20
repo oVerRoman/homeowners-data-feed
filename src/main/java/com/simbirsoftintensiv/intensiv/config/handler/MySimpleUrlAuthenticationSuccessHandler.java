@@ -26,15 +26,15 @@ public class MySimpleUrlAuthenticationSuccessHandler implements AuthenticationSu
                                         Authentication authentication) throws IOException {
         clearAuthenticationAttributes(request);
         AuthorizedUser authorizedUser = (AuthorizedUser) authentication.getPrincipal();
-        UserTo authUserTo = authorizedUser.getUserTo();
-        HashMap UserFoFront = authUserTo.info();
+        UserTo authUser = authorizedUser.getUserTo();
+        HashMap userFoFront = authUser.info();
         String role = String.valueOf(authentication.getAuthorities());
         String roleForFront = role.substring(1, role.length() - 1);
 
-        UserFoFront.put("role", roleForFront);
+        userFoFront.put("role", roleForFront);
         response.setCharacterEncoding("UTF-8");
         response.setContentType("application/json;charset=UTF-8");
-        response.getWriter().write(JsonUtil.writeValue(UserFoFront));
+        response.getWriter().write(JsonUtil.writeValue(userFoFront));
         response.setStatus(200);
     }
 

@@ -4,7 +4,7 @@ import com.simbirsoftintensiv.intensiv.UserTestData;
 import com.simbirsoftintensiv.intensiv.entity.User;
 import com.simbirsoftintensiv.intensiv.exception_handling.NotFoundException;
 import com.simbirsoftintensiv.intensiv.service.user.UserService;
-import com.simbirsoftintensiv.intensiv.to.CreateUserTo;
+import com.simbirsoftintensiv.intensiv.to.UserTo;
 import com.simbirsoftintensiv.intensiv.util.JsonUtil;
 import com.simbirsoftintensiv.intensiv.util.UserUtil;
 import org.junit.jupiter.api.Test;
@@ -46,7 +46,7 @@ class ProfileRestControllerTest extends AbstractUserRestControllerTest {
 
     @Test
     void update() throws Exception {
-        CreateUserTo updatedUserTo = new CreateUserTo(60000, "79000000000", "qwe@asd.re", "updateFName",
+        UserTo updatedUserTo = new UserTo(60000, "79000000000", "qwe@asd.re", "updateFName",
                 "sname", "pname", "city", "street", "house",
                 "building", "apartment");
 
@@ -64,7 +64,7 @@ class ProfileRestControllerTest extends AbstractUserRestControllerTest {
 
     @Test
     void updatePhone() throws Exception {
-        CreateUserTo updatedUserTo = new CreateUserTo(60000, "79000000001", "qwe@asd.re", "updateFName",
+        UserTo updatedUserTo = new UserTo(60000, "79000000001", "qwe@asd.re", "updateFName",
                 "sname", "pname", "city", "street", "house",
                 "building", "apartment");
         perform(MockMvcRequestBuilders.put(REST_URL + "/" + "update")
@@ -75,7 +75,7 @@ class ProfileRestControllerTest extends AbstractUserRestControllerTest {
 
     @Test
     void updateWithNotAuthId() throws Exception {
-        CreateUserTo updatedUserTo = new CreateUserTo(60000, "79000000000", "qwe@asd.re", "updateFName",
+        UserTo updatedUserTo = new UserTo(60000, "79000000000", "qwe@asd.re", "updateFName",
                 "sname", "pname", "city", "street", "house",
                 "building", "apartment");
         perform(MockMvcRequestBuilders.put(REST_URL + "/" + "update")

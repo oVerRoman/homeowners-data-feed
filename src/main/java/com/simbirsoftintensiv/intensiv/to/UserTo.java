@@ -2,6 +2,7 @@ package com.simbirsoftintensiv.intensiv.to;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.simbirsoftintensiv.intensiv.entity.HasId;
+import com.simbirsoftintensiv.intensiv.exception_handling.IncorectDataDuringRegistration;
 
 import java.beans.ConstructorProperties;
 import java.io.Serializable;
@@ -13,43 +14,66 @@ import static com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility.NONE;
 @JsonAutoDetect(fieldVisibility = ANY, getterVisibility = NONE, isGetterVisibility = NONE, setterVisibility = NONE)
 public class UserTo implements HasId, Serializable {
 
-    protected Integer id;
-    private final Long phone;
+    private Integer id;
+    private final String phone;
     private final String email;
     private final String firstName;
     private final String secondName;
     private final String patronymic;
-    private final String address;
-    private final String company;
+    private final String city;
+    private final String street;
+    private final String house;
+    private final String building;
+    private final String apartment;
 
-    @ConstructorProperties({"id", "phone", "email", "firstName", "secondName", "patronymic", "address", "company"})
-    public UserTo(Integer id, Long phone, String email, String firstName, String secondName, String patronymic,
-                  String address, String company) {
+    private final String roles;
+
+
+    @ConstructorProperties({"id", "phone", "email", "firstName", "secondName", "patronymic", "city", "street", "house",
+            "building", "apartment", "roles"})
+    public UserTo(Integer id, String phone, String email, String firstName, String secondName, String patronymic,
+                  String city, String street, String house, String building, String apartment, String roles) {
         this.id = id;
         this.phone = phone;
         this.email = email;
         this.firstName = firstName;
         this.secondName = secondName;
         this.patronymic = patronymic;
-        this.address = address;
-        this.company = company;
+        this.city = city;
+        this.street = street;
+        this.house = house;
+        this.building = building;
+        this.apartment = apartment;
+        this.roles = roles;
     }
 
-    @Override
-    public Integer getId() {
-        return id;
-    }
+    public String getPhone() {
+        if (phone.length() < 11) {
+            throw new IncorectDataDuringRegistration("Length " + phone + " < 11");
+        }
+        if (phone.length() > 11) {
+            throw new IncorectDataDuringRegistration("Length " + phone + " > 11");
+        }
+        char firstSymbol = '7';
+        char secondSymbol = '9';
+        System.out.println("getPhone " + phone.charAt(1));
 
-    @Override
-    public void setId(Integer id) {
-        this.id = id;
-    }
+        if (phone.charAt(0) != firstSymbol) {
+            throw new IncorectDataDuringRegistration("The first digit is not 7.");
+        }
+        if (phone.charAt(1) != secondSymbol) {
+            throw new IncorectDataDuringRegistration("The second digit is not 9.");
+        }
 
-    public Long getPhone() {
         return phone;
     }
 
     public String getEmail() {
+        String checkEmail = "@";
+        if (!email.contains(checkEmail)) {
+            throw new IncorectDataDuringRegistration("This no email.");
+        }
+
         return email;
     }
 
@@ -65,12 +89,38 @@ public class UserTo implements HasId, Serializable {
         return patronymic;
     }
 
-    public String getAddress() {
-        return address;
+    public String getCity() {
+        return city;
     }
 
-    public String getCompany() {
-        return company;
+    public String getStreet() {
+        return street;
+    }
+
+    public String getHouse() {
+        return house;
+    }
+
+    public String getBuilding() {
+        return building;
+    }
+
+    public String getApartment() {
+        return apartment;
+    }
+
+    public String getRoles() {
+        return roles;
+    }
+
+    @Override
+    public Integer getId() {
+        return this.id;
+    }
+
+    @Override
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public HashMap<String, String> info() {
