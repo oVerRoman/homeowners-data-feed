@@ -33,7 +33,7 @@ public class AdminRestController {
         //TODO а если несколько админов то надо будет сделать какой конкретно
         return userService.getAll()
                 .stream()
-                .map(UserUtil::asTo)
+                .map(user -> UserUtil.asTo(user))
                 .collect(Collectors.toList());
     }
 

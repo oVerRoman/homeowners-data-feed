@@ -3,33 +3,26 @@ package com.simbirsoftintensiv.intensiv.util;
 import com.simbirsoftintensiv.intensiv.entity.Address;
 import com.simbirsoftintensiv.intensiv.entity.Role;
 import com.simbirsoftintensiv.intensiv.entity.User;
+import com.simbirsoftintensiv.intensiv.to.AbstractUserTo;
 import com.simbirsoftintensiv.intensiv.to.UserTo;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class UserUtil {
 
-//    public static UserToToDelete asTo(User user) {
-//        return new UserToToDelete(
-//                user.getId(),
-//                user.getPhone(),
-//                user.getEmail(),
-//                user.getFirstName(),
-//                user.getSecondName(),
-//                user.getPatronymic(),
-//                user.getAddress().toString(),
-//                user.getCompany().toString());
-//    }
-
-    public static User toEntity(UserTo userTo) {
+    public static User toEntity(AbstractUserTo userTo) {
+        String[] rolesFromTo = userTo.getRoles().split(",");
+        Set<Role> roles = Arrays.stream(rolesFromTo).map(text -> Role.fromString(text)).collect(Collectors.toSet());
         User created = new User(
                 Long.parseLong(userTo.getPhone()),
                 userTo.getEmail(),
                 userTo.getFirstName(),
                 userTo.getSecondName(),
                 userTo.getPatronymic(),
-                Role.USER);
+                roles);
 
         Address address = new Address(
                 userTo.getCity(),
@@ -59,10 +52,10 @@ public class UserUtil {
                 user.getAddress().getHouse(),
                 user.getAddress().getBuilding(),
                 user.getAddress().getApartment(),
-                String.join(",", user.getRoles()
+                user.getRoles()
                         .stream()
                         .map(Enum::toString)
-                        .collect(Collectors.joining())));
+                        .collect(Collectors.joining(",")));
     }
 
     public static User updateFromTo(User user, UserTo userTo) {

@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Set;
 
 @Controller
 @RequestMapping(value = "/registration")
@@ -42,7 +43,7 @@ public class JspRegistrationController {
                 request.getParameter("secondName"),
                 request.getParameter("patronymic"),
 //                null,
-                Role.USER);
+                Set.of(Role.USER));
         Address address = new Address(
                 request.getParameter("city"),
                 request.getParameter("street"),

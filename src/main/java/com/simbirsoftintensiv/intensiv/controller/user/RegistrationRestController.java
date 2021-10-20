@@ -4,8 +4,8 @@ import com.simbirsoftintensiv.intensiv.controller.LoginController;
 import com.simbirsoftintensiv.intensiv.entity.User;
 import com.simbirsoftintensiv.intensiv.service.OtpService;
 import com.simbirsoftintensiv.intensiv.service.user.UserService;
+import com.simbirsoftintensiv.intensiv.to.CreateUserTo;
 import com.simbirsoftintensiv.intensiv.to.UserTo;
-import com.simbirsoftintensiv.intensiv.to.UserToToDelete;
 import com.simbirsoftintensiv.intensiv.util.UserUtil;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.slf4j.Logger;
@@ -39,19 +39,19 @@ public class RegistrationRestController {
     }
 
     @PostMapping()
-    public ResponseEntity<UserToToDelete> create(@RequestBody UserTo userTo) {
-        log.info("Attempt to create a new user " + userTo.getPhone());
-
-        Integer otp = Integer.parseInt(oneTimePassword);
-        if (otp.equals(otpService.getOtp(Long.parseLong(userTo.getPhone())))) {
-            User userFromTo = UserUtil.toEntity(userTo);
-            UserToToDelete created = UserUtil.asTo(userService.create(userFromTo));
+    public ResponseEntity<UserTo> create(@RequestBody CreateUserTo createUserTo) {
+        log.info("Attempt to create a new user " + createUserTo.getPhone());
+        //otp = one time password
+        Integer otp = Integer.parseInt(createUserTo.getOtp());
+        if (otp.equals(otpService.getOtp(Long.parseLong(createUserTo.getPhone())))) {
+            User userFromTo = UserUtil.toEntity(createUserTo);
+            UserTo created = UserUtil.asTo(userService.create(userFromTo));
             URI uriOfNewUser = ServletUriComponentsBuilder.fromCurrentContextPath()
                     .path("/rest/admin/users" + "/{phone}")
                     .buildAndExpand(created.getPhone()).toUri();
             return ResponseEntity.created(uriOfNewUser).body(created);
         } else {
-            throw new BadCredentialsException("Wrong password!");
+            throw new BadCredentialsException("Wrong registration password!");
         }
     }
 
