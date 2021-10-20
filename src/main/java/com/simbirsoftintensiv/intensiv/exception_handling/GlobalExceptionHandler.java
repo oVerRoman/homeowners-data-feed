@@ -70,7 +70,6 @@ public class GlobalExceptionHandler {
         IncorrectData data = new IncorrectData();
         data.setInfo(exception.getMessage());
         log.warn("An exception! Oops!", exception);
-        System.out.println(exception.getClass());
         return new ResponseEntity<>(data, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
