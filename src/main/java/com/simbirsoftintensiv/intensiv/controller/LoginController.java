@@ -51,4 +51,14 @@ public class LoginController {
         return map;
     }
 
+    @ResponseBody
+    @PostMapping("/registration-otp")
+    public HashMap<String, String> getRegistrationOneTimePassword(@RequestParam(value = "username") Long phone) {
+
+        int oneTimePassword = otpService.generateOTP(phone);
+        HashMap<String, String> map = new HashMap<>();
+
+        map.put("smsPassword", String.valueOf(oneTimePassword));// временно
+        return map;
+    }
 }

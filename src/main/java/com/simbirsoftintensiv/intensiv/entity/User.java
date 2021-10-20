@@ -49,6 +49,7 @@ public class User extends AbstractBaseEntity {
     @BatchSize(size = 200)
     @JoinColumn(name = "user_id") // https://stackoverflow.com/a/62848296/548473
     @OnDelete(action = OnDeleteAction.CASCADE)
+    @OrderBy
     private Set<Role> roles;
 
     public User() {}
@@ -64,15 +65,14 @@ public class User extends AbstractBaseEntity {
         this.roles = EnumSet.of(role, roles);
     }
 
-    public User(Long phone, String email, String firstName, String secondName, String patronymic,/*String password,*/
-                Role role, Role... roles) {
-        System.out.println("!!!!!!User->" + role);
+    public User(Long phone, String email, String firstName, String secondName, String patronymic, Set<Role> roles) {
+        System.out.println("!!!!!!User->");
         this.phone = phone;
         this.email = email;
         this.firstName = firstName;
         this.secondName = secondName;
         this.patronymic = patronymic;
-        this.roles = EnumSet.of(role, roles);
+        this.roles = roles;
     }
 
     public Long getPhone() {

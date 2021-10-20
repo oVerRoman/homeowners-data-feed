@@ -3,54 +3,44 @@ package com.simbirsoftintensiv.intensiv.util;
 import com.simbirsoftintensiv.intensiv.entity.Address;
 import com.simbirsoftintensiv.intensiv.entity.Role;
 import com.simbirsoftintensiv.intensiv.entity.User;
-import com.simbirsoftintensiv.intensiv.to.CreateUserTo;
+import com.simbirsoftintensiv.intensiv.to.AbstractUserTo;
 import com.simbirsoftintensiv.intensiv.to.UserTo;
 
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class UserUtil {
 
-    public static UserTo asTo(User user) {
-        return new UserTo(
-                user.getId(),
-                user.getPhone(),
-                user.getEmail(),
-                user.getFirstName(),
-                user.getSecondName(),
-                user.getPatronymic(),
-                user.getAddress().toString(),
-                user.getCompany().toString(),
-                String.join(",", user.getRoles().stream().map(Enum::toString).collect(Collectors.joining())));
-    }
-
-    public static User toEntity(CreateUserTo createUserTo) {
+    public static User toEntity(AbstractUserTo userTo) {
+        String[] rolesFromTo = userTo.getRoles().split(",");
+        Set<Role> roles = Arrays.stream(rolesFromTo).map(text -> Role.fromString(text)).collect(Collectors.toSet());
         User created = new User(
-                Long.parseLong(createUserTo.getPhone()),
-                createUserTo.getEmail(),
-                createUserTo.getFirstName(),
-                createUserTo.getSecondName(),
-                createUserTo.getPatronymic(),
-                Role.USER);
+                Long.parseLong(userTo.getPhone()),
+                userTo.getEmail(),
+                userTo.getFirstName(),
+                userTo.getSecondName(),
+                userTo.getPatronymic(),
+                roles);
 
         Address address = new Address(
-                createUserTo.getCity(),
-                createUserTo.getStreet(),
-                createUserTo.getHouse(),
-                createUserTo.getBuilding(),
-                createUserTo.getApartment());
+                userTo.getCity(),
+                userTo.getStreet(),
+                userTo.getHouse(),
+                userTo.getBuilding(),
+                userTo.getApartment());
 
         created.setAddress(address);
         return created;
     }
 
-    public static List<UserTo> asTos(List<User> users){
+    public static List<UserTo> asTos(List<User> users) {
         return users.stream().map(UserUtil::asTo).collect(Collectors.toList());
     }
 
-    public static CreateUserTo asCreateTo(User user) {
-        return new CreateUserTo(
+    public static UserTo asTo(User user) {
+        return new UserTo(
                 user.getId(),
                 user.getPhone() + "",
                 user.getEmail(),
@@ -61,22 +51,26 @@ public class UserUtil {
                 user.getAddress().getStreet(),
                 user.getAddress().getHouse(),
                 user.getAddress().getBuilding(),
-                user.getAddress().getApartment());
+                user.getAddress().getApartment(),
+                user.getRoles()
+                        .stream()
+                        .map(Enum::toString)
+                        .collect(Collectors.joining(",")));
     }
 
-    public static User updateFromTo(User user, CreateUserTo createUserTo) {
+    public static User updateFromTo(User user, UserTo userTo) {
 
         Address address = user.getAddress();
-        address.setCity(createUserTo.getCity());
-        address.setStreet(createUserTo.getStreet());
-        address.setHouse(createUserTo.getHouse());
-        address.setBuilding(createUserTo.getBuilding());
-        address.setApartment(createUserTo.getApartment());
+        address.setCity(userTo.getCity());
+        address.setStreet(userTo.getStreet());
+        address.setHouse(userTo.getHouse());
+        address.setBuilding(userTo.getBuilding());
+        address.setApartment(userTo.getApartment());
 
-        user.setFirstName(createUserTo.getFirstName());
-        user.setSecondName(createUserTo.getSecondName());
-        user.setPatronymic(createUserTo.getPatronymic());
-        user.setEmail(createUserTo.getEmail());
+        user.setFirstName(userTo.getFirstName());
+        user.setSecondName(userTo.getSecondName());
+        user.setPatronymic(userTo.getPatronymic());
+        user.setEmail(userTo.getEmail());
 
         return user;
     }

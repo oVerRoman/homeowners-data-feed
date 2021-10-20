@@ -5,7 +5,7 @@ import com.simbirsoftintensiv.intensiv.entity.User;
 import com.simbirsoftintensiv.intensiv.repository.CompanyRepository;
 import com.simbirsoftintensiv.intensiv.repository.user.CrudUserRepository;
 import com.simbirsoftintensiv.intensiv.service.OtpService;
-import com.simbirsoftintensiv.intensiv.to.CreateUserTo;
+import com.simbirsoftintensiv.intensiv.to.UserTo;
 import com.simbirsoftintensiv.intensiv.util.UserUtil;
 import com.simbirsoftintensiv.intensiv.util.ValidationUtil;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -52,14 +52,14 @@ public class UserService implements UserDetailsService {
         return userRepository.save(user);
     }
 
-    public void update(CreateUserTo createUserTo, int authUserId) {
-        ValidationUtil.checkIdEquality(createUserTo, authUserId);
+    public void update(UserTo userTo, int authUserId) {
+        ValidationUtil.checkIdEquality(userTo, authUserId);
 
-        User user = getByPhone(Long.parseLong(createUserTo.getPhone()));
+        User user = getByPhone(Long.parseLong(userTo.getPhone()));
         //User cannot change phone number! Only the administrator can..
-        ValidationUtil.checkPhoneEquality(createUserTo, user.getPhone());
+        ValidationUtil.checkPhoneEquality(userTo, user.getPhone());
 
-        userRepository.save(UserUtil.updateFromTo(user, createUserTo));
+        userRepository.save(UserUtil.updateFromTo(user, userTo));
     }
 
     public void delete(Long phone) {

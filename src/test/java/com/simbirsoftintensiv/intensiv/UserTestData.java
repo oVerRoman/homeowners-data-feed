@@ -59,11 +59,11 @@ public class UserTestData {
     }
 
     public static <T> void assertEquals(T actual, T expected) {
-        assertThat(actual).usingRecursiveComparison().ignoringFields("address.id", "company", "id").isEqualTo(expected);
+        assertThat(actual).usingRecursiveComparison().ignoringFields("address.id", "company", "id", "roles").isEqualTo(expected);
     }
 
     public static <T> void assertListEquals(List<T> actual, List<T> expected) {
-        assertThat(actual).usingRecursiveComparison().ignoringFields("address.id", "company", "id").isEqualTo(expected);
+        assertThat(actual).usingRecursiveComparison().ignoringFields("address.id", "company", "id", "roles").isEqualTo(expected);
     }
 
     public static ResultMatcher jsonMatcher(UserTo expected, BiConsumer<UserTo, UserTo> equalsAssertion) {

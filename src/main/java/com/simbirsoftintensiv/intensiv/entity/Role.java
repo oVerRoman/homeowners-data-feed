@@ -6,6 +6,15 @@ public enum Role implements GrantedAuthority {
     USER,
     ADMIN;
 
+    public static Role fromString(String text) {
+        for (Role role : Role.values()) {
+            if (role.getAuthority().equalsIgnoreCase("ROLE_" + text)) {
+                return role;
+            }
+        }
+        return null;
+    }
+
     //    https://stackoverflow.com/a/19542316/548473
     @Override
     public String getAuthority() {
