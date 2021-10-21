@@ -1,9 +1,12 @@
 package com.simbirsoftintensiv.intensiv.repository.countervalue;
 
+import java.sql.Date;
 import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.dao.DataAccessResourceFailureException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import com.simbirsoftintensiv.intensiv.entity.Counter;
@@ -60,9 +63,26 @@ public class DataJpaValueRepository implements CrudValueRepository {
         return counterValue;
     }
 
+//    @Override
+//    public List<CounterValue> getLastByCounters(List<Counter> counters) {
+//        List<CounterValue> counterValues;
+//        try {
+//            counterValues = valueRepository.getLastByCounters(counters);
+//        } catch (DataAccessResourceFailureException e) {
+//            throw new TimeOutSQLException("Соединение прервано. Попробуйте позже.");
+//        }
+//        return counterValues;
+//    }
+
     @Override
     public List<CounterValue> getByCounter(Counter counter) {
         return valueRepository.getByCounter(counter);
+    }
+
+    @Override
+    public Page<CounterValue> getByCounters(List<Counter> counters, String type,
+            Date startDate, Date endDate, Pageable pageable) {
+        return valueRepository.getByCounters(counters, type, startDate, endDate, pageable);
     }
 
     @Override

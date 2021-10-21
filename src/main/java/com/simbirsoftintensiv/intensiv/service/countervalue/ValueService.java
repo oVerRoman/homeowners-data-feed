@@ -1,8 +1,11 @@
 package com.simbirsoftintensiv.intensiv.service.countervalue;
 
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.simbirsoftintensiv.intensiv.entity.Counter;
@@ -22,9 +25,13 @@ public class ValueService {
         return repository.get(id, userId);
     }
 
-    public CounterValue getLast(Counter counter) {
+    public CounterValue getLastValue(Counter counter) {
         return repository.getLastByCounter(counter);
     }
+
+//    public List<CounterValue> getLastValues(List<Counter> counters) {
+//        return repository.getLastByCounters(counters);
+//    }
 
     public void delete(int id, int userId) {
         repository.delete(id, userId);
@@ -36,6 +43,7 @@ public class ValueService {
 
     public List<CounterValue> getAll(List<Counter> counters) {
         List<CounterValue> values = new ArrayList<>();
+//        List<CounterValue> values = repository.getLastByCounters(counters);
         CounterValue value;
         for (Counter counter : counters) {
             value = repository.getLastByCounter(counter);
@@ -44,15 +52,17 @@ public class ValueService {
         return values;
     }
 
-    public List<CounterValue> getAllHistory(List<Counter> counters) {
-        List<CounterValue> values = new ArrayList<>();
-        List<CounterValue> historyValues;
-        for (Counter counter : counters) {
-            historyValues = repository.getByCounter(counter);
-            for (CounterValue historyValue : historyValues) {
-                values.add(historyValue);
-            }
-        }
+    public Page<CounterValue> getAllHistory(List<Counter> counters, String type,
+            Date startDate, Date endDate, Pageable pageable) {
+//        List<CounterValue> values = new ArrayList<>();
+        Page<CounterValue> values = repository.getByCounters(counters, type, startDate, endDate, pageable);
+//        List<CounterValue> historyValues;
+//        for (Counter counter : counters) {
+//            historyValues = repository.getByCounter(counter);
+//            for (CounterValue historyValue : historyValues) {
+//                values.add(historyValue);
+//            }
+//        }
         return values;
     }
 

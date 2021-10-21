@@ -1,9 +1,14 @@
 package com.simbirsoftintensiv.intensiv.controller;
 
+import java.sql.Date;
 import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,6 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.simbirsoftintensiv.intensiv.AuthorizedUser;
@@ -78,12 +84,12 @@ public class CounterRestController {
             @RequestBody List<CounterValue> counterValues) {
         if (!counterValues.isEmpty()) {
             for (CounterValue counterValue : counterValues) {
-                if (counterValue.getValue() > valueService.getLast(counterValue.getCounter()).getValue()) {
+                if (counterValue.getValue() > valueService.getLastValue(counterValue.getCounter()).getValue()) {
                     CounterValue newCounterValue = new CounterValue();
                     newCounterValue.setValue(counterValue.getValue());
                     valueService.saveNewValue(newCounterValue, user.getId(), counterValue.getCounter().getId());
                     log.info("Пользователь " + user.getUsername() + " отправил новые значение счетчика.");
-                } else if (counterValue.getValue() < valueService.getLast(counterValue.getCounter())
+                } else if (counterValue.getValue() < valueService.getLastValue(counterValue.getCounter())
                         .getValue()) {
                     log.info("Попытка внести меньшее значение в счетчик пользователем " + user.getUsername() + ".");
                     throw new IncorrectCounterValueException(
@@ -96,9 +102,16 @@ public class CounterRestController {
 
     @GetMapping("/counters/history")
     public List<CounterValue> getAllCountersHistory(
+            @RequestParam(value = "type", required = false) String type,
+            @RequestParam(value = "startDate", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date startDate,
+            @RequestParam(value = "endDate", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date endDate,
+            @RequestParam(value = "pageNumber", defaultValue = "0") Integer pageNumber,
+            @RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize,
             @Parameter(hidden = true) @AuthenticationPrincipal AuthorizedUser user) {
         List<Counter> allCounters = counterService.getAll(user.getId());
-        List<CounterValue> allValues = valueService.getAllHistory(allCounters);
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by("id").descending());
+        List<CounterValue> allValues = valueService.getAllHistory(allCounters, type, startDate, endDate, pageable)
+                .getContent();
         return allValues;
     }
 }
