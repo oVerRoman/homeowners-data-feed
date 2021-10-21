@@ -1,6 +1,7 @@
 package com.simbirsoftintensiv.intensiv.controller;
 
-import java.sql.Date;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -8,7 +9,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -103,14 +103,24 @@ public class CounterRestController {
     @GetMapping("/counters/history")
     public List<CounterValue> getAllCountersHistory(
             @RequestParam(value = "type", required = false) String type,
-            @RequestParam(value = "startDate", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date startDate,
-            @RequestParam(value = "endDate", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date endDate,
+            @RequestParam(value = "startDate", required = false) String startDate,
+            @RequestParam(value = "endDate", required = false) String endDate,
             @RequestParam(value = "pageNumber", defaultValue = "0") Integer pageNumber,
             @RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize,
             @Parameter(hidden = true) @AuthenticationPrincipal AuthorizedUser user) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
+        LocalDateTime startDateTime = null;
+        LocalDateTime endDateTime = null;
+        if (startDate != null) {
+            startDateTime = LocalDateTime.parse(startDate, formatter);
+        }
+        if (endDate != null) {
+            endDateTime = LocalDateTime.parse(endDate, formatter);
+        }
         List<Counter> allCounters = counterService.getAll(user.getId());
         Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by("id").descending());
-        List<CounterValue> allValues = valueService.getAllHistory(allCounters, type, startDate, endDate, pageable)
+        List<CounterValue> allValues = valueService
+                .getAllHistory(allCounters, type, startDateTime, endDateTime, pageable)
                 .getContent();
         return allValues;
     }

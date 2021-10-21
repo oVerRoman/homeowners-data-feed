@@ -1,6 +1,5 @@
 package com.simbirsoftintensiv.intensiv.repository.countervalue;
 
-import java.sql.Date;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -63,17 +62,6 @@ public class DataJpaValueRepository implements CrudValueRepository {
         return counterValue;
     }
 
-//    @Override
-//    public List<CounterValue> getLastByCounters(List<Counter> counters) {
-//        List<CounterValue> counterValues;
-//        try {
-//            counterValues = valueRepository.getLastByCounters(counters);
-//        } catch (DataAccessResourceFailureException e) {
-//            throw new TimeOutSQLException("Соединение прервано. Попробуйте позже.");
-//        }
-//        return counterValues;
-//    }
-
     @Override
     public List<CounterValue> getByCounter(Counter counter) {
         return valueRepository.getByCounter(counter);
@@ -81,7 +69,7 @@ public class DataJpaValueRepository implements CrudValueRepository {
 
     @Override
     public Page<CounterValue> getByCounters(List<Counter> counters, String type,
-            Date startDate, Date endDate, Pageable pageable) {
+            LocalDateTime startDate, LocalDateTime endDate, Pageable pageable) {
         return valueRepository.getByCounters(counters, type, startDate, endDate, pageable);
     }
 

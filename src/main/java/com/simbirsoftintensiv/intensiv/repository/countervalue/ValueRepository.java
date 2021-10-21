@@ -1,6 +1,6 @@
 package com.simbirsoftintensiv.intensiv.repository.countervalue;
 
-import java.sql.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.dao.DataAccessResourceFailureException;
@@ -27,11 +27,6 @@ public interface ValueRepository extends JpaRepository<CounterValue, Integer> {
     CounterValue getLastByCounter(@Param("counter") Counter counter)
             throws DataAccessResourceFailureException;
 
-//    @Query("SELECT cv FROM CounterValue cv WHERE cv.counter IN (:counters) AND cv.dateTime="
-//            + "(SELECT max(cv.dateTime) FROM CounterValue cv WHERE cv.counter IN (:counters))")
-//    List<CounterValue> getLastByCounters(@Param("counters") List<Counter> counters)
-//            throws DataAccessResourceFailureException;
-
     List<CounterValue> getByCounter(@Param("counter") Counter counter) throws DataAccessResourceFailureException;
 
     @Query("SELECT cv FROM CounterValue cv WHERE "
@@ -41,6 +36,6 @@ public interface ValueRepository extends JpaRepository<CounterValue, Integer> {
             + "(CAST(:startDate AS date) IS NULL OR cv.dateTime BETWEEN :startDate AND current_date)) AND "
             + "cv.counter IN :counters")
     Page<CounterValue> getByCounters(@Param("counters") List<Counter> counters, @Param("type") String type,
-            @Param("startDate") Date startDate, @Param("endDate") Date endDate,
+            @Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate,
             Pageable pageable) throws DataAccessResourceFailureException;
 }
