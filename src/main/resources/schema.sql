@@ -3,6 +3,7 @@ DROP TABLE IF EXISTS client_company;
 DROP TABLE IF EXISTS requests;
 DROP TABLE IF EXISTS request_statuses;
 DROP TABLE IF EXISTS maters;
+DROP TABLE IF EXISTS services;
 DROP TABLE IF EXISTS addresses CASCADE;
 DROP TABLE IF EXISTS users CASCADE;
 DROP TABLE IF EXISTS user_roles;
@@ -56,14 +57,20 @@ CREATE TABLE user_roles
     FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
 );
 
-
+CREATE TABLE services
+(
+    id      INTEGER PRIMARY KEY DEFAULT nextval('global_seq'),
+    name    VARCHAR NOT NULL
+);
 
 CREATE TABLE maters
 (
     id      INTEGER PRIMARY KEY DEFAULT nextval('global_seq'),
     name    VARCHAR NOT NULL,
     user_id INTEGER,
-    FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
+    service_id INTEGER,
+    FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE,
+    FOREIGN KEY (service_id) REFERENCES services (id) ON DELETE CASCADE
 );
 
 CREATE TABLE mater_values

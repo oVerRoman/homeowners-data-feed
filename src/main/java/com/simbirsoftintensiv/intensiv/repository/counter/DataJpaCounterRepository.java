@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 
 import com.simbirsoftintensiv.intensiv.entity.Counter;
 import com.simbirsoftintensiv.intensiv.exception_handling.TimeOutSQLException;
+import com.simbirsoftintensiv.intensiv.repository.service.ServiceRepository;
 import com.simbirsoftintensiv.intensiv.repository.user.UserRepository;
 
 @Repository
@@ -14,10 +15,13 @@ public class DataJpaCounterRepository implements CrudCounterRepository {
 
     public final CounterRepository counterRepository;
     public final UserRepository userRepository;
+    public final ServiceRepository serviceRepository;
 
-    public DataJpaCounterRepository(CounterRepository counterRepository, UserRepository userRepository) {
+    public DataJpaCounterRepository(CounterRepository counterRepository, UserRepository userRepository,
+            ServiceRepository serviceRepository) {
         this.counterRepository = counterRepository;
         this.userRepository = userRepository;
+        this.serviceRepository = serviceRepository;
     }
 
     @Override
@@ -43,6 +47,7 @@ public class DataJpaCounterRepository implements CrudCounterRepository {
             return null;
         }
         counter.setUser(userRepository.getById(userId));
+        counter.setService(serviceRepository.findByName(counter.getService().getName()));
         try {
             counter = counterRepository.save(counter);
         } catch (DataAccessResourceFailureException e) {

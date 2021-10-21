@@ -1,8 +1,11 @@
 package com.simbirsoftintensiv.intensiv.service.countervalue;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.simbirsoftintensiv.intensiv.entity.Counter;
@@ -22,7 +25,7 @@ public class ValueService {
         return repository.get(id, userId);
     }
 
-    public CounterValue getLast(Counter counter) {
+    public CounterValue getLastValue(Counter counter) {
         return repository.getLastByCounter(counter);
     }
 
@@ -44,16 +47,9 @@ public class ValueService {
         return values;
     }
 
-    public List<CounterValue> getAllHistory(List<Counter> counters) {
-        List<CounterValue> values = new ArrayList<>();
-        List<CounterValue> historyValues;
-        for (Counter counter : counters) {
-            historyValues = repository.getByCounter(counter);
-            for (CounterValue historyValue : historyValues) {
-                values.add(historyValue);
-            }
-        }
-        return values;
+    public Page<CounterValue> getAllHistory(List<Counter> counters, String type,
+            LocalDateTime startDate, LocalDateTime endDate, Pageable pageable) {
+        return repository.getByCounters(counters, type, startDate, endDate, pageable);
     }
 
     public CounterValue saveNewValue(CounterValue value, int userId, Integer counterId) {
