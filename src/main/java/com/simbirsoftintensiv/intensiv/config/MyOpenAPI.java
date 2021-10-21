@@ -8,16 +8,15 @@ import org.springframework.context.annotation.Bean;
 
 public class MyOpenAPI {
 
-
     @Bean
     public OpenAPI customOpenAPI(){
         return new OpenAPI()
-                .info(new Info().title("SpringShop API")
-                        .description("Spring shop sample application")
+                .info(new Info().title("API")
+                        .description("Spring home application")
                         .version("v0.0.1")
                         .license(new License().name("Apache 2.0").url("http://springdoc.org")))
                 .externalDocs(new ExternalDocumentation()
-                        .description("SpringShop Wiki Documentation")
+                        .description("Wiki Documentation")
                         .url("https://springshop.wiki.github.org/docs"));
     }
 

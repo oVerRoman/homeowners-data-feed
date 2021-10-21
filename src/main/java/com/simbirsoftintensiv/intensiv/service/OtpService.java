@@ -7,17 +7,18 @@ import org.springframework.stereotype.Service;
 
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
+
 @Service
 public class OtpService {
-    //TODO проверить
+
     //cache based on username and OPT MAX 8
     private static final Integer EXPIRE_MINS = 5;
 
-    private LoadingCache<Long, Integer> otpCache;
+    private final LoadingCache<Long, Integer> otpCache;
 
     public OtpService(){
         otpCache = CacheBuilder.newBuilder().
-                expireAfterWrite(EXPIRE_MINS, TimeUnit.MINUTES).build(new CacheLoader<Long, Integer>() {
+                expireAfterWrite(EXPIRE_MINS, TimeUnit.MINUTES).build(new CacheLoader<>() {
             public Integer load(Long key) {
                 return 0;
             }
@@ -44,7 +45,7 @@ public class OtpService {
     }
 
     //This method is used to clear the OTP catched already
-    public void clearOTP(String key){
-        otpCache.invalidate(key);
-    }
+//    public void clearOTP(String key){
+//        otpCache.invalidate(key);
+//    }
 }

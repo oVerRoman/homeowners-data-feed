@@ -1,6 +1,6 @@
 package com.simbirsoftintensiv.intensiv;
 
-import com.simbirsoftintensiv.intensiv.controller.LoginController;
+import com.simbirsoftintensiv.intensiv.controller.user.LoginController;
 import com.simbirsoftintensiv.intensiv.entity.User;
 import com.simbirsoftintensiv.intensiv.repository.user.UserRepository;
 import com.simbirsoftintensiv.intensiv.service.OtpService;
