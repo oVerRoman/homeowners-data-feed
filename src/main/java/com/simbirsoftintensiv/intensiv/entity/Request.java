@@ -1,5 +1,6 @@
 package com.simbirsoftintensiv.intensiv.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
@@ -16,6 +17,7 @@ public class Request {
     @Column(name = "id", nullable = false)
     private Integer id;
 
+    @JsonIgnore
     @Column(name = "type", nullable = false)
     private Integer type;
 
@@ -23,8 +25,7 @@ public class Request {
     private String title;
 
     @Column(name = "date", nullable = false)
-  //  @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
-    private Date date;
+    private LocalDateTime date;
 
     @Column(name = "address")
     private Integer address;
@@ -84,11 +85,11 @@ public class Request {
         this.address = address;
     }
 
-    public Date getDate() {
+    public LocalDateTime getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(LocalDateTime date) {
         this.date = date;
     }
 
@@ -112,6 +113,7 @@ public class Request {
         return id;
     }
 
+    @JsonIgnore
     public Boolean isNull(){
         return !(this.getType() != null
                 || this.getTitle() != null

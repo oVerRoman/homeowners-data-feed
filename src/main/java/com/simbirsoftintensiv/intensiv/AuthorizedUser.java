@@ -20,6 +20,12 @@ public class AuthorizedUser extends org.springframework.security.core.userdetail
         this.userTo = UserUtil.asTo(user);
     }
 
+
+    public long getPhone(){
+        return Long.parseLong(userTo.getPhone());
+    }
+
+
     public int getId() {
         return userTo.id();
     }
