@@ -23,7 +23,7 @@ import javax.annotation.PostConstruct;
 
 @Configuration
 @EnableWebSecurity
-public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements WebMvcConfigurer{
 
     private final MySimpleUrlAuthenticationSuccessHandler authenticationSuccessHandler;
     private final UserService userService;
@@ -55,7 +55,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                         "/configuration/security",
                         "/swagger-ui.html",
                         "/webjars/**","/", "/resources/**", "/v3/api-docs/**",
-                        "/swagger-ui/**").permitAll()
+                        "/swagger-ui/**","/login").permitAll()
                 .antMatchers("/rest/allcounters").not().authenticated() //fixme delete
                 .antMatchers("/rest/counters").not().authenticated() //fixme delete
                 .antMatchers("/onetimecode").not().authenticated()
@@ -89,7 +89,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
                 .loginPage("/login")
 
-                .defaultSuccessUrl("/").permitAll()
+//                .defaultSuccessUrl("/").permitAll()
                 .successHandler(authenticationSuccessHandler)
                 .failureHandler(new CustomAuthenticationFailureHandler())
 //
