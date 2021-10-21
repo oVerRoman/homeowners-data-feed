@@ -102,11 +102,6 @@
 			<artifactId>guava</artifactId>
 			<version>19.0</version>
 		</dependency>
-	<!--	<dependency>
-			<groupId>com.github.ulisesbocchio</groupId>
-			<artifactId>jasypt-maven-plugin</artifactId>
-			<version>3.0.4</version>
-		</dependency>-->
 	</dependencies>
 
 	<build>
@@ -123,11 +118,6 @@
 					</excludes>
 				</configuration>
 			</plugin>
-		<!--	<plugin>
-				<groupId>com.github.ulisesbocchio</groupId>
-				<artifactId>jasypt-maven-plugin</artifactId>
-				<version>3.0.4</version>
-			</plugin>-->
 		</plugins>
 	</build>
 
