@@ -7,6 +7,7 @@ import com.simbirsoftintensiv.intensiv.config.handler.MySimpleUrlAuthenticationS
 import com.simbirsoftintensiv.intensiv.service.user.UserService;
 import com.simbirsoftintensiv.intensiv.util.JsonUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.embedded.tomcat.TomcatContextCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
@@ -124,6 +125,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements W
             }
         };
     }
+
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) {
