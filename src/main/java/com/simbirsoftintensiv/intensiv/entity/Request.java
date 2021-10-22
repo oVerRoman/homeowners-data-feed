@@ -24,7 +24,7 @@ public class Request {
     @Column(name = "title", nullable = false, length = 50)
     private String title;
 
-    @Column(name = "date", nullable = false)
+    @Column(name = "date")
     private LocalDateTime date;
 
     @Column(name = "address")
@@ -37,15 +37,15 @@ public class Request {
     private Integer status;
 
     public String getFileName() {
-        return fileName;
+        return filename;
     }
 
     public void setFileName(String fileName) {
-        this.fileName = fileName;
+        this.filename = fileName;
     }
 
     @Column(name = "file")
-    private String fileName;
+    private String filename;
 
     public Integer getClient() {
         return client;
@@ -90,7 +90,7 @@ public class Request {
     }
 
     public void setDate(LocalDateTime date) {
-        this.date = date;
+         this.date = date;
     }
 
     public String getTitle() {
@@ -106,6 +106,7 @@ public class Request {
     }
 
     public void setType(Integer type) {
+     //   this.type = 1;
         this.type = type;
     }
 
@@ -125,14 +126,16 @@ public class Request {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "(" +
-                "id = " + id + ", " +
-                "type = " + type + ", " +
-                "title = " + title + ", " +
-                "date = " + date + ", " +
-                "address = " + address + ", " +
-                "comment = " + comment + ", " +
-                "status = " + status + ", " +
-                "client = " + client + ")";
+        return "Request{" +
+                "id=" + id +
+                ", type=" + type +
+                ", title='" + title + '\'' +
+                ", date=" + date +
+                ", address=" + address +
+                ", comment='" + comment + '\'' +
+                ", status=" + status +
+                ", filename='" + filename + '\'' +
+                ", client=" + client +
+                '}';
     }
 }

@@ -166,9 +166,17 @@ public class RequestController {
     // Добавление обращения пользователя
     @PostMapping(path = "")
     public ResponseEntity<?> createRequest(@RequestBody Request request,  @AuthenticationPrincipal UserDetails userDetails) {
+
         try {
+
             if (request != null) {
+
                 request.setClient(getUserIdByRole(userDetails,request.getClient()));
+                request.setType(1);
+                request.setAddress(userService.getByPhone(Long.parseLong(userDetails.getUsername())).getAddress().getId());
+                if (request.getDate() == null) {
+                    request.setDate(LocalDateTime.now());
+                }
                 log.info("Request creat " + request.getId() + " .");
                 final Request result = requestRepository.save(request);
                 return  new ResponseEntity<>(result,HttpStatus.OK);
@@ -222,6 +230,7 @@ public class RequestController {
                 if (request.getFileName() != null) {
                     request1.setFileName(request.getFileName());
                 }
+                System.out.println(request1.toString());
                 final Request result = requestRepository.save(request1);
                 log.info("UpdateRequest " + request.getId() + ".");
                 return new ResponseEntity<>(result, HttpStatus.OK);
