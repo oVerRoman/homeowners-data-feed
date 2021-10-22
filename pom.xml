@@ -144,6 +144,13 @@
 				<artifactId>jasypt-maven-plugin</artifactId>
 				<version>3.0.4</version>
 			</plugin>
+			<plugin>
+			    <groupId>org.apache.maven.plugins</groupId>
+			    <artifactId>maven-surefire-plugin</artifactId>
+			    <configuration>
+			        <argLine>-Dfile.encoding=UTF-8</argLine>
+			    </configuration>
+			</plugin>
 		</plugins>
 	</build>
 

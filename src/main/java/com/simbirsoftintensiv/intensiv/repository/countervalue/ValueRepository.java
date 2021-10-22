@@ -31,11 +31,19 @@ public interface ValueRepository extends JpaRepository<CounterValue, Integer> {
 
     @Query("SELECT cv FROM CounterValue cv WHERE "
             + "(:type IS NULL OR cv.counter.service.name=:type) AND "
-            + "((CAST (:startDate AS date) IS NULL AND CAST(:endDate AS date) IS NULL "
-            + "OR cv.dateTime BETWEEN :startDate AND :endDate) OR "
-            + "(CAST(:startDate AS date) IS NULL OR cv.dateTime BETWEEN :startDate AND current_date)) AND "
+            + "(CAST(:startDate AS date) IS NULL OR cv.dateTime >= :startDate) AND "
+            + "(CAST(:endDate AS date) IS NULL OR cv.dateTime <= :endDate) AND "
             + "cv.counter IN :counters")
     Page<CounterValue> getByCounters(@Param("counters") List<Counter> counters, @Param("type") String type,
             @Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate,
             Pageable pageable) throws DataAccessResourceFailureException;
+
+    @Query("SELECT COUNT(cv) FROM CounterValue cv WHERE "
+            + "(:type IS NULL OR cv.counter.service.name=:type) AND "
+            + "(CAST(:startDate AS date) IS NULL OR cv.dateTime >= :startDate) AND "
+            + "(CAST(:endDate AS date) IS NULL OR cv.dateTime <= :endDate) AND "
+            + "cv.counter IN :counters")
+    int getAmountByCounters(@Param("counters") List<Counter> counters, @Param("type") String type,
+            @Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate)
+            throws DataAccessResourceFailureException;
 }
