@@ -106,7 +106,7 @@ public class CounterRestController {
             @RequestParam(value = "startDate", required = false) String startDateString,
             @RequestParam(value = "endDate", required = false) String endDateString,
             @RequestParam(value = "pageNumber", defaultValue = "0") Integer pageNumber,
-            @RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize,
+            @RequestParam(value = "pageSize", defaultValue = "20") Integer pageSize,
             @Parameter(hidden = true) @AuthenticationPrincipal AuthorizedUser user) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
         LocalDateTime startDate = null;
@@ -131,7 +131,7 @@ public class CounterRestController {
             @RequestParam(value = "startDate", required = false) String startDateString,
             @RequestParam(value = "endDate", required = false) String endDateString,
             @RequestParam(value = "pageNumber", defaultValue = "0") Integer pageNumber,
-            @RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize,
+            @RequestParam(value = "pageSize", defaultValue = "20") Integer pageSize,
             @Parameter(hidden = true) @AuthenticationPrincipal AuthorizedUser user) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
         LocalDateTime startDate = null;
