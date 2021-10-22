@@ -1,6 +1,5 @@
 package com.simbirsoftintensiv.intensiv.controller.user;
 
-import com.simbirsoftintensiv.intensiv.controller.LoginController;
 import com.simbirsoftintensiv.intensiv.entity.User;
 import com.simbirsoftintensiv.intensiv.service.OtpService;
 import com.simbirsoftintensiv.intensiv.service.user.UserService;
@@ -22,12 +21,10 @@ import java.net.URI;
 
 @RestController
 @Tag(name = "Контроллер регистрации")
-//TODO требует прописать Content-Type: application/json
 @RequestMapping(value = RegistrationRestController.REST_URL)
 public class RegistrationRestController {
 
-    static final Logger log = LoggerFactory.getLogger(LoginController.class);
-
+    static final Logger log = LoggerFactory.getLogger(RegistrationRestController.class);
     static final String REST_URL = "/rest/users";
 
     private final OtpService otpService;
@@ -38,12 +35,12 @@ public class RegistrationRestController {
         this.userService = userService;
     }
 
-    @PostMapping()
+    @PostMapping
     public ResponseEntity<UserTo> create(@RequestBody CreateUserTo createUserTo) {
         log.info("Attempt to create a new user " + createUserTo.getPhone());
         //otp = one time password
-        Integer otp = Integer.parseInt(createUserTo.getOtp());
-        if (otp.equals(otpService.getOtp(Long.parseLong(createUserTo.getPhone())))) {
+        int otp = Integer.parseInt(createUserTo.getOtp());
+        if (otp == otpService.getOtp(Long.parseLong(createUserTo.getPhone()))) {
             User userFromTo = UserUtil.toEntity(createUserTo);
             UserTo created = UserUtil.asTo(userService.create(userFromTo));
             URI uriOfNewUser = ServletUriComponentsBuilder.fromCurrentContextPath()

@@ -14,6 +14,7 @@ public class CreateUserTo extends AbstractUserTo implements HasId, Serializable 
     public CreateUserTo(String phone, String email, String firstName, String secondName,
                         String patronymic, String city, String street, String house, String building,
                         String apartment, String roles, String otp) {
+
         super(phone, email, firstName, secondName, patronymic,
                 city, street, house, building, apartment, roles);
         this.otp = otp;

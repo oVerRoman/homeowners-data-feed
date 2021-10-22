@@ -4,6 +4,7 @@ import com.simbirsoftintensiv.intensiv.AuthorizedUser;
 import com.simbirsoftintensiv.intensiv.entity.Request;
 import com.simbirsoftintensiv.intensiv.entity.User;
 import com.simbirsoftintensiv.intensiv.repository.RequestRepository;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.simbirsoftintensiv.intensiv.service.user.UserService;
@@ -61,12 +62,13 @@ import java.util.List;
  */
 
 @RestController
+@Tag(name = "Users requests controller")
 @RequestMapping(path = "rest/request")
 public class RequestController {
 
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
     static final Logger log =
-            LoggerFactory.getLogger(LoginController.class);
+            LoggerFactory.getLogger(RequestController.class);
 
     @Autowired
     private RequestRepository requestRepository;
@@ -166,9 +168,17 @@ public class RequestController {
     // Добавление обращения пользователя
     @PostMapping(path = "")
     public ResponseEntity<?> createRequest(@RequestBody Request request,  @AuthenticationPrincipal UserDetails userDetails) {
+
         try {
+
             if (request != null) {
+
                 request.setClient(getUserIdByRole(userDetails,request.getClient()));
+                request.setType(1);
+                request.setAddress(userService.getByPhone(Long.parseLong(userDetails.getUsername())).getAddress().getId());
+                if (request.getDate() == null) {
+                    request.setDate(LocalDateTime.now());
+                }
                 log.info("Request creat " + request.getId() + " .");
                 final Request result = requestRepository.save(request);
                 return  new ResponseEntity<>(result,HttpStatus.OK);
@@ -222,6 +232,7 @@ public class RequestController {
                 if (request.getFileName() != null) {
                     request1.setFileName(request.getFileName());
                 }
+                System.out.println(request1.toString());
                 final Request result = requestRepository.save(request1);
                 log.info("UpdateRequest " + request.getId() + ".");
                 return new ResponseEntity<>(result, HttpStatus.OK);
