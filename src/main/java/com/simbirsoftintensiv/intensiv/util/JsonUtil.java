@@ -10,6 +10,7 @@ import java.util.List;
 
 @UtilityClass
 public class JsonUtil {
+
     private static ObjectMapper objectMapper;
 
     public static void setObjectMapper(ObjectMapper objectMapper) {

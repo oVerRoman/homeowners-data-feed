@@ -1,5 +1,6 @@
 package com.simbirsoftintensiv.intensiv.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
@@ -16,15 +17,15 @@ public class Request {
     @Column(name = "id", nullable = false)
     private Integer id;
 
+    @JsonIgnore
     @Column(name = "type", nullable = false)
     private Integer type;
 
     @Column(name = "title", nullable = false, length = 50)
     private String title;
 
-    @Column(name = "date", nullable = false)
-  //  @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
-    private Date date;
+    @Column(name = "date")
+    private LocalDateTime date;
 
     @Column(name = "address")
     private Integer address;
@@ -36,15 +37,15 @@ public class Request {
     private Integer status;
 
     public String getFileName() {
-        return fileName;
+        return filename;
     }
 
     public void setFileName(String fileName) {
-        this.fileName = fileName;
+        this.filename = fileName;
     }
 
     @Column(name = "file")
-    private String fileName;
+    private String filename;
 
     public Integer getClient() {
         return client;
@@ -84,12 +85,12 @@ public class Request {
         this.address = address;
     }
 
-    public Date getDate() {
+    public LocalDateTime getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
-        this.date = date;
+    public void setDate(LocalDateTime date) {
+         this.date = date;
     }
 
     public String getTitle() {
@@ -105,6 +106,7 @@ public class Request {
     }
 
     public void setType(Integer type) {
+     //   this.type = 1;
         this.type = type;
     }
 
@@ -112,6 +114,7 @@ public class Request {
         return id;
     }
 
+    @JsonIgnore
     public Boolean isNull(){
         return !(this.getType() != null
                 || this.getTitle() != null
@@ -123,14 +126,16 @@ public class Request {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "(" +
-                "id = " + id + ", " +
-                "type = " + type + ", " +
-                "title = " + title + ", " +
-                "date = " + date + ", " +
-                "address = " + address + ", " +
-                "comment = " + comment + ", " +
-                "status = " + status + ", " +
-                "client = " + client + ")";
+        return "Request{" +
+                "id=" + id +
+                ", type=" + type +
+                ", title='" + title + '\'' +
+                ", date=" + date +
+                ", address=" + address +
+                ", comment='" + comment + '\'' +
+                ", status=" + status +
+                ", filename='" + filename + '\'' +
+                ", client=" + client +
+                '}';
     }
 }

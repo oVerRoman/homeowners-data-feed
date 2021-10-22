@@ -1,8 +1,10 @@
 package com.simbirsoftintensiv.intensiv.controller;
 
+import com.simbirsoftintensiv.intensiv.AuthorizedUser;
 import com.simbirsoftintensiv.intensiv.entity.Request;
 import com.simbirsoftintensiv.intensiv.entity.User;
 import com.simbirsoftintensiv.intensiv.repository.RequestRepository;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.simbirsoftintensiv.intensiv.service.user.UserService;
@@ -10,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -18,7 +21,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 
+import javax.ejb.Local;
 import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalAccessor;
 import java.util.Date;
 import java.util.List;
 
@@ -52,11 +61,14 @@ import java.util.List;
  *
  */
 
-@Controller
+@RestController
+@Tag(name = "Users requests controller")
 @RequestMapping(path = "rest/request")
 public class RequestController {
+
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
     static final Logger log =
-            LoggerFactory.getLogger(LoginController.class);
+            LoggerFactory.getLogger(RequestController.class);
 
     @Autowired
     private RequestRepository requestRepository;
@@ -64,28 +76,45 @@ public class RequestController {
     @Autowired
     private UserService userService;
 
+    // Получаем id пользователя на основе роли
+    private Integer getUserIdByRole(UserDetails details, Integer userId){
+        if (details.getAuthorities().toString().equals("[USER]")) {
+            return userService.getByPhone(Long.parseLong(details.getUsername())).getId();
+        } else {
+            return userId;
+        }
+    }
+
     // получаем все запросы клиентов
     // ? Как фронт передает дату. В каком формате.
     @GetMapping(path = "")
     public @ResponseBody
     ResponseEntity<List<Request>> getAllRequest(
             @RequestParam(value = "type", required = false) Integer type,
-            @RequestParam(value = "date", required = false) Date date,
+            @RequestParam(value = "startdate", required = false) String startDate,
+            @RequestParam(value = "enddate", required = false) String endDate,
             @RequestParam(value = "status", required = false) Integer status,
             @RequestParam(value = "clientId", required = false) Integer clientId,
             @RequestParam(value = "pageNumber", defaultValue = "0") Integer pageNumber,
             @RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize,
             @RequestParam(value = "order", defaultValue = "date") String order,
             @AuthenticationPrincipal UserDetails userDetails){
-        User user = userService.getByPhone(Long.parseLong(userDetails.getUsername()));
+
+        LocalDateTime dateStart = null;
+        LocalDateTime dateEnd = null;
+        if (startDate != null) {
+            dateStart = LocalDateTime.parse(startDate, formatter);
+        }
+        if (endDate != null) {
+            dateEnd = LocalDateTime.parse(endDate, formatter);
+        }
         Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(order).descending());
-        Integer userId = clientId;
-     /*   if (user.getRoles().toString().equals("USER")) {
-            userId = user.getId();
-        }*/
-        List<Request> result = requestRepository.findAllBy(type, status,
-                //  date,
-                userId, pageable).getContent();
+        List<Request> result = requestRepository.findAllBy(type,
+                status,
+                dateStart,
+                dateEnd,
+                getUserIdByRole(userDetails,clientId),
+                pageable).getContent();
 
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
@@ -95,14 +124,14 @@ public class RequestController {
     public @ResponseBody
     ResponseEntity<Request> getRequestById(@PathVariable Integer id,  @AuthenticationPrincipal UserDetails userDetails) {
         if (id>0) {
-          /*  User user = userService.getByPhone(Long.parseLong(userDetails.getUsername()));
-            Integer userId = requestRepository.findById(id).get().getClient();
-            if (user.getRoles().toString().equals("USER")) {
-                userId = user.getId();
-            } */
             if (requestRepository.findById(id).isPresent()) {
-                   final Request result = requestRepository.findById(id).get();
-                return new ResponseEntity<>(result, HttpStatus.OK);
+                final Request result = requestRepository.findById(id).get();
+                final Integer userId = getUserIdByRole(userDetails,result.getClient());
+                if (userId.equals(result.getClient())) {
+                    return new ResponseEntity<>(result, HttpStatus.OK);
+                } else {
+                    return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+                }
             } else {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
@@ -116,40 +145,41 @@ public class RequestController {
     public @ResponseBody
     Long getRequestCount(
             @RequestParam(value = "type", required = false) Integer type,
-            @RequestParam(value = "date", required = false) Instant date,
+            @RequestParam(value = "startdate", required = false) String startDate,
+            @RequestParam(value = "enddate", required = false) String endDate,
             @RequestParam(value = "status", required = false) Integer status,
             @RequestParam(value = "clientId", required = false) Integer clientId,
-            @RequestParam(value = "pageNumber", defaultValue = "0") Integer pageNumber,
-            @RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize,
-            @RequestParam(value = "order", defaultValue = "id") String order,
             @AuthenticationPrincipal UserDetails userDetails){
-        User user = userService.getByPhone(Long.parseLong(userDetails.getUsername()));
-        Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(order).descending());
-        Integer userId = clientId;
-     /*   if (user.getRoles().toString().equals("USER")) {
-            userId = user.getId();
-        } */
+
+        LocalDateTime dateStart = null;
+        LocalDateTime dateEnd = null;
+        if (startDate != null) {
+            dateStart = LocalDateTime.parse(startDate, formatter);
+        }
+        if (endDate != null) {
+            dateEnd = LocalDateTime.parse(endDate, formatter);
+        }
         return requestRepository.countAllBy(type, status,
-                //  date,
-                userId);
+                dateStart,
+                dateEnd,
+                getUserIdByRole(userDetails,clientId));
     }
 
     // Добавление обращения пользователя
     @PostMapping(path = "")
     public ResponseEntity<?> createRequest(@RequestBody Request request,  @AuthenticationPrincipal UserDetails userDetails) {
 
-        //request.setClient();
-     //   System.out.println(request.toString());
-   //     final Request result = requestRepository.save(request);
-      //  result.setClient(user);
-     //   return  new ResponseEntity<>(result,HttpStatus.OK);
         try {
+
             if (request != null) {
+
+                request.setClient(getUserIdByRole(userDetails,request.getClient()));
+                request.setType(1);
+                request.setAddress(userService.getByPhone(Long.parseLong(userDetails.getUsername())).getAddress().getId());
+                if (request.getDate() == null) {
+                    request.setDate(LocalDateTime.now());
+                }
                 log.info("Request creat " + request.getId() + " .");
-              /*  User user = userService.getByPhone(Long.parseLong(userDetails.getUsername()));
-                if (user.getRoles().toString().equals("USER")) {
-                    request.setClient(user.getId());
-                }*/
                 final Request result = requestRepository.save(request);
                 return  new ResponseEntity<>(result,HttpStatus.OK);
             } else {
@@ -175,6 +205,9 @@ public class RequestController {
         if (!request.isNull()) {
             try {
                 Request request1 = requestRepository.findById(id).get();
+                if (!request1.getClient().equals(getUserIdByRole(userDetails,request1.getClient()))) {
+                    return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+                }
                 if (request.getStatus() != null) {
                     request1.setStatus(request.getStatus());
                 }
@@ -199,13 +232,9 @@ public class RequestController {
                 if (request.getFileName() != null) {
                     request1.setFileName(request.getFileName());
                 }
-            /*    User user = userService.getByPhone(Long.parseLong(userDetails.getUsername()));
-                if (user.getRoles().toString().equals("USER")) {
-                    request1.setClient(user.getId());
-                }*/
+                System.out.println(request1.toString());
                 final Request result = requestRepository.save(request1);
                 log.info("UpdateRequest " + request.getId() + ".");
-
                 return new ResponseEntity<>(result, HttpStatus.OK);
             } catch (Exception e) {
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -220,18 +249,13 @@ public class RequestController {
     public ResponseEntity<?> deleteById(@PathVariable Integer id,  @AuthenticationPrincipal UserDetails userDetails) {
         if (id > 0) {
             if (requestRepository.findById(id).isPresent()) {
-              /*  User user = userService.getByPhone(Long.parseLong(userDetails.getUsername()));
-                if (user.getRoles().toString().equals("USER")) {
-                    if (requestRepository.findById(id).get().getClient().intValue() == user.getId()) {
-                        requestRepository.deleteById(id);
-                        return new ResponseEntity<>(HttpStatus.OK);
-                    } else {
+                    if (!requestRepository.findById(id).get().getClient().equals(getUserIdByRole(userDetails,
+                            requestRepository.findById(id).get().getClient()))) {
                         return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
                     }
-                } else {*/
                     requestRepository.deleteById(id);
-                    log.warn("Deleting a client's request " + id + ".");return new ResponseEntity<>(HttpStatus.OK);
-           //     }
+                    log.warn("Deleting a client's request " + id + ".");
+                    return new ResponseEntity<>(HttpStatus.OK);
             } else {
                 log.info("attempt to Delete a client's request "+ id +" .");
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);

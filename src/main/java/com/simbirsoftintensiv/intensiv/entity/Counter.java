@@ -21,13 +21,17 @@ public class Counter extends AbstractBaseEntity {
     @Column(name = "name")
     private String name;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     private User user;
 
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "counter")
     private List<CounterValue> counterValues;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "service_id")
+    private Service service;
 
     public Counter() {
     }
@@ -46,5 +50,13 @@ public class Counter extends AbstractBaseEntity {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public Service getService() {
+        return service;
+    }
+
+    public void setService(Service service) {
+        this.service = service;
     }
 }

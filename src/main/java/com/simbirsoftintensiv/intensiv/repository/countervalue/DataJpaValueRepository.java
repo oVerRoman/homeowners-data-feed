@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.dao.DataAccessResourceFailureException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import com.simbirsoftintensiv.intensiv.entity.Counter;
@@ -63,6 +65,12 @@ public class DataJpaValueRepository implements CrudValueRepository {
     @Override
     public List<CounterValue> getByCounter(Counter counter) {
         return valueRepository.getByCounter(counter);
+    }
+
+    @Override
+    public Page<CounterValue> getByCounters(List<Counter> counters, String type,
+            LocalDateTime startDate, LocalDateTime endDate, Pageable pageable) {
+        return valueRepository.getByCounters(counters, type, startDate, endDate, pageable);
     }
 
     @Override

@@ -1,10 +1,13 @@
 package com.simbirsoftintensiv.intensiv.controller;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.validation.Valid;
-
+import com.simbirsoftintensiv.intensiv.AuthorizedUser;
+import com.simbirsoftintensiv.intensiv.controller.user.LoginController;
+import com.simbirsoftintensiv.intensiv.entity.Counter;
+import com.simbirsoftintensiv.intensiv.entity.CounterValue;
+import com.simbirsoftintensiv.intensiv.entity.CounterValuesList;
+import com.simbirsoftintensiv.intensiv.service.counter.CounterService;
+import com.simbirsoftintensiv.intensiv.service.countervalue.ValueService;
+import io.swagger.v3.oas.annotations.Parameter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -15,19 +18,14 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.simbirsoftintensiv.intensiv.AuthorizedUser;
-import com.simbirsoftintensiv.intensiv.entity.Counter;
-import com.simbirsoftintensiv.intensiv.entity.CounterValue;
-import com.simbirsoftintensiv.intensiv.entity.CounterValuesList;
-import com.simbirsoftintensiv.intensiv.service.counter.CounterService;
-import com.simbirsoftintensiv.intensiv.service.countervalue.ValueService;
-
-import io.swagger.v3.oas.annotations.Parameter;
+import javax.validation.Valid;
+import java.util.ArrayList;
+import java.util.List;
 
 @Controller
 public class CounterController {
 
-    static final Logger log = LoggerFactory.getLogger(LoginController.class);
+    static final Logger log = LoggerFactory.getLogger(CounterController.class);
     final CounterService counterService;
     final ValueService valueService;
 
