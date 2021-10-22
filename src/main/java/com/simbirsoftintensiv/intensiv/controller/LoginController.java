@@ -8,10 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 
@@ -32,6 +29,7 @@ public class LoginController {
         return "username";
     }
 
+//    @CrossOrigin(origins = "http://localhost:3000")
     @ResponseBody
     @PostMapping("/onetimecode")
     public HashMap<String, String> getOneTimePassword(@RequestParam(value = "username") Long phone) {
