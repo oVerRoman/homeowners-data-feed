@@ -29,5 +29,8 @@ public interface CrudValueRepository {
     Page<CounterValue> getByCounters(List<Counter> counters, String type,
             LocalDateTime startDate, LocalDateTime endDate, Pageable pageable);
 
+    int getAmountByCounters(List<Counter> counters, String type,
+            LocalDateTime startDate, LocalDateTime endDate);
+
     CounterValue saveNewValue(CounterValue value, int userId, int counterId);
 }
