@@ -68,7 +68,7 @@ public class RequestController {
 
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
     static final Logger log =
-            LoggerFactory.getLogger(LoginController.class);
+            LoggerFactory.getLogger(RequestController.class);
 
     @Autowired
     private RequestRepository requestRepository;

@@ -25,7 +25,7 @@ import java.util.List;
 @Controller
 public class CounterController {
 
-    static final Logger log = LoggerFactory.getLogger(LoginController.class);
+    static final Logger log = LoggerFactory.getLogger(CounterController.class);
     final CounterService counterService;
     final ValueService valueService;
 

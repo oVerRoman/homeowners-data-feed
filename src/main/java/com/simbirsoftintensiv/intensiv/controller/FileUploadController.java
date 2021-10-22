@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 @RequestMapping(path="rest/files")
 public class FileUploadController {
     static final Logger log =
-            LoggerFactory.getLogger(LoginController.class);
+            LoggerFactory.getLogger(FileUploadController.class);
 
     @Autowired
     FileStorageService fileStorageService;

@@ -24,7 +24,13 @@ public class MySimpleUrlAuthenticationSuccessHandler implements AuthenticationSu
                                         Authentication authentication) throws IOException {
         AuthorizedUser authorizedUser = (AuthorizedUser) authentication.getPrincipal();
         UserTo authUserTo = authorizedUser.getUserTo();
-        httpServletResponse.setHeader("Access-Control-Allow-Origin", "*");
+        System.out.println(httpServletRequest.getHeader("Origin"));
+        String requestUrl =  httpServletRequest.getHeader("Origin");
+        System.out.println("onAuthenticationSuccess "+requestUrl);
+
+        httpServletResponse.setHeader("Access-Control-Allow-Origin", requestUrl);
+        httpServletResponse.setHeader("Access-Control-Allow-Credentials", "true");
+
         httpServletResponse.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE");
         httpServletResponse.setCharacterEncoding("UTF-8");
         httpServletResponse.setContentType("application/json;charset=UTF-8");

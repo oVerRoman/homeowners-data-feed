@@ -29,7 +29,7 @@ import java.util.List;
 @RequestMapping("/rest")
 public class CounterRestController {
 
-    static final Logger log = LoggerFactory.getLogger(LoginController.class);
+    static final Logger log = LoggerFactory.getLogger(CounterRestController.class);
     final CounterService counterService;
     final ValueService valueService;
     final UserService userService;

@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class OtpAuthenticationProvider implements AuthenticationProvider {
     static final Logger log =
-            LoggerFactory.getLogger(LoginController.class);
+            LoggerFactory.getLogger(OtpAuthenticationProvider.class);
     private final UserRepository userRepository;
     private final OtpService otpService;
 
