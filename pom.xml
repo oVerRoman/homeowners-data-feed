@@ -30,19 +30,6 @@
 			<artifactId>spring-boot-starter-security</artifactId>
 		</dependency>
 
-	<!--	<dependency>
-			<groupId>io.springfox</groupId>
-			<artifactId>springfox-swagger2</artifactId>
-			<version>3.0.0</version>
-		</dependency>
-
-
-		<dependency>
-			<groupId>io.springfox</groupId>
-			<artifactId>springfox-swagger-ui</artifactId>
-			<version>3.0.0</version>
-		</dependency>-->
-
 		<dependency>
 			<groupId>org.springdoc</groupId>
 			<artifactId>springdoc-openapi-ui</artifactId>
@@ -58,9 +45,6 @@
 			<artifactId>springdoc-openapi-security</artifactId>
 			<version>1.5.2</version>
 		</dependency>
-
-
-
 
 		<dependency>
 			<groupId>org.projectlombok</groupId>
@@ -118,11 +102,6 @@
 			<artifactId>guava</artifactId>
 			<version>19.0</version>
 		</dependency>
-		<dependency>
-			<groupId>com.github.ulisesbocchio</groupId>
-			<artifactId>jasypt-maven-plugin</artifactId>
-			<version>3.0.4</version>
-		</dependency>
 	</dependencies>
 
 	<build>
@@ -138,11 +117,6 @@
 						</exclude>
 					</excludes>
 				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>com.github.ulisesbocchio</groupId>
-				<artifactId>jasypt-maven-plugin</artifactId>
-				<version>3.0.4</version>
 			</plugin>
 		</plugins>
 	</build>

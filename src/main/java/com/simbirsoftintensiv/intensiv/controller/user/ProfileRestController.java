@@ -25,14 +25,12 @@ public class ProfileRestController {
 
     @GetMapping()
     public UserTo get(@Parameter(hidden = true) @AuthenticationPrincipal AuthorizedUser authorizedUser) {
-       // return authorizedUser.getUserTo();
         return UserUtil.asTo(userService.getByPhone(authorizedUser.getPhone()));
     }
 
     @GetMapping(value = "/update")
     public UserTo getUserForUpdate(
             @Parameter(hidden = true) @AuthenticationPrincipal AuthorizedUser authorizedUser) {
-       // return authorizedUser.getUserTo();
         return UserUtil.asTo(userService.getByPhone(authorizedUser.getPhone()));
     }
 
@@ -40,8 +38,8 @@ public class ProfileRestController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void update(@RequestBody UserTo userTo,
                        @Parameter(hidden = true) @AuthenticationPrincipal AuthorizedUser authorizedUser) {
-
         userService.update(userTo, authorizedUser.getId());
+        authorizedUser.setUserTo(userTo);
     }
 
 }

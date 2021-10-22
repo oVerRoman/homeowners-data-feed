@@ -1,6 +1,7 @@
 package com.simbirsoftintensiv.intensiv.controller;
 
 import com.simbirsoftintensiv.intensiv.AuthorizedUser;
+import com.simbirsoftintensiv.intensiv.controller.user.LoginController;
 import com.simbirsoftintensiv.intensiv.service.FileStorageService;
 import com.simbirsoftintensiv.intensiv.util.Message;
 import com.simbirsoftintensiv.intensiv.util.UploadFile;
