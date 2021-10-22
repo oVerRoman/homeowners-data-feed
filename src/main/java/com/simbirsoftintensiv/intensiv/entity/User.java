@@ -10,8 +10,7 @@ import javax.validation.constraints.NotNull;
 import java.util.EnumSet;
 import java.util.Set;
 
-@Entity // ->поля класса имеют отображение в БД,
-
+@Entity
 @Table(name = "users")
 public class User extends AbstractBaseEntity {
 
@@ -45,7 +44,6 @@ public class User extends AbstractBaseEntity {
             @UniqueConstraint(columnNames = { "user_id", "role" }, name = "uk_user_roles") })
     @Column(name = "role")
     @ElementCollection(fetch = FetchType.EAGER)
-//    @Fetch(FetchMode.SUBSELECT)
     @BatchSize(size = 200)
     @JoinColumn(name = "user_id") // https://stackoverflow.com/a/62848296/548473
     @OnDelete(action = OnDeleteAction.CASCADE)
