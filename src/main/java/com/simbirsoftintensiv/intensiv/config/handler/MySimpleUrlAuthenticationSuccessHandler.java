@@ -24,13 +24,17 @@ public class MySimpleUrlAuthenticationSuccessHandler implements AuthenticationSu
                                         Authentication authentication) throws IOException {
         AuthorizedUser authorizedUser = (AuthorizedUser) authentication.getPrincipal();
         UserTo authUserTo = authorizedUser.getUserTo();
-        System.out.println(httpServletRequest.getHeader("Origin"));
+        System.out.println(httpServletRequest.getSession().getId());
+//        String cookie = httpServletResponse.getHeader("Set-Cookie");if (cookie != null)
+//        { httpServletResponse.setHeader("Set-Cookie", cookie + "; HttpOnly; SameSite=strict");}
+        httpServletResponse.setHeader("Set-Cookie", "JSESSIONID="+httpServletRequest.getSession().getId()+";"  +" SameSite=None; Secure; " + "Path=/; HttpOnly");
+        System.out.println(httpServletResponse.getHeader("Set-Cookie"));
         String requestUrl =  httpServletRequest.getHeader("Origin");
         System.out.println("onAuthenticationSuccess "+requestUrl);
 
         httpServletResponse.setHeader("Access-Control-Allow-Origin", requestUrl);
         httpServletResponse.setHeader("Access-Control-Allow-Credentials", "true");
-        httpServletResponse.setHeader("SameSite=strict","secure");
+
         httpServletResponse.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE");
         httpServletResponse.setCharacterEncoding("UTF-8");
         httpServletResponse.setContentType("application/json;charset=UTF-8");
