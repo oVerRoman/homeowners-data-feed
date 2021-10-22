@@ -1,4 +1,4 @@
-package com.simbirsoftintensiv.intensiv;
+package com.simbirsoftintensiv.intensiv.controller.user;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.simbirsoftintensiv.intensiv.entity.Address;

@@ -1,12 +1,9 @@
 package com.simbirsoftintensiv.intensiv.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
-import java.time.Instant;
 import java.time.LocalDateTime;
-import java.util.Date;
 
 
 @Entity
@@ -59,7 +56,20 @@ public class Request {
     @Column(name = "client_id")
     private Integer client;
 
+    public Request() {}
 
+    public Request(Integer id, Integer type, String title, LocalDateTime date, Integer address, String comment,
+                   Integer status, String fileName, Integer client) {
+        this.id = id;
+        this.type = type;
+        this.title = title;
+        this.date = date;
+        this.address = address;
+        this.comment = comment;
+        this.status = status;
+        this.fileName = fileName;
+        this.client = client;
+    }
 
     public Integer getStatus() {
         return status;
