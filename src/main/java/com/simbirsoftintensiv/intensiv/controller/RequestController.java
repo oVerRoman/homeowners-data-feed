@@ -4,6 +4,7 @@ import com.simbirsoftintensiv.intensiv.AuthorizedUser;
 import com.simbirsoftintensiv.intensiv.entity.Request;
 import com.simbirsoftintensiv.intensiv.entity.User;
 import com.simbirsoftintensiv.intensiv.repository.RequestRepository;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.simbirsoftintensiv.intensiv.service.user.UserService;
@@ -61,6 +62,7 @@ import java.util.List;
  */
 
 @RestController
+@Tag(name = "Users requests controller")
 @RequestMapping(path = "rest/request")
 public class RequestController {
 
