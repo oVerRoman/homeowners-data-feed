@@ -2,7 +2,11 @@ package com.simbirsoftintensiv.intensiv.controller;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Paths;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,14 +20,18 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 public class VersionRestController {
 
     @GetMapping
-    public String getVersion() {
-        String pom = null;
-        try {
-            pom = Files.lines(Paths.get("POM.xml")).toString();
+    public String getVersion() throws NoSuchFileException {
+        StringBuilder stringBuilder = new StringBuilder();
+        try (Stream<String> textStream = Files.lines(Paths.get("pom.xml"))) {
+            textStream.forEach(stringBuilder::append);
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new NoSuchFileException("File pom.xml not found");
         }
-        System.out.println(pom);
-        return "0.9.0";
+        final Pattern pattern = Pattern.compile("<version>(.+?)</version>",
+                Pattern.DOTALL);
+        final Matcher matcher = pattern.matcher(stringBuilder.toString());
+        matcher.find();
+        matcher.find();
+        return matcher.group(1);
     }
 }
