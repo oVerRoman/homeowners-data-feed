@@ -1,11 +1,7 @@
 package com.simbirsoftintensiv.intensiv.config;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.simbirsoftintensiv.intensiv.OtpAuthenticationProvider;
-import com.simbirsoftintensiv.intensiv.config.handler.CustomAuthenticationFailureHandler;
-import com.simbirsoftintensiv.intensiv.config.handler.MySimpleUrlAuthenticationSuccessHandler;
-import com.simbirsoftintensiv.intensiv.service.user.UserService;
-import com.simbirsoftintensiv.intensiv.util.JsonUtil;
+import javax.annotation.PostConstruct;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,11 +15,16 @@ import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import javax.annotation.PostConstruct;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.simbirsoftintensiv.intensiv.OtpAuthenticationProvider;
+import com.simbirsoftintensiv.intensiv.config.handler.CustomAuthenticationFailureHandler;
+import com.simbirsoftintensiv.intensiv.config.handler.MySimpleUrlAuthenticationSuccessHandler;
+import com.simbirsoftintensiv.intensiv.service.user.UserService;
+import com.simbirsoftintensiv.intensiv.util.JsonUtil;
 
 @Configuration
 @EnableWebSecurity
-public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements WebMvcConfigurer{
+public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements WebMvcConfigurer {
 
     private final MySimpleUrlAuthenticationSuccessHandler authenticationSuccessHandler;
     private final UserService userService;
@@ -31,8 +32,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements W
     private final ObjectMapper objectMapper;
 
     public WebSecurityConfig(MySimpleUrlAuthenticationSuccessHandler authenticationSuccessHandler,
-                             OtpAuthenticationProvider otpAuthenticationProvider,
-                             UserService userService, ObjectMapper objectMapper) {
+            OtpAuthenticationProvider otpAuthenticationProvider,
+            UserService userService, ObjectMapper objectMapper) {
         this.authenticationSuccessHandler = authenticationSuccessHandler;
         this.otpAuthenticationProvider = otpAuthenticationProvider;
         this.userService = userService;
@@ -48,16 +49,17 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements W
     protected void configure(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.csrf().disable().authorizeRequests()
                 // Доступ только для не зарегистрированных пользователей
-                .antMatchers( "/v2/api-docs",
+                .antMatchers("/v2/api-docs",
                         "/swagger-resources",
                         "/swagger-resources/**",
                         "/configuration/ui",
                         "/configuration/security",
                         "/swagger-ui.html",
-                        "/webjars/**","/", "/resources/**", "/v3/api-docs/**",
-                        "/swagger-ui/**","/login").permitAll()
-                .antMatchers("/rest/allcounters").not().authenticated() //fixme delete
-                .antMatchers("/rest/counters").not().authenticated() //fixme delete
+                        "/webjars/**", "/", "/resources/**", "/v3/api-docs/**",
+                        "/swagger-ui/**", "/login")
+                .permitAll()
+                .antMatchers("/rest/allcounters").not().authenticated() // fixme delete
+                .antMatchers("/rest/counters").not().authenticated() // fixme delete
                 .antMatchers("/onetimecode").not().authenticated()
                 .antMatchers("/registration-otp").not().authenticated()
                 .antMatchers("/rest/users").not().authenticated()
@@ -67,7 +69,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements W
                 // Доступ только для пользователей с ролью Администратор
                 .antMatchers("/rest/admin").hasRole("ADMIN")
                 .antMatchers("/rest/admin/**").hasRole("ADMIN")
-                //TODO разобраться
+                // TODO разобраться
 //                .antMatchers("/news").hasAnyAuthority("USER", "ADMIN")// почему то так не работает
                 .antMatchers("/news").hasRole("USER")
 //                .antMatchers("/counters").hasRole("USER")
@@ -103,7 +105,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements W
 
         ;
 
-
         httpSecurity.exceptionHandling()
                 .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED));
     }
@@ -112,6 +113,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements W
     @Bean
     public WebMvcConfigurer corsConfigurer() {
         return new WebMvcConfigurer() {
+
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
@@ -123,7 +125,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements W
             }
         };
     }
-
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) {
