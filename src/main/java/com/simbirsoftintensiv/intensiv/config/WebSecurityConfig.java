@@ -65,6 +65,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements W
                 .antMatchers("/rest/users").not().authenticated()
                 .antMatchers("/registration").not().authenticated()
                 .antMatchers("/username").not().authenticated()
+                .antMatchers("/version").not().authenticated()
                 .antMatchers("/rest/profile").authenticated()
                 // Доступ только для пользователей с ролью Администратор
                 .antMatchers("/rest/admin").hasRole("ADMIN")
