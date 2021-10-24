@@ -65,7 +65,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements W
                 .antMatchers("/rest/users").not().authenticated()
                 .antMatchers("/registration").not().authenticated()
                 .antMatchers("/username").not().authenticated()
-                .antMatchers("/version").not().authenticated()
                 .antMatchers("/rest/profile").authenticated()
                 // Доступ только для пользователей с ролью Администратор
                 .antMatchers("/rest/admin").hasRole("ADMIN")
@@ -83,6 +82,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements W
                 .antMatchers("/request/**").hasRole("USER")
                 .antMatchers("/files/**").hasRole("USER")
                 // Доступ разрешен всем пользователей
+                .antMatchers("version").permitAll()
 //                .antMatchers("/", "/resources/**", "/v3/api-docs/**",
 //                        "/swagger-ui/**").permitAll()
                 // Все остальные страницы требуют аутентификации
