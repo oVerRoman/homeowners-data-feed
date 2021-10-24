@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 @RequestMapping(value = "/rest/admin/users")
 public class AdminRestController {
 
-    static final Logger log = LoggerFactory.getLogger(LoginController.class);
+    static final Logger log = LoggerFactory.getLogger(AdminRestController.class);
     private final UserService userService;
 
     public AdminRestController(UserService userService) {

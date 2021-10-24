@@ -24,7 +24,7 @@ import java.net.URI;
 @RequestMapping(value = RegistrationRestController.REST_URL)
 public class RegistrationRestController {
 
-    static final Logger log = LoggerFactory.getLogger(LoginController.class);
+    static final Logger log = LoggerFactory.getLogger(RegistrationRestController.class);
     static final String REST_URL = "/rest/users";
 
     private final OtpService otpService;

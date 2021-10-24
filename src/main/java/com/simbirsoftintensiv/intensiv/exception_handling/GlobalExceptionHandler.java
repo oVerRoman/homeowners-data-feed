@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-    static final Logger log = LoggerFactory.getLogger(LoginController.class);
+    static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
     @ExceptionHandler
     public ResponseEntity<IncorrectData> handleException(NotFoundException exception) {

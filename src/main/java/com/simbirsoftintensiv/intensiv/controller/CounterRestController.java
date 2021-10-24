@@ -29,7 +29,7 @@ import java.util.List;
 @RequestMapping("/rest")
 public class CounterRestController {
 
-    static final Logger log = LoggerFactory.getLogger(LoginController.class);
+    static final Logger log = LoggerFactory.getLogger(CounterRestController.class);
     final CounterService counterService;
     final ValueService valueService;
     final UserService userService;
@@ -96,25 +96,47 @@ public class CounterRestController {
     @GetMapping("/counters/history")
     public List<CounterValue> getAllCountersHistory(
             @RequestParam(value = "type", required = false) String type,
-            @RequestParam(value = "startDate", required = false) String startDate,
-            @RequestParam(value = "endDate", required = false) String endDate,
+            @RequestParam(value = "startDate", required = false) String startDateString,
+            @RequestParam(value = "endDate", required = false) String endDateString,
             @RequestParam(value = "pageNumber", defaultValue = "0") Integer pageNumber,
-            @RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize,
+            @RequestParam(value = "pageSize", defaultValue = "20") Integer pageSize,
             @Parameter(hidden = true) @AuthenticationPrincipal AuthorizedUser user) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
-        LocalDateTime startDateTime = null;
-        LocalDateTime endDateTime = null;
-        if (startDate != null) {
-            startDateTime = LocalDateTime.parse(startDate, formatter);
+        LocalDateTime startDate = null;
+        LocalDateTime endDate = null;
+        if (startDateString != null) {
+            startDate = LocalDateTime.parse(startDateString, formatter);
         }
-        if (endDate != null) {
-            endDateTime = LocalDateTime.parse(endDate, formatter);
+        if (endDateString != null) {
+            endDate = LocalDateTime.parse(endDateString, formatter);
         }
         List<Counter> allCounters = counterService.getAll(user.getId());
         Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by("id").descending());
         List<CounterValue> allValues = valueService
-                .getAllHistory(allCounters, type, startDateTime, endDateTime, pageable)
+                .getAllHistory(allCounters, type, startDate, endDate, pageable)
                 .getContent();
         return allValues;
+    }
+
+    @GetMapping("/counters/history/amount")
+    public int getAllCountersHistoryAmount(
+            @RequestParam(value = "type", required = false) String type,
+            @RequestParam(value = "startDate", required = false) String startDateString,
+            @RequestParam(value = "endDate", required = false) String endDateString,
+            @RequestParam(value = "pageNumber", defaultValue = "0") Integer pageNumber,
+            @RequestParam(value = "pageSize", defaultValue = "20") Integer pageSize,
+            @Parameter(hidden = true) @AuthenticationPrincipal AuthorizedUser user) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
+        LocalDateTime startDate = null;
+        LocalDateTime endDate = null;
+        if (startDateString != null) {
+            startDate = LocalDateTime.parse(startDateString, formatter);
+        }
+        if (endDateString != null) {
+            endDate = LocalDateTime.parse(endDateString, formatter);
+        }
+        List<Counter> allCounters = counterService.getAll(user.getId());
+        int allValuesAmount = valueService.getAllHistoryAmount(allCounters, type, startDate, endDate);
+        return allValuesAmount;
     }
 }

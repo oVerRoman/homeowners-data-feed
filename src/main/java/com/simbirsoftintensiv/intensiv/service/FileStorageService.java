@@ -20,7 +20,7 @@ import java.util.stream.Stream;
 @Service("fileStorageService")
 public class FileStorageService implements FileStorageRepository {
     static final Logger log =
-            LoggerFactory.getLogger(LoginController.class);
+            LoggerFactory.getLogger(FileStorageService.class);
     private final Path path =  Paths.get(System.getProperty("user.dir") + "/fileStorage");
 
     @Override

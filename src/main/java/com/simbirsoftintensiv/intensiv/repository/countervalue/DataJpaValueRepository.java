@@ -74,6 +74,12 @@ public class DataJpaValueRepository implements CrudValueRepository {
     }
 
     @Override
+    public int getAmountByCounters(List<Counter> counters, String type, LocalDateTime startDate,
+            LocalDateTime endDate) {
+        return valueRepository.getAmountByCounters(counters, type, startDate, endDate);
+    }
+
+    @Override
     public CounterValue saveNewValue(CounterValue value, int userId, int counterId) {
         value.setCounter(counterRepository.getById(counterId));
         value.setDateTime(LocalDateTime.now());

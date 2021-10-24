@@ -7,10 +7,11 @@ import com.simbirsoftintensiv.intensiv.service.user.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
+
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-
+ 
 import java.util.HashMap;
 
 @Controller
@@ -25,6 +26,7 @@ public class LoginController {
         this.otpService = otpService;
     }
 
+//    @CrossOrigin(origins = "http://localhost:3000")
     @ResponseBody
     @PostMapping("/onetimecode")
     public HashMap<String, String> getOneTimePassword(@RequestParam(value = "username") long phone) {

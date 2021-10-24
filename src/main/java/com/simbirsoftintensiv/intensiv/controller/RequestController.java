@@ -1,23 +1,34 @@
 package com.simbirsoftintensiv.intensiv.controller;
 
-import com.simbirsoftintensiv.intensiv.controller.user.LoginController;
+import com.simbirsoftintensiv.intensiv.AuthorizedUser;
 import com.simbirsoftintensiv.intensiv.entity.Request;
+import com.simbirsoftintensiv.intensiv.entity.User;
 import com.simbirsoftintensiv.intensiv.repository.RequestRepository;
-import com.simbirsoftintensiv.intensiv.service.user.UserService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import com.simbirsoftintensiv.intensiv.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+
+import javax.ejb.Local;
+import java.time.Instant;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalAccessor;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -51,12 +62,13 @@ import java.util.List;
  */
 
 @RestController
+@Tag(name = "Users requests controller")
 @RequestMapping(path = "rest/request")
 public class RequestController {
 
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
     static final Logger log =
-            LoggerFactory.getLogger(LoginController.class);
+            LoggerFactory.getLogger(RequestController.class);
 
     @Autowired
     private RequestRepository requestRepository;
@@ -156,9 +168,17 @@ public class RequestController {
     // Добавление обращения пользователя
     @PostMapping(path = "")
     public ResponseEntity<?> createRequest(@RequestBody Request request,  @AuthenticationPrincipal UserDetails userDetails) {
+
         try {
+
             if (request != null) {
+
                 request.setClient(getUserIdByRole(userDetails,request.getClient()));
+                request.setType(1);
+                request.setAddress(userService.getByPhone(Long.parseLong(userDetails.getUsername())).getAddress().getId());
+                if (request.getDate() == null) {
+                    request.setDate(LocalDateTime.now());
+                }
                 log.info("Request creat " + request.getId() + " .");
                 final Request result = requestRepository.save(request);
                 return  new ResponseEntity<>(result,HttpStatus.OK);
@@ -212,6 +232,7 @@ public class RequestController {
                 if (request.getFileName() != null) {
                     request1.setFileName(request.getFileName());
                 }
+                System.out.println(request1.toString());
                 final Request result = requestRepository.save(request1);
                 log.info("UpdateRequest " + request.getId() + ".");
                 return new ResponseEntity<>(result, HttpStatus.OK);
