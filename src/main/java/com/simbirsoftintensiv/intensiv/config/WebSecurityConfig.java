@@ -58,8 +58,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements W
                         "/webjars/**", "/", "/resources/**", "/v3/api-docs/**",
                         "/swagger-ui/**", "/login")
                 .permitAll()
-                .antMatchers("/rest/allcounters").not().authenticated() // fixme delete
-                .antMatchers("/rest/counters").not().authenticated() // fixme delete
+//                .antMatchers("/rest/allcounters").not().authenticated() // fixme delete
+//                .antMatchers("/rest/counters").not().authenticated() // fixme delete
                 .antMatchers("/onetimecode").not().authenticated()
                 .antMatchers("/version").not().authenticated()
                 .antMatchers("/registration-otp").not().authenticated()
@@ -83,6 +83,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements W
                 .antMatchers("/request/**").hasRole("USER")
                 .antMatchers("/files/**").hasRole("USER")
                 // Доступ разрешен всем пользователей
+                .antMatchers("/version").permitAll()
 //                .antMatchers("/", "/resources/**", "/v3/api-docs/**",
 //                        "/swagger-ui/**").permitAll()
                 // Все остальные страницы требуют аутентификации
