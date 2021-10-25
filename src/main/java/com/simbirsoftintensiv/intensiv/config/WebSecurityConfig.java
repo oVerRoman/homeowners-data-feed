@@ -61,6 +61,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements W
                 .antMatchers("/rest/allcounters").not().authenticated() // fixme delete
                 .antMatchers("/rest/counters").not().authenticated() // fixme delete
                 .antMatchers("/onetimecode").not().authenticated()
+                .antMatchers("/version").not().authenticated()
                 .antMatchers("/registration-otp").not().authenticated()
                 .antMatchers("/rest/users").not().authenticated()
                 .antMatchers("/registration").not().authenticated()
