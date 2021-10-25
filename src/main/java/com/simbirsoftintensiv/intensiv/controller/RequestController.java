@@ -96,18 +96,27 @@ public class RequestController {
             @RequestParam(value = "status", required = false) Integer status,
             @RequestParam(value = "clientId", required = false) Integer clientId,
             @RequestParam(value = "pageNumber", defaultValue = "0") Integer pageNumber,
-            @RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize,
+            @RequestParam(value = "pageSize", defaultValue = "0") Integer pageSize,
             @RequestParam(value = "order", defaultValue = "date") String order,
             @AuthenticationPrincipal UserDetails userDetails){
 
         LocalDateTime dateStart = null;
         LocalDateTime dateEnd = null;
+
         if (startDate != null) {
             dateStart = LocalDateTime.parse(startDate, formatter);
         }
         if (endDate != null) {
             dateEnd = LocalDateTime.parse(endDate, formatter);
         }
+
+        if (pageSize.equals(0)) {
+            pageSize = requestRepository.countAllBy(type, status,
+                    dateStart,
+                    dateEnd,
+                    getUserIdByRole(userDetails, clientId)).intValue();
+        }
+
         Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(order).descending());
         List<Request> result = requestRepository.findAllBy(type,
                 status,
