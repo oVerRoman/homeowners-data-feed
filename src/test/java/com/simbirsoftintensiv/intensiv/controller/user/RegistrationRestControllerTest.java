@@ -1,6 +1,5 @@
 package com.simbirsoftintensiv.intensiv.controller.user;
 
-import com.simbirsoftintensiv.intensiv.UserTestData;
 import com.simbirsoftintensiv.intensiv.entity.Role;
 import com.simbirsoftintensiv.intensiv.exception_handling.NotFoundException;
 import com.simbirsoftintensiv.intensiv.service.OtpService;
