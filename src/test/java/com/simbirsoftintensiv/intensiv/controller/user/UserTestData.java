@@ -79,7 +79,6 @@ public class UserTestData {
         return JsonUtil.readValues(jsonActual, UserTo.class);
     }
 
-
     public static UserTo asUserTo(MvcResult mvcResult) throws UnsupportedEncodingException, JsonProcessingException {
         String jsonActual = mvcResult.getResponse().getContentAsString();
         return JsonUtil.readValue(jsonActual, UserTo.class);

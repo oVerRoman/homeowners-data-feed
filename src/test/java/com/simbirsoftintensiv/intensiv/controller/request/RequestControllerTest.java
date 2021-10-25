@@ -1,30 +1,115 @@
 package com.simbirsoftintensiv.intensiv.controller.request;
 
+import com.simbirsoftintensiv.intensiv.entity.Request;
+import com.simbirsoftintensiv.intensiv.util.JsonUtil;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-class RequestControllerTest {
+import static com.simbirsoftintensiv.intensiv.TestUtil.user;
+import static com.simbirsoftintensiv.intensiv.controller.RequestController.REST_URL;
+import static com.simbirsoftintensiv.intensiv.controller.user.UserTestData.user_60000;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+class RequestControllerTest extends AbstractRequestControllerTest {
 
     @Test
-    void getAllRequest() {
+    void get() throws Exception {
+
+        perform(MockMvcRequestBuilders.get(REST_URL + "/" + "80000")
+                .with(user(user_60000)))
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+        ;
     }
 
     @Test
-    void getRequestById() {
+    void getUnAuth() throws Exception {
+
+        perform(MockMvcRequestBuilders.get(REST_URL + "/" + "80002")
+                .with(user(user_60000)))
+                .andExpect(status().isUnauthorized())
+                .andDo(print())
+        ;
     }
 
     @Test
-    void getRequestCount() {
+    void getRequestCount() throws Exception {
+
+        perform(MockMvcRequestBuilders.get(REST_URL + "/" + "count")
+                .with(user(user_60000)))
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(RequestTestData.jsonMatcher(JsonUtil.readValue(RequestTestData.numberOfUser60000Requests,
+                        String.class),
+                        (actual, expected) -> assertThat(actual).isEqualTo(expected)))
+        ;
     }
 
     @Test
-    void createRequest() {
+    void create() throws Exception {
+
+        Request newRequest = new Request(100000, "Новая тестовая заявка",null, 1, "Комментарий", 1,
+                 60000, "file path");
+
+        perform(MockMvcRequestBuilders.post(REST_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .with(user(user_60000))
+                .content(JsonUtil.writeValue(newRequest)))
+                .andExpect(status().isCreated())
+                .andDo(print())
+                .andReturn()
+        ;
     }
 
     @Test
-    void updateRequest() {
+    void createUnAuth() throws Exception {
+
+        Request newRequest = new Request(100000, "Новая тестовая заявка",null, 1, "Комментарий", 1,
+                60000, "file path");
+
+        perform(MockMvcRequestBuilders.post(REST_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(newRequest)))
+                .andExpect(status().isUnauthorized())
+                .andDo(print())
+                .andReturn()
+        ;
     }
 
     @Test
-    void deleteById() {
+    void deleteById() throws Exception {
+
+        perform(MockMvcRequestBuilders.delete(REST_URL + "/" + "80001")
+                .with(user(user_60000)))
+                .andExpect(status().isOk())
+                .andDo(print())
+        ;
     }
+
+    @Test
+    void deleteNotOwner() throws Exception {
+
+        perform(MockMvcRequestBuilders.delete(REST_URL + "/" + "80002")
+                .with(user(user_60000)))
+                .andExpect(status().isUnauthorized())
+                .andDo(print())
+        ;
+    }
+
+    @Test
+    void deleteUnAuth() throws Exception {
+
+        perform(MockMvcRequestBuilders.delete(REST_URL + "/" + "80002"))
+                .andExpect(status().isUnauthorized())
+                .andDo(print())
+        ;
+    }
+
+
 }
