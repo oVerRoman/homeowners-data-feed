@@ -30,7 +30,7 @@ public class MySimpleUrlAuthenticationSuccessHandler implements AuthenticationSu
 //        String cookie = httpServletResponse.getHeader("Set-Cookie");if (cookie != null)
 //        { httpServletResponse.setHeader("Set-Cookie", cookie + "; HttpOnly; SameSite=strict");}
         httpServletResponse.setHeader("Set-Cookie", "JSESSIONID=" + httpServletRequest.getSession().getId() + ";"
-                + " SameSite=None; Path=/; HttpOnly");
+                +"Secure;" + " SameSite=None; Path=/; HttpOnly");
         System.out.println(httpServletResponse.getHeader("Set-Cookie"));
         String requestUrl = httpServletRequest.getHeader("Origin");
         System.out.println("onAuthenticationSuccess " + requestUrl);
