@@ -1,12 +1,9 @@
 package com.simbirsoftintensiv.intensiv.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
-import java.time.Instant;
 import java.time.LocalDateTime;
-import java.util.Date;
 
 
 @Entity
@@ -36,30 +33,26 @@ public class Request {
     @Column(name = "status", nullable = false)
     private Integer status;
 
-    public String getFileName() {
-        return filename;
-    }
-
-    public void setFileName(String fileName) {
-        this.filename = fileName;
-    }
-
-    @Column(name = "file")
-    private String filename;
-
-    public Integer getClient() {
-        return client;
-    }
-
-    public void setClient(Integer client) {
-        this.client = client;
-    }
-
     // @ManyToOne(optional = false)
     @Column(name = "client_id")
     private Integer client;
 
+    @Column(name = "file")
+    private String fileName;
 
+    public Request() {}
+
+    public Request(Integer id, String title, LocalDateTime date, Integer address, String comment,
+                   Integer status, Integer client, String fileName ) {
+        this.id = id;
+        this.title = title;
+        this.date = date;
+        this.address = address;
+        this.comment = comment;
+        this.status = status;
+        this.fileName = fileName;
+        this.client = client;
+    }
 
     public Integer getStatus() {
         return status;
@@ -110,6 +103,22 @@ public class Request {
         this.type = type;
     }
 
+    public Integer getClient() {
+        return client;
+    }
+
+    public void setClient(Integer client) {
+        this.client = client;
+    }
+
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
+
     public Integer getId() {
         return id;
     }
@@ -134,7 +143,7 @@ public class Request {
                 ", address=" + address +
                 ", comment='" + comment + '\'' +
                 ", status=" + status +
-                ", filename='" + filename + '\'' +
+                ", filename='" + fileName + '\'' +
                 ", client=" + client +
                 '}';
     }

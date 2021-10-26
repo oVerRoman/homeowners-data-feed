@@ -38,7 +38,7 @@ public class UserService implements UserDetailsService {
         return new AuthorizedUser(user);
     }
 
-    public User getByPhone(Long phone) {
+    public User getByPhone(long phone) {
         return ValidationUtil.checkNotFoundWithPhone(userRepository.getByPhone(phone), phone);
     }
 
@@ -55,9 +55,11 @@ public class UserService implements UserDetailsService {
     public void update(UserTo userTo, int authUserId) {
         ValidationUtil.checkIdEquality(userTo, authUserId);
 
-        User user = getByPhone(Long.parseLong(userTo.getPhone()));
+        long phoneFromTo = Long.parseLong(userTo.getPhone());
+
+        User user = getByPhone(phoneFromTo);
         //User cannot change phone number! Only the administrator can..
-        ValidationUtil.checkPhoneEquality(userTo, user.getPhone());
+        ValidationUtil.checkPhoneEquality(phoneFromTo, user.getPhone());
 
         userRepository.save(UserUtil.updateFromTo(user, userTo));
     }

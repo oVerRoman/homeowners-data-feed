@@ -1,34 +1,23 @@
 package com.simbirsoftintensiv.intensiv.controller;
 
-import com.simbirsoftintensiv.intensiv.AuthorizedUser;
 import com.simbirsoftintensiv.intensiv.entity.Request;
-import com.simbirsoftintensiv.intensiv.entity.User;
 import com.simbirsoftintensiv.intensiv.repository.RequestRepository;
+import com.simbirsoftintensiv.intensiv.service.user.UserService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.simbirsoftintensiv.intensiv.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-
-import javax.ejb.Local;
-import java.time.Instant;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.TemporalAccessor;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -63,8 +52,10 @@ import java.util.List;
 
 @RestController
 @Tag(name = "Users requests controller")
-@RequestMapping(path = "rest/request")
+@RequestMapping(path = RequestController.REST_URL)
 public class RequestController {
+
+    public static final String REST_URL = "/rest/request";
 
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
     static final Logger log =
@@ -87,7 +78,7 @@ public class RequestController {
 
     // получаем все запросы клиентов
     // ? Как фронт передает дату. В каком формате.
-    @GetMapping(path = "")
+    @GetMapping()
     public @ResponseBody
     ResponseEntity<List<Request>> getAllRequest(
             @RequestParam(value = "type", required = false) Integer type,
@@ -181,7 +172,7 @@ public class RequestController {
                 }
                 log.info("Request creat " + request.getId() + " .");
                 final Request result = requestRepository.save(request);
-                return  new ResponseEntity<>(result,HttpStatus.OK);
+                return  new ResponseEntity<>(result,HttpStatus.CREATED);
             } else {
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
