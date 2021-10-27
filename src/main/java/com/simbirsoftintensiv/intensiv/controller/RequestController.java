@@ -181,7 +181,7 @@ public class RequestController {
                 }
                 log.info("Request creat " + request.getId() + " .");
                 final Request result = requestRepository.save(request);
-                return  new ResponseEntity<>(result,HttpStatus.CREATED);
+                return  new ResponseEntity<>(result,HttpStatus.OK);
             } else {
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
