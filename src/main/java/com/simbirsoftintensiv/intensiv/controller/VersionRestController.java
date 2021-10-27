@@ -1,5 +1,10 @@
 package com.simbirsoftintensiv.intensiv.controller;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
@@ -8,15 +13,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import io.swagger.v3.oas.annotations.tags.Tag;
-
 @RestController
 @Tag(name = "Version controller")
 @RequestMapping("/version")
+//@CrossOrigin(origins = "https://localhost:3000/", maxAge = 3600, allowCredentials = "true")
 public class VersionRestController {
 
     @GetMapping

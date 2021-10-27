@@ -1,7 +1,6 @@
 package com.simbirsoftintensiv.intensiv.controller;
 
 import com.simbirsoftintensiv.intensiv.AuthorizedUser;
-import com.simbirsoftintensiv.intensiv.controller.user.LoginController;
 import com.simbirsoftintensiv.intensiv.entity.Counter;
 import com.simbirsoftintensiv.intensiv.entity.CounterValue;
 import com.simbirsoftintensiv.intensiv.exception_handling.IncorrectCounterValueException;
@@ -16,7 +15,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,6 +24,7 @@ import java.util.List;
 
 @RestController
 @Tag(name = "Counters values controller")
+//@CrossOrigin(origins = "https://localhost:3000/", maxAge = 3600, allowCredentials = "true")
 @RequestMapping("/rest")
 public class CounterRestController {
 
@@ -42,9 +41,13 @@ public class CounterRestController {
     }
 
     @GetMapping("/allcounters") // fixme delete
-    public List<Counter> getAllCounters(Authentication authentication) {
-        System.out.println(authentication.getPrincipal());
-        return counterService.getAll();
+    public List<CounterValue> getAllCounters1(/*Authentication
+    authentication*/@AuthenticationPrincipal AuthorizedUser user) {
+//        System.out.println(authentication.getPrincipal());
+        List<Counter> allCounters = counterService.getAll();
+        List<CounterValue> allValues = valueService.getAll(allCounters);
+        return allValues;
+//        return counterService.getAll();
     }
 
     @GetMapping("/counters")

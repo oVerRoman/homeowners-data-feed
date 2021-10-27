@@ -7,14 +7,14 @@ import com.simbirsoftintensiv.intensiv.service.user.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
-
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
- 
+
 import java.util.HashMap;
 
 @Controller
+//@CrossOrigin(origins = "https://localhost:3000", maxAge = 3600, allowCredentials = "true")
 public class LoginController {
 
     static final Logger log = LoggerFactory.getLogger(LoginController.class);
