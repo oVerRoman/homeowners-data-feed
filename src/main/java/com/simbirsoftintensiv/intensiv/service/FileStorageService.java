@@ -1,6 +1,5 @@
 package com.simbirsoftintensiv.intensiv.service;
 
-import com.simbirsoftintensiv.intensiv.controller.user.LoginController;
 import com.simbirsoftintensiv.intensiv.repository.FileStorageRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,6 +14,8 @@ import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Objects;
+import java.util.Random;
 import java.util.stream.Stream;
 
 @Service("fileStorageService")
@@ -35,13 +36,33 @@ public class FileStorageService implements FileStorageRepository {
     }
 
     @Override
-    public void save(MultipartFile multipartFile) {
+    public String save(MultipartFile multipartFile) {
         if (!Files.exists(this.path)) {
              this.init();
         }
         try {
-            Files.copy(multipartFile.getInputStream(), this.path.resolve(multipartFile.getOriginalFilename()));
+            // получаем расширение файла
+            String extension = "";
+
+            int index = Objects.requireNonNull(multipartFile.getOriginalFilename()).lastIndexOf('.');
+            if (index > 0) {
+                extension = multipartFile.getOriginalFilename().substring(index + 1);
+            }
+
+            // генерируем случайное имя файла
+            Random rng = new Random();
+            String characters = "abcdefghijklmnopqrstuvwxyz1234567890";
+            char[] text = new char[10];
+            for (int i = 0; i < 10; i++) {
+                    text[i] = characters.charAt(rng.nextInt(characters.length()));
+                }
+            String newFileName = new String(text)+"."+extension;
+
+            Path newPath = Path.of(String.valueOf(this.path), newFileName);
+            System.out.println(newPath);
+            Files.copy(multipartFile.getInputStream(), newPath);
             log.info("Сохраняем файл" + multipartFile.getOriginalFilename());
+            return newFileName;
         } catch (IOException e) {
             log.error("Невозможно сохранить файл" + multipartFile.getOriginalFilename());
             throw new RuntimeException("Could not store this file. Error" + e.getMessage());

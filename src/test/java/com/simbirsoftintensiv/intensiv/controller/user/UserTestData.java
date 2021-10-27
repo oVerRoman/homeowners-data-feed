@@ -1,4 +1,4 @@
-package com.simbirsoftintensiv.intensiv;
+package com.simbirsoftintensiv.intensiv.controller.user;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.simbirsoftintensiv.intensiv.entity.Address;
@@ -78,7 +78,6 @@ public class UserTestData {
         String jsonActual = mvcResult.getResponse().getContentAsString();
         return JsonUtil.readValues(jsonActual, UserTo.class);
     }
-
 
     public static UserTo asUserTo(MvcResult mvcResult) throws UnsupportedEncodingException, JsonProcessingException {
         String jsonActual = mvcResult.getResponse().getContentAsString();

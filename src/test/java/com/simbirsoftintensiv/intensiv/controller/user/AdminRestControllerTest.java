@@ -1,6 +1,5 @@
 package com.simbirsoftintensiv.intensiv.controller.user;
 
-import com.simbirsoftintensiv.intensiv.UserTestData;
 import com.simbirsoftintensiv.intensiv.exception_handling.NotFoundException;
 import com.simbirsoftintensiv.intensiv.service.user.UserService;
 import com.simbirsoftintensiv.intensiv.util.UserUtil;
@@ -10,7 +9,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import static com.simbirsoftintensiv.intensiv.TestUtil.user;
-import static com.simbirsoftintensiv.intensiv.UserTestData.*;
+import static com.simbirsoftintensiv.intensiv.controller.user.UserTestData.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
