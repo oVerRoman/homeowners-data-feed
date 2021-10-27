@@ -79,9 +79,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements W
                 .antMatchers("/upload").hasRole("USER")
                 .antMatchers("/saveCounterValues").hasRole("USER")
                 .antMatchers("/rest/counters").hasRole("USER")
-                .antMatchers("/request").hasRole("USER")
-                .antMatchers("/request/**").hasRole("USER")
-                .antMatchers("/files/**").hasRole("USER")
+                .antMatchers("/rest/request").hasRole("USER")
+                .antMatchers("/rest/request/**").hasRole("USER")
+                .antMatchers("/rest/files/**").hasRole("USER")
                 // Доступ разрешен всем пользователей
                 .antMatchers("/version").permitAll()
 //                .antMatchers("/", "/resources/**", "/v3/api-docs/**",
