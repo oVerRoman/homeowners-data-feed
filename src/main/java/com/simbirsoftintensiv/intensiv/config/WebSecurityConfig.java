@@ -125,11 +125,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements W
                 .and()
                 .logout().permitAll()
                 .and()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
                 .and()
                 .csrf().disable()
                 .cors()
-                      // Перенаправление на главную страницу после успешного выхода
+                // Перенаправление на главную страницу после успешного выхода
 //                .defaultSuccessUrl("/").permitAll()
                 .and().exceptionHandling().authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
 //                .and()
@@ -142,28 +142,28 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements W
     }
 
     // Насстройки запросов CORS. Разрешены все запросы с любого адреса
-  /*  @Bean
-    public WebMvcConfigurer corsConfigurer() {
-        return new WebMvcConfigurer() {
+//    @Bean
+//    public WebMvcConfigurer corsConfigurer() {
+//        return new WebMvcConfigurer() {
+//
+//            @Override
+//            public void addCorsMappings(CorsRegistry registry) {
+//                registry.addMapping("/**")
+//
+//
+//                        .allowedOrigins("http://localhost:3000")
+////                        .allowedOriginPatterns("*")
+//                        .allowCredentials(true)
+//                        .allowedHeaders("Access-Control-Allow-Origin", "Authorization", "Access-Control-Request-Method", "content-type")
+//                        .allowedMethods("GET", "PUT", "POST", "PATCH", "DELETE", "OPTIONS");
+//
+//            }
+//        };
+//
+//    }
 
-            @Override
-            public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**")
-                ;
-                *//*
-     *//*
-     *//*   .allowedOrigins("https://localhost:3000")
-//                        .allowedOriginPatterns("*")
-                        .allowCredentials(true)
-//                        .allowedHeaders("Content-Type, Access-Control-Allow-Origin, Access-Control-Allow-Headers,")
-                        .allowedMethods("GET", "PUT", "POST", "PATCH", "DELETE", "OPTIONS");*//**//*
 
-            }
-        };
-*//*
-            }
-        };
-    }*/
+
 
 
    /* @Override
