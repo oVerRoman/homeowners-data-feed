@@ -59,6 +59,5 @@ public class ValueService {
 
     public CounterValue saveNewValue(CounterValue value, int userId, Integer counterId) {
         return repository.saveNewValue(value, userId, counterId);
-
     }
 }

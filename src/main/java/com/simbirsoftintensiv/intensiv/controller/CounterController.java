@@ -1,13 +1,10 @@
 package com.simbirsoftintensiv.intensiv.controller;
 
-import com.simbirsoftintensiv.intensiv.AuthorizedUser;
-import com.simbirsoftintensiv.intensiv.controller.user.LoginController;
-import com.simbirsoftintensiv.intensiv.entity.Counter;
-import com.simbirsoftintensiv.intensiv.entity.CounterValue;
-import com.simbirsoftintensiv.intensiv.entity.CounterValuesList;
-import com.simbirsoftintensiv.intensiv.service.counter.CounterService;
-import com.simbirsoftintensiv.intensiv.service.countervalue.ValueService;
-import io.swagger.v3.oas.annotations.Parameter;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.validation.Valid;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -18,9 +15,14 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.List;
+import com.simbirsoftintensiv.intensiv.AuthorizedUser;
+import com.simbirsoftintensiv.intensiv.entity.Counter;
+import com.simbirsoftintensiv.intensiv.entity.CounterValue;
+import com.simbirsoftintensiv.intensiv.entity.CounterValuesList;
+import com.simbirsoftintensiv.intensiv.service.counter.CounterService;
+import com.simbirsoftintensiv.intensiv.service.countervalue.ValueService;
+
+import io.swagger.v3.oas.annotations.Parameter;
 
 @Controller
 public class CounterController {
@@ -88,16 +90,4 @@ public class CounterController {
         redirectAttrs.addFlashAttribute("allValueErrors", errors);
         return "redirect:/counters";
     }
-
-//    @GetMapping("/counters/history")
-//    public String getAllCounterValuesHistory(Model model,
-//            @Valid @ModelAttribute("allCurrentValues") CounterValuesList currentValues,
-//            @Parameter(hidden = true) @AuthenticationPrincipal AuthorizedUser user) {
-//        List<Counter> counters = counterService.getAll(user.getId());
-//        model.addAttribute("allCounters", counters);
-//        List<CounterValue> counterValuesList = valueService.getAllHistory(counters);
-//        currentValues.setCounterValues(counterValuesList);
-//        model.addAttribute("allCounterValues", counterValuesList);
-//        return "counters-history";
-//    }
 }

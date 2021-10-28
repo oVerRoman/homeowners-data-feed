@@ -13,14 +13,9 @@ public interface CrudValueRepository {
 
     CounterValue save(CounterValue counterValue, int userId, int counterId);
 
-    // false if meal do not belong to userId
     boolean delete(int id, int userId);
 
-    // null if meal do not belong to userId
     CounterValue get(int id, int userId);
-
-    // ORDERED dateTime desc
-    List<CounterValue> getAll(int userId);
 
     CounterValue getLastByCounter(Counter counter);
 

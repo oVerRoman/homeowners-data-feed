@@ -45,12 +45,6 @@ public class DataJpaValueRepository implements CrudValueRepository {
                 .orElse(null);
     }
 
-    // fixme может, такой метод не нужен?..
-    @Override
-    public List<CounterValue> getAll(int userId) {
-        return null;
-    }
-
     @Override
     public CounterValue getLastByCounter(Counter counter) {
         CounterValue counterValue;

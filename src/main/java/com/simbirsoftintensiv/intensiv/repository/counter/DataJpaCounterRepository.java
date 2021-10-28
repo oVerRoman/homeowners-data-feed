@@ -60,9 +60,4 @@ public class DataJpaCounterRepository implements CrudCounterRepository {
     public boolean delete(int id, int userId) {
         return counterRepository.delete(id, userId) == 0;
     }
-
-    @Override
-    public List<Counter> getAll() {// fixme delete
-        return counterRepository.findAll();
-    }
 }
