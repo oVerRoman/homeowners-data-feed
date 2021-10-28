@@ -10,12 +10,14 @@ import com.simbirsoftintensiv.intensiv.util.JsonUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -44,7 +46,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements W
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         final CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(ImmutableList.of("http://localhost:3000/"));
+        configuration.setAllowedOrigins(ImmutableList.of("http://localhost:3000/", "https://localhost:3000/"));
         configuration.setAllowedMethods(ImmutableList.of("HEAD", "GET", "POST", "PUT", "DELETE", "PATCH"));
         // setAllowCredentials(true) is important, otherwise:
         // The value of the 'Access-Control-Allow-Origin' header in the response must not be the wildcard '*' when the request's credentials mode is 'include'.
@@ -81,7 +83,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements W
 //                .antMatchers("/rest/counters").not().authenticated() // fixme delete
                 .antMatchers("/onetimecode").not().authenticated()
                 .antMatchers("/registration-otp").not().authenticated()
-//                .antMatchers("/rest/users").not().authenticated()
+                .antMatchers("/rest/users").not().authenticated()
                 .antMatchers("/registration").not().authenticated()
                 .antMatchers("/username").not().authenticated()
 //                .antMatchers("/rest/profile").authenticated()
@@ -129,7 +131,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements W
                 .cors()
                       // Перенаправление на главную страницу после успешного выхода
 //                .defaultSuccessUrl("/").permitAll()
-//                .and().exceptionHandling().authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
+                .and().exceptionHandling().authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
 //                .and()
 
         ;
