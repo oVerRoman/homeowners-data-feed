@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import java.util.HashMap;
 
 @Controller
+//@CrossOrigin(origins = "https://localhost:3000", maxAge = 3600, allowCredentials = "true")
 public class LoginController {
 
     static final Logger log = LoggerFactory.getLogger(LoginController.class);
