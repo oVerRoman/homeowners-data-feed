@@ -1,25 +1,19 @@
 package com.simbirsoftintensiv.intensiv.controller.user;
 
-import static com.simbirsoftintensiv.intensiv.TestUtil.user;
-import static com.simbirsoftintensiv.intensiv.controller.user.UserTestData.admin_60002;
-import static com.simbirsoftintensiv.intensiv.controller.user.UserTestData.jsonListMatcher;
-import static com.simbirsoftintensiv.intensiv.controller.user.UserTestData.jsonMatcher;
-import static com.simbirsoftintensiv.intensiv.controller.user.UserTestData.user_60000;
-import static com.simbirsoftintensiv.intensiv.controller.user.UserTestData.user_60001;
-import static com.simbirsoftintensiv.intensiv.controller.user.UserTestData.users;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
+import com.simbirsoftintensiv.intensiv.exception_handling.NotFoundException;
+import com.simbirsoftintensiv.intensiv.service.user.UserService;
+import com.simbirsoftintensiv.intensiv.util.UserUtil;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import com.simbirsoftintensiv.intensiv.exception_handling.NotFoundException;
-import com.simbirsoftintensiv.intensiv.service.user.UserService;
-import com.simbirsoftintensiv.intensiv.util.UserUtil;
+import static com.simbirsoftintensiv.intensiv.TestUtil.user;
+import static com.simbirsoftintensiv.intensiv.controller.user.UserTestData.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 class AdminRestControllerTest extends AbstractUserRestControllerTest {
 
@@ -49,7 +43,7 @@ class AdminRestControllerTest extends AbstractUserRestControllerTest {
     @Test
     void getUnAuth() throws Exception { // fixme статут наверно должен быть другим
         perform(MockMvcRequestBuilders.get(REST_URL + "/" + "79000000000"))
-                .andExpect(status().isFound())
+                .andExpect(status().isUnauthorized())
                 .andDo(print());
     }
 

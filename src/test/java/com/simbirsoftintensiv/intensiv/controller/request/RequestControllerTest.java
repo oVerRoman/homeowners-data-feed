@@ -1,5 +1,11 @@
 package com.simbirsoftintensiv.intensiv.controller.request;
 
+import com.simbirsoftintensiv.intensiv.entity.Request;
+import com.simbirsoftintensiv.intensiv.util.JsonUtil;
+import org.junit.jupiter.api.Test;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+
 import static com.simbirsoftintensiv.intensiv.TestUtil.user;
 import static com.simbirsoftintensiv.intensiv.controller.RequestController.REST_URL;
 import static com.simbirsoftintensiv.intensiv.controller.user.UserTestData.user_60000;
@@ -7,13 +13,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import org.junit.jupiter.api.Test;
-import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-
-import com.simbirsoftintensiv.intensiv.entity.Request;
-import com.simbirsoftintensiv.intensiv.util.JsonUtil;
 
 class RequestControllerTest extends AbstractRequestControllerTest {
 
@@ -74,7 +73,7 @@ class RequestControllerTest extends AbstractRequestControllerTest {
         perform(MockMvcRequestBuilders.post(REST_URL)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(newRequest)))
-                        .andExpect(status().isFound())
+                        .andExpect(status().isUnauthorized())
                         .andDo(print())
                         .andReturn();
     }
@@ -101,7 +100,7 @@ class RequestControllerTest extends AbstractRequestControllerTest {
     void deleteUnAuth() throws Exception {
 
         perform(MockMvcRequestBuilders.delete(REST_URL + "/" + "80002"))
-                .andExpect(status().isFound())
+                .andExpect(status().isUnauthorized())
                 .andDo(print());
     }
 
