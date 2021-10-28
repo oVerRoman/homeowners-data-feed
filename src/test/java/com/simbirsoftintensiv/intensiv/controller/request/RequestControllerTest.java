@@ -74,7 +74,7 @@ class RequestControllerTest extends AbstractRequestControllerTest {
         perform(MockMvcRequestBuilders.post(REST_URL)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(newRequest)))
-                        .andExpect(status().isUnauthorized())
+                        .andExpect(status().isFound())
                         .andDo(print())
                         .andReturn();
     }
@@ -101,7 +101,7 @@ class RequestControllerTest extends AbstractRequestControllerTest {
     void deleteUnAuth() throws Exception {
 
         perform(MockMvcRequestBuilders.delete(REST_URL + "/" + "80002"))
-                .andExpect(status().isUnauthorized())
+                .andExpect(status().isFound())
                 .andDo(print());
     }
 
